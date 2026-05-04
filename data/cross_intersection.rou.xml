@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes>
+    <!-- Vehicle types -->
+    <vType id="car" accel="2.6" decel="4.5" sigma="0.5" length="5.0" maxSpeed="50.0"/>
+    
+    <!-- Routes -->
+    <route id="r_N_S" edges="E_N_in E_S_out"/>
+    <route id="r_N_E" edges="E_N_in E_E_out"/>
+    <route id="r_N_W" edges="E_N_in E_W_out"/>
+    <route id="r_S_N" edges="E_S_in E_N_out"/>
+    <route id="r_S_E" edges="E_S_in E_E_out"/>
+    <route id="r_S_W" edges="E_S_in E_W_out"/>
+    <route id="r_E_W" edges="E_E_in E_W_out"/>
+    <route id="r_E_N" edges="E_E_in E_N_out"/>
+    <route id="r_E_S" edges="E_E_in E_S_out"/>
+    <route id="r_W_E" edges="E_W_in E_E_out"/>
+    <route id="r_W_N" edges="E_W_in E_N_out"/>
+    <route id="r_W_S" edges="E_W_in E_S_out"/>
+    
+    <!-- Traffic flow: vehicles generated over 3600 seconds (1 hour) -->
+    <!-- North-South direction -->
+    <flow id="f_NS" type="car" route="r_N_S" begin="0" end="3600" period="5" departPos="free" departSpeed="max"/>
+    <flow id="f_SN" type="car" route="r_S_N" begin="0" end="3600" period="5" departPos="free" departSpeed="max"/>
+    <flow id="f_NE" type="car" route="r_N_E" begin="0" end="3600" period="12" departPos="free" departSpeed="max"/>
+    <flow id="f_NW" type="car" route="r_N_W" begin="0" end="3600" period="12" departPos="free" departSpeed="max"/>
+    <flow id="f_SE" type="car" route="r_S_E" begin="0" end="3600" period="12" departPos="free" departSpeed="max"/>
+    <flow id="f_SW" type="car" route="r_S_W" begin="0" end="3600" period="12" departPos="free" departSpeed="max"/>
+    
+    <!-- East-West direction -->
+    <flow id="f_EW" type="car" route="r_E_W" begin="0" end="3600" period="6" departPos="free" departSpeed="max"/>
+    <flow id="f_WE" type="car" route="r_W_E" begin="0" end="3600" period="6" departPos="free" departSpeed="max"/>
+    <flow id="f_EN" type="car" route="r_E_N" begin="0" end="3600" period="15" departPos="free" departSpeed="max"/>
+    <flow id="f_ES" type="car" route="r_E_S" begin="0" end="3600" period="15" departPos="free" departSpeed="max"/>
+    <flow id="f_WN" type="car" route="r_W_N" begin="0" end="3600" period="15" departPos="free" departSpeed="max"/>
+    <flow id="f_WS" type="car" route="r_W_S" begin="0" end="3600" period="15" departPos="free" departSpeed="max"/>
+</routes>
