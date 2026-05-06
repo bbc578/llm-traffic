@@ -1,1 +1,7 @@
 node_modules/\ndist/\n__pycache__/\n*.pyc\n.env\nfcd_output.xml
+__pycache__/
+*.pyc
+node_modules/
+dist/
+*.pdf
+.vite/

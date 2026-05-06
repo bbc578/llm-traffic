@@ -1,19 +1,20 @@
 """
-SUMO simulation wrapper using TraCI.
+Multi-intersection SUMO simulation engine using TraCI.
+
+Network-agnostic: auto-discovers traffic lights and approach edges
+from whatever .sumocfg is loaded (grid6, Cologne subnetwork, etc.).
 """
 import os
 import sys
 import logging
-from typing import Dict, List, Optional
+from dataclasses import dataclass, field
+from typing import Dict, List, Optional, Tuple
 
 # Set SUMO_HOME before importing traci
-os.environ["SUMO_HOME"] = "/usr/share/sumo"
-
-# Add SUMO tools to path
-if "SUMO_HOME" in os.environ:
-    tools = os.path.join(os.environ["SUMO_HOME"], "tools")
-    if tools not in sys.path:
-        sys.path.append(tools)
+os.environ["SUMO_HOME"] = os.environ.get("SUMO_HOME", "/usr/share/sumo")
+_tools = os.path.join(os.environ["SUMO_HOME"], "tools")
+if _tools not in sys.path:
+    sys.path.append(_tools)
 
 try:
     import traci
@@ -22,217 +23,387 @@ except ImportError:
     TRACI_AVAILABLE = False
     logging.warning("TraCI not available. SUMO simulation will not work.")
 
-try:
-    from backend.config.settings import (
-        SUMO_BINARY, SUMO_CONFIG, TLS_ID, EDGES,
-        DEFAULT_SIM_DURATION, DEFAULT_STEP_LENGTH
-    )
-except ImportError:
-    from config.settings import (
-        SUMO_BINARY, SUMO_CONFIG, TLS_ID, EDGES,
-        DEFAULT_SIM_DURATION, DEFAULT_STEP_LENGTH
-    )
-
 logger = logging.getLogger(__name__)
+
+# ---------------------------------------------------------------------------
+# Default config
+# ---------------------------------------------------------------------------
+DEFAULT_CONFIG = os.path.join(os.path.dirname(__file__), "..", "..", "data", "grid6.sumocfg")
+
+
+@dataclass
+class IntersectionMetrics:
+    """Metrics for a single intersection."""
+    total_wait_time: float = 0.0
+    total_queue_length: int = 0
+    total_vehicle_count: int = 0
+    sample_count: int = 0
+
+    @property
+    def avg_wait_time(self) -> float:
+        return self.total_wait_time / self.sample_count if self.sample_count else 0.0
+
+    @property
+    def avg_queue_length(self) -> float:
+        return self.total_queue_length / self.sample_count if self.sample_count else 0.0
+
+    @property
+    def avg_vehicle_count(self) -> float:
+        return self.total_vehicle_count / self.sample_count if self.sample_count else 0.0
+
+
+@dataclass
+class SimulationMetrics:
+    """Aggregate simulation metrics."""
+    per_intersection: Dict[str, IntersectionMetrics] = field(default_factory=dict)
+    total_steps: int = 0
+    vehicles_departed: int = 0
+    vehicles_arrived: int = 0
+
+    @property
+    def avg_wait_time(self) -> float:
+        vals = [m.avg_wait_time for m in self.per_intersection.values()]
+        return sum(vals) / len(vals) if vals else 0.0
+
+    @property
+    def avg_queue_length(self) -> float:
+        vals = [m.avg_queue_length for m in self.per_intersection.values()]
+        return sum(vals) / len(vals) if vals else 0.0
+
+    @property
+    def throughput(self) -> float:
+        return self.vehicles_arrived / self.total_steps if self.total_steps else 0.0
+
+    def summary(self) -> Dict:
+        return {
+            "total_steps": self.total_steps,
+            "throughput": round(self.throughput, 4),
+            "avg_wait_time": round(self.avg_wait_time, 2),
+            "avg_queue_length": round(self.avg_queue_length, 2),
+            "vehicles_departed": self.vehicles_departed,
+            "vehicles_arrived": self.vehicles_arrived,
+            "per_intersection": {
+                iid: {
+                    "avg_wait_time": round(m.avg_wait_time, 2),
+                    "avg_queue_length": round(m.avg_queue_length, 2),
+                    "avg_vehicle_count": round(m.avg_vehicle_count, 2),
+                }
+                for iid, m in self.per_intersection.items()
+            },
+        }
 
 
 class SumoEngine:
-    """Wrapper around SUMO TraCI for traffic simulation control."""
+    """Network-agnostic SUMO simulation engine."""
 
     def __init__(self):
         self._is_running = False
         self._current_step = 0
-        self._step_length = DEFAULT_STEP_LENGTH
+        self._step_length = 1
+        self._metrics = SimulationMetrics()
+        self._intersections: List[str] = []
+        self._approach_edges: Dict[str, Dict[str, str]] = {}
 
-    @property
-    def is_running(self) -> bool:
-        return self._is_running
+    # -- lifecycle ----------------------------------------------------------
 
-    def start(self, config_file: Optional[str] = None, step_length: int = 1, extra_args: Optional[List[str]] = None):
-        """Start the SUMO simulation."""
+    def start(
+        self,
+        config_file: Optional[str] = None,
+        step_length: int = 1,
+        extra_args: Optional[List[str]] = None,
+    ):
+        """Start SUMO with the given config.
+
+        Auto-discovers traffic lights and their approach edges from the network.
+        """
         if self._is_running:
             logger.warning("Simulation already running, stopping first.")
             self.stop()
 
-        cfg = config_file or SUMO_CONFIG
+        cfg = config_file or DEFAULT_CONFIG
+        if not os.path.isabs(cfg):
+            cfg = os.path.abspath(cfg)
+
         self._step_length = step_length
         self._current_step = 0
+        self._metrics = SimulationMetrics()
 
-        sumo_cmd = [SUMO_BINARY, "-c", cfg, "--step-length", str(step_length), "--no-step-log", "true"]
+        sumo_binary = "sumo"
+        sumo_home = os.environ.get("SUMO_HOME", "/usr/share/sumo")
+        for candidate in ["sumo", os.path.join(sumo_home, "bin", "sumo")]:
+            if os.path.isfile(candidate) or candidate == "sumo":
+                sumo_binary = candidate
+                break
+
+        sumo_cmd = [
+            sumo_binary,
+            "-c", cfg,
+            "--step-length", str(step_length),
+            "--no-step-log", "true",
+        ]
         if extra_args:
             sumo_cmd.extend(extra_args)
 
-        logger.info(f"Starting SUMO with command: {' '.join(sumo_cmd)}")
+        logger.info("Starting SUMO: %s", " ".join(sumo_cmd))
         try:
             traci.start(sumo_cmd)
             self._is_running = True
-            logger.info("SUMO simulation started successfully.")
+            self._discover_network()
+            logger.info("SUMO started. Discovered %d intersections.", len(self._intersections))
         except Exception as e:
             logger.error(f"Failed to start SUMO: {e}")
-            raise RuntimeError(f"Failed to start SUMO simulation: {e}")
+            raise RuntimeError(f"Failed to start SUMO: {e}")
+
+    @staticmethod
+    def _lane_to_edge(lane_id: str) -> str:
+        """Convert a lane ID ('edgeId_laneIdx') to its edge ID ('edgeId')."""
+        # Lane IDs look like 'some_edge_0' or 'some_edge#1_2'
+        # The last '_N' is the lane index; strip it
+        parts = lane_id.rsplit('_', 1)
+        if len(parts) == 2 and parts[1].isdigit():
+            return parts[0]
+        return lane_id
+
+    def _discover_network(self):
+        """Auto-discover TLS IDs and their approach edges from the running SUMO instance."""
+        self._intersections = []
+        self._approach_edges = {}
+
+        tl_ids = traci.trafficlight.getIDList()
+        logger.info("Found %d traffic lights: %s", len(tl_ids), list(tl_ids))
+
+        for tl_id in tl_ids:
+            self._intersections.append(tl_id)
+            self._approach_edges[tl_id] = {}
+
+            try:
+                controlled_links = traci.trafficlight.getControlledLinks(tl_id)
+                # getControlledLinks returns [[(fromLane, toLane, viaLane), ...], ...]
+                # Each element is one signal phase; each tuple is one connection.
+                seen_edges = {}  # edge_id -> lane_id (for position lookup)
+                for phase_links in controlled_links:
+                    for link in phase_links:
+                        from_lane = link[0]
+                        if from_lane and not from_lane.startswith(':'):
+                            edge_id = self._lane_to_edge(from_lane)
+                            seen_edges[edge_id] = from_lane
+
+                # Map edges to compass directions relative to TLS position
+                # SUMO 1.12.0 doesn't have trafficlight.getPosition;
+                # use junction.getPosition (TLS ID == junction ID)
+                try:
+                    tls_pos = traci.junction.getPosition(tl_id)
+                except Exception:
+                    tls_pos = (0, 0)
+
+                for edge_id, lane_id in seen_edges.items():
+                    try:
+                        end_pos = traci.lane.getShape(lane_id)[-1]
+                        dx = end_pos[0] - tls_pos[0]
+                        dy = end_pos[1] - tls_pos[1]
+                        if abs(dx) > abs(dy):
+                            direction = "east" if dx > 0 else "west"
+                        else:
+                            direction = "north" if dy > 0 else "south"
+                        self._approach_edges[tl_id][direction] = edge_id
+                    except Exception:
+                        pass
+
+                if not self._approach_edges[tl_id]:
+                    for i, edge_id in enumerate(seen_edges):
+                        self._approach_edges[tl_id][f"approach_{i}"] = edge_id
+
+            except Exception as e:
+                logger.warning("Failed to discover edges for TLS %s: %s", tl_id, e)
+
+        for iid in self._intersections:
+            self._metrics.per_intersection[iid] = IntersectionMetrics()
 
     def stop(self):
-        """Stop the SUMO simulation."""
+        """Stop the SUMO simulation and reset state."""
         if self._is_running:
             try:
                 traci.close()
-            except Exception as e:
-                logger.warning(f"Error closing TraCI: {e}")
+            except Exception:
+                pass
             self._is_running = False
-            self._current_step = 0
-            logger.info("SUMO simulation stopped.")
+            logger.info("SUMO simulation stopped after %d steps.", self._current_step)
 
     def step(self) -> bool:
-        """Advance the simulation by one step. Returns False if simulation ended."""
+        """Advance one simulation step. Returns False when simulation ends."""
         if not self._is_running:
             return False
         try:
             traci.simulationStep()
             self._current_step += 1
+            self._collect_metrics()
             return True
-        except traci.exceptions.TraCIException as e:
-            logger.error(f"TraCI error during step: {e}")
+        except Exception as e:
+            logger.error(f"Simulation step failed: {e}")
             self._is_running = False
             return False
 
-    def get_vehicle_count(self) -> Dict[str, int]:
-        """Get vehicle count per incoming edge."""
-        counts = {}
-        for direction, edge_id in EDGES.items():
-            try:
-                counts[direction] = traci.edge.getLastStepVehicleNumber(edge_id)
-            except Exception:
-                counts[direction] = 0
-        return counts
+    def _collect_metrics(self):
+        """Collect per-intersection metrics."""
+        for iid in self._intersections:
+            m = self._metrics.per_intersection[iid]
+            m.sample_count += 1
 
-    def get_queue_length(self) -> Dict[str, int]:
-        """Get queue length (number of halting vehicles) per incoming edge."""
-        queues = {}
-        for direction, edge_id in EDGES.items():
-            try:
-                queues[direction] = traci.edge.getLastStepHaltingNumber(edge_id)
-            except Exception:
-                queues[direction] = 0
-        return queues
+            # Queue length
+            queue_sum = 0
+            for edge_id in self._approach_edges.get(iid, {}).values():
+                try:
+                    queue_sum += traci.edge.getLastStepHaltingNumber(edge_id)
+                except Exception:
+                    pass
+            m.total_queue_length += queue_sum
 
-    def get_avg_speed(self) -> Dict[str, float]:
-        """Get average speed per incoming edge in m/s."""
-        speeds = {}
-        for direction, edge_id in EDGES.items():
-            try:
-                speeds[direction] = round(traci.edge.getLastStepMeanSpeed(edge_id), 2)
-            except Exception:
-                speeds[direction] = 0.0
-        return speeds
+            # Vehicle count
+            veh_sum = 0
+            for edge_id in self._approach_edges.get(iid, {}).values():
+                try:
+                    veh_sum += traci.edge.getLastStepVehicleNumber(edge_id)
+                except Exception:
+                    pass
+            m.total_vehicle_count += veh_sum
 
-    def get_waiting_time(self) -> Dict[str, float]:
-        """Get average waiting time per incoming edge."""
-        waiting = {}
-        for direction, edge_id in EDGES.items():
-            try:
-                waiting[direction] = round(traci.edge.getWaitingTime(edge_id), 2)
-            except Exception:
-                waiting[direction] = 0.0
-        return waiting
+            # Wait time (from vehicles on approach edges)
+            wait_sum = 0.0
+            count = 0
+            for edge_id in self._approach_edges.get(iid, {}).values():
+                try:
+                    for vid in traci.edge.getLastStepVehicleIDs(edge_id):
+                        wait_sum += traci.vehicle.getWaitingTime(vid)
+                        count += 1
+                except Exception:
+                    pass
+            m.total_wait_time += (wait_sum / count if count else 0)
 
-    def get_current_phase(self) -> tuple:
-        """Get current traffic light phase index and its remaining duration."""
+        self._metrics.total_steps = self._current_step
         try:
-            phase = traci.trafficlight.getPhase(TLS_ID)
-            # Get the complete logics to find current phase duration
-            logics = traci.trafficlight.getAllProgramLogics(TLS_ID)
-            if logics:
-                current_logic = logics[0]
-                phases = current_logic.getPhases()
-                if 0 <= phase < len(phases):
-                    duration = phases[phase].duration
-                else:
-                    duration = 0
-            else:
-                duration = 0
-            return phase, duration
+            self._metrics.vehicles_departed += traci.simulation.getDepartedNumber()
+            self._metrics.vehicles_arrived += traci.simulation.getArrivedNumber()
+        except Exception:
+            pass
+
+    # -- signal control -----------------------------------------------------
+
+    def set_signal_program(self, intersection_id: str, program_id: int):
+        """Switch an intersection to a named program."""
+        if not self._is_running:
+            raise RuntimeError("Simulation is not running.")
+        if intersection_id not in self._intersections:
+            raise ValueError(f"Unknown intersection: {intersection_id}")
+        try:
+            traci.trafficlight.setProgram(intersection_id, str(program_id))
         except Exception as e:
-            logger.error(f"Error getting traffic light phase: {e}")
-            return 0, 0
+            logger.error(f"Error setting program on {intersection_id}: {e}")
+            raise
+
+    def set_phase(self, intersection_id: str, phase_index: int, duration: int = 30):
+        """Set a specific phase on an intersection."""
+        if not self._is_running:
+            raise RuntimeError("Simulation is not running.")
+        try:
+            traci.trafficlight.setPhase(intersection_id, phase_index)
+            traci.trafficlight.setPhaseDuration(intersection_id, duration)
+        except Exception as e:
+            logger.error(f"Error setting phase on {intersection_id}: {e}")
+            raise
+
+    def get_signal_state(self, intersection_id: str) -> Dict:
+        """Return current phase index, program ID, and state string."""
+        try:
+            phase = traci.trafficlight.getPhase(intersection_id)
+            program = traci.trafficlight.getProgram(intersection_id)
+            state = traci.trafficlight.getRedYellowGreenState(intersection_id)
+            return {
+                "intersection": intersection_id,
+                "program": program,
+                "phase": phase,
+                "state": state,
+            }
+        except Exception as e:
+            logger.error(f"Error reading signal state for {intersection_id}: {e}")
+            return {"intersection": intersection_id, "program": "?", "phase": -1, "state": "?"}
+
+    def get_all_signal_states(self) -> List[Dict]:
+        return [self.get_signal_state(iid) for iid in self._intersections]
+
+    # -- per-intersection data retrieval ------------------------------------
+
+    def get_queue_lengths(self, intersection_id: str) -> Dict[str, int]:
+        """Queue length (halting vehicles) per approach for one intersection."""
+        result = {}
+        for direction, edge_id in self._approach_edges.get(intersection_id, {}).items():
+            try:
+                result[direction] = traci.edge.getLastStepHaltingNumber(edge_id)
+            except Exception:
+                result[direction] = 0
+        return result
+
+    def get_vehicle_counts(self, intersection_id: str) -> Dict[str, int]:
+        """Vehicle count per approach for one intersection."""
+        result = {}
+        for direction, edge_id in self._approach_edges.get(intersection_id, {}).items():
+            try:
+                result[direction] = traci.edge.getLastStepVehicleNumber(edge_id)
+            except Exception:
+                result[direction] = 0
+        return result
+
+    def get_all_queue_lengths(self) -> Dict[str, Dict[str, int]]:
+        return {iid: self.get_queue_lengths(iid) for iid in self._intersections}
+
+    def get_all_vehicle_counts(self) -> Dict[str, Dict[str, int]]:
+        return {iid: self.get_vehicle_counts(iid) for iid in self._intersections}
 
     def get_total_vehicles(self) -> int:
-        """Get total number of vehicles currently in the simulation."""
         try:
             return traci.vehicle.getIDCount()
         except Exception:
             return 0
 
-    def set_phase(self, phase_index: int, duration: int = 30):
-        """Set traffic light to a specific phase with given duration."""
-        if not self._is_running:
-            raise RuntimeError("Simulation is not running.")
-        try:
-            traci.trafficlight.setPhase(TLS_ID, phase_index)
-            # Set phase duration by modifying the program
-            traci.trafficlight.setPhaseDuration(TLS_ID, duration)
-            logger.info(f"Set traffic light to phase {phase_index} for {duration}s")
-        except Exception as e:
-            logger.error(f"Error setting phase: {e}")
-            raise
+    # -- properties ---------------------------------------------------------
 
-    def set_phase_durations(self, phase_durations: Dict[int, int]):
-        """Set durations for all phases. phase_durations maps phase index to duration."""
-        if not self._is_running:
-            raise RuntimeError("Simulation is not running.")
-        try:
-            logics = traci.trafficlight.getAllProgramLogics(TLS_ID)
-            if not logics:
-                raise RuntimeError("No traffic light programs found.")
+    @property
+    def intersections(self) -> List[str]:
+        return list(self._intersections)
 
-            current_logic = logics[0]
-            phases = list(current_logic.getPhases())
+    @property
+    def approach_edges(self) -> Dict[str, Dict[str, str]]:
+        return dict(self._approach_edges)
 
-            # Update phase durations
-            for idx, phase_obj in enumerate(phases):
-                if idx in phase_durations:
-                    new_dur = phase_durations[idx]
-                    # Create new phase with updated duration
-                    from traci._trafficlight import Phase
-                    phases[idx] = Phase(new_dur, phase_obj.state, new_dur, new_dur)
-
-            # Rebuild and set the logic
-            from traci._trafficlight import Logic
-            new_logic = Logic(
-                current_logic.programID,
-                current_logic.type,
-                current_logic.currentPhaseIndex,
-                phases
-            )
-            traci.trafficlight.setProgramLogic(TLS_ID, new_logic)
-            logger.info(f"Updated phase durations: {phase_durations}")
-        except Exception as e:
-            logger.error(f"Error setting phase durations: {e}")
-            raise
-
-    def get_traffic_state(self) -> Dict:
-        """Get complete traffic state snapshot."""
-        vehicle_counts = self.get_vehicle_count()
-        queue_lengths = self.get_queue_length()
-        avg_speeds = self.get_avg_speed()
-        waiting_times = self.get_waiting_time()
-        current_phase, phase_duration = self.get_current_phase()
-        total_vehicles = self.get_total_vehicles()
-
-        return {
-            "time": self._current_step * self._step_length,
-            "vehicle_counts": vehicle_counts,
-            "queue_lengths": queue_lengths,
-            "avg_speeds": avg_speeds,
-            "avg_waiting_times": waiting_times,
-            "current_phase": current_phase,
-            "current_phase_duration": phase_duration,
-            "total_vehicles": total_vehicles,
-            "is_running": self._is_running,
-        }
+    @property
+    def metrics(self) -> SimulationMetrics:
+        return self._metrics
 
     @property
     def simulation_time(self) -> float:
-        return self._current_step * self._step_length
+        try:
+            return traci.simulation.getTime()
+        except Exception:
+            return self._current_step * self._step_length
+
+    @property
+    def current_step(self) -> int:
+        return self._current_step
+
+    @property
+    def is_running(self) -> bool:
+        return self._is_running
+
+    def get_snapshot(self) -> Dict:
+        """Full snapshot: all signals, all queues, all counts, metrics."""
+        return {
+            "step": self._current_step,
+            "time": self.simulation_time,
+            "total_vehicles": self.get_total_vehicles(),
+            "signals": self.get_all_signal_states(),
+            "queue_lengths": self.get_all_queue_lengths(),
+            "vehicle_counts": self.get_all_vehicle_counts(),
+            "metrics": self._metrics.summary(),
+        }
 
     def __del__(self):
         self.stop()

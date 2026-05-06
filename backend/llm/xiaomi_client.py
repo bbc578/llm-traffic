@@ -13,36 +13,12 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
-SYSTEM_PROMPT = """You are an expert traffic engineer optimizing signal timing at a 4-way intersection.
-The intersection has 4 phases:
-- Phase 0: North-South Green (vehicles from north and south can pass)
-- Phase 1: North-South Yellow (transition)
-- Phase 2: East-West Green (vehicles from east and west can pass)
-- Phase 3: East-West Yellow (transition)
+SYSTEM_PROMPT = """You are a traffic signal optimizer for a grid of intersections. Respond ONLY with a single JSON object, nothing else.
+Format: {"intersection_id": {"phase_durations": {"0": NS_green_sec, "1": 3, "2": EW_green_sec, "3": 3}, "reasoning": "brief"}, ...}
+Green phases: 10-90 seconds. Yellow phases: 3 seconds. Keep reasoning under 30 words per intersection."""
 
-You must respond with a JSON object containing:
-1. "phase_durations": an object mapping phase number to recommended duration in seconds (integers, yellow phases should be 3-5 seconds, green phases 10-90 seconds)
-2. "reasoning": a brief explanation of your recommendation
-
-Example response:
-{"phase_durations": {"0": 30, "1": 3, "2": 25, "3": 3}, "reasoning": "North-south has heavier traffic, so longer green phase allocated."}
-"""
-
-USER_PROMPT_TEMPLATE = """Current traffic state at the intersection:
-
-Direction    | Vehicle Count | Queue Length | Avg Speed (m/s) | Waiting Time (s)
--------------|---------------|-------------|-----------------|------------------
-North        | {n_count}     | {n_queue}   | {n_speed}       | {n_wait}
-South        | {s_count}     | {s_queue}   | {s_speed}       | {s_wait}
-East         | {e_count}     | {e_queue}   | {e_speed}       | {e_wait}
-West         | {w_count}     | {w_queue}   | {w_speed}       | {w_wait}
-
-Total vehicles in simulation: {total}
-Current simulation time: {sim_time}s
-Current phase: {current_phase}
-
-Analyze the traffic congestion and recommend optimal signal timing.
-Respond ONLY with a JSON object containing "phase_durations" and "reasoning"."""
+USER_PROMPT_TEMPLATE = """Intersection state — N:{n_count}veh/{n_queue}q/{n_wait}w S:{s_count}veh/{s_queue}q/{s_wait}w E:{e_count}veh/{e_queue}q/{e_wait}w W:{w_count}veh/{w_queue}q/{w_wait}w | Total:{total} | Time:{sim_time}s | Phase:{current_phase}
+Reply JSON only."""
 
 
 class LLMClient:
@@ -52,6 +28,75 @@ class LLMClient:
         self.base_url = base_url or LLM_BASE_URL
         self.api_key = api_key or LLM_API_KEY
         self.model = model or LLM_MODEL
+
+    def get_batch_recommendation(self, all_states: Dict[str, Dict]) -> Dict[str, Dict]:
+        """
+        Analyze traffic states for ALL intersections in one LLM call.
+
+        Args:
+            all_states: {intersection_id: traffic_state_dict, ...}
+
+        Returns:
+            {intersection_id: {"phase_durations": {...}, "reasoning": "..."}, ...}
+        """
+        try:
+            # Build compact prompt
+            lines = []
+            for iid, ts in all_states.items():
+                vc = ts.get("vehicle_counts", {})
+                ql = ts.get("queue_lengths", {})
+                wt = ts.get("avg_waiting_times", {})
+                lines.append(
+                    f"{iid}: N:{vc.get('north',0)}veh/{ql.get('north',0)}q/{wt.get('north',0)}w "
+                    f"S:{vc.get('south',0)}veh/{ql.get('south',0)}q/{wt.get('south',0)}w "
+                    f"E:{vc.get('east',0)}veh/{ql.get('east',0)}q/{wt.get('east',0)}w "
+                    f"W:{vc.get('west',0)}veh/{ql.get('west',0)}q/{wt.get('west',0)}w"
+                )
+            user_msg = "Time: " + str(list(all_states.values())[0].get("time", 0)) + "s\n" + "\n".join(lines) + "\nReply JSON only."
+
+            response_text = self._call_llm(user_msg)
+            return self._parse_batch_response(response_text, all_states)
+
+        except Exception as e:
+            logger.error(f"LLM batch recommendation error: {e}")
+            return {
+                iid: {"phase_durations": {0: 30, 1: 3, 2: 30, 3: 3}, "reasoning": f"Default: {e}"}
+                for iid in all_states
+            }
+
+    def _parse_batch_response(self, response_text: str, all_states: Dict[str, Dict]) -> Dict[str, Dict]:
+        """Parse batch LLM response for multiple intersections."""
+        json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
+        if json_match:
+            try:
+                parsed = json.loads(json_match.group())
+                result = {}
+                defaults = {0: 30, 1: 3, 2: 30, 3: 3}
+                for iid in all_states:
+                    entry = parsed.get(iid, parsed.get(iid.lower(), parsed.get(iid.upper(), {})))
+                    if isinstance(entry, dict) and "phase_durations" in entry:
+                        pd = {}
+                        for k, v in entry["phase_durations"].items():
+                            pd[int(k)] = int(v)
+                        for phase_idx in range(4):
+                            if phase_idx not in pd:
+                                pd[phase_idx] = defaults[phase_idx]
+                            elif phase_idx in (1, 3):
+                                pd[phase_idx] = max(3, min(5, pd[phase_idx]))
+                            else:
+                                pd[phase_idx] = max(10, min(90, pd[phase_idx]))
+                        result[iid] = {"phase_durations": pd, "reasoning": entry.get("reasoning", "")}
+                    else:
+                        result[iid] = {"phase_durations": dict(defaults), "reasoning": "LLM did not provide data for this intersection"}
+                return result
+            except (json.JSONDecodeError, ValueError) as e:
+                logger.warning(f"Failed to parse batch LLM JSON: {e}")
+
+        # Fallback: try per-intersection parsing
+        return {
+            iid: self._parse_response(response_text)
+            for iid in all_states
+        }
 
     def get_recommendation(self, traffic_state: Dict) -> Dict:
         """
@@ -115,16 +160,24 @@ class LLMClient:
                 {"role": "user", "content": user_message},
             ],
             "temperature": 0.3,
-            "max_tokens": 500,
+            "max_tokens": 8000,  # reasoning models need large budget
         }
 
         logger.info(f"Calling LLM ({self.model}) at {url}")
-        with httpx.Client(timeout=30.0) as client:
+        with httpx.Client(timeout=120.0) as client:
             resp = client.post(url, json=payload, headers=headers)
             resp.raise_for_status()
             data = resp.json()
 
-        content = data["choices"][0]["message"]["content"]
+        msg = data["choices"][0]["message"]
+        content = msg.get("content", "")
+        # Reasoning models (mimo-v2.5-pro etc.) put thinking in reasoning_content
+        # and may leave content empty. Fall back to reasoning_content if needed.
+        if not content.strip():
+            reasoning = msg.get("reasoning_content", "")
+            if reasoning:
+                logger.info("Content empty, using reasoning_content")
+                content = reasoning
         logger.info(f"LLM response: {content[:200]}")
         return content
 

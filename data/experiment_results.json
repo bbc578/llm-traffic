@@ -1,0 +1,170 @@
+{
+  "fixed": {
+    "total_steps": 300,
+    "throughput": 0.09,
+    "avg_wait_time": 47.2,
+    "avg_queue_length": 17.75,
+    "vehicles_departed": 299,
+    "vehicles_arrived": 27,
+    "per_intersection": {
+      "A0": {
+        "avg_wait_time": 48.52,
+        "avg_queue_length": 14.31,
+        "avg_vehicle_count": 18.54
+      },
+      "A1": {
+        "avg_wait_time": 40.64,
+        "avg_queue_length": 11.66,
+        "avg_vehicle_count": 16.34
+      },
+      "B0": {
+        "avg_wait_time": 48.1,
+        "avg_queue_length": 22.05,
+        "avg_vehicle_count": 27.53
+      },
+      "B1": {
+        "avg_wait_time": 39.41,
+        "avg_queue_length": 25.29,
+        "avg_vehicle_count": 31.8
+      },
+      "C0": {
+        "avg_wait_time": 59.8,
+        "avg_queue_length": 14.52,
+        "avg_vehicle_count": 18.02
+      },
+      "C1": {
+        "avg_wait_time": 46.73,
+        "avg_queue_length": 18.64,
+        "avg_vehicle_count": 23.29
+      }
+    },
+    "elapsed_seconds": 4.0,
+    "strategy": "fixed"
+  },
+  "random": {
+    "total_steps": 300,
+    "throughput": 0.3567,
+    "avg_wait_time": 8.0,
+    "avg_queue_length": 7.78,
+    "vehicles_departed": 298,
+    "vehicles_arrived": 107,
+    "per_intersection": {
+      "A0": {
+        "avg_wait_time": 10.09,
+        "avg_queue_length": 6.79,
+        "avg_vehicle_count": 16.27
+      },
+      "A1": {
+        "avg_wait_time": 9.48,
+        "avg_queue_length": 8.72,
+        "avg_vehicle_count": 16.6
+      },
+      "B0": {
+        "avg_wait_time": 5.25,
+        "avg_queue_length": 7.29,
+        "avg_vehicle_count": 19.07
+      },
+      "B1": {
+        "avg_wait_time": 4.63,
+        "avg_queue_length": 8.82,
+        "avg_vehicle_count": 24.03
+      },
+      "C0": {
+        "avg_wait_time": 7.96,
+        "avg_queue_length": 3.62,
+        "avg_vehicle_count": 9.33
+      },
+      "C1": {
+        "avg_wait_time": 10.58,
+        "avg_queue_length": 11.44,
+        "avg_vehicle_count": 21.89
+      }
+    },
+    "elapsed_seconds": 3.6,
+    "strategy": "random"
+  },
+  "webster": {
+    "total_steps": 300,
+    "throughput": 0.4133,
+    "avg_wait_time": 4.52,
+    "avg_queue_length": 6.42,
+    "vehicles_departed": 299,
+    "vehicles_arrived": 124,
+    "per_intersection": {
+      "A0": {
+        "avg_wait_time": 1.11,
+        "avg_queue_length": 1.79,
+        "avg_vehicle_count": 9.51
+      },
+      "A1": {
+        "avg_wait_time": 8.7,
+        "avg_queue_length": 10.61,
+        "avg_vehicle_count": 19.12
+      },
+      "B0": {
+        "avg_wait_time": 0.68,
+        "avg_queue_length": 1.96,
+        "avg_vehicle_count": 13.01
+      },
+      "B1": {
+        "avg_wait_time": 13.44,
+        "avg_queue_length": 19.21,
+        "avg_vehicle_count": 31.19
+      },
+      "C0": {
+        "avg_wait_time": 0.95,
+        "avg_queue_length": 1.93,
+        "avg_vehicle_count": 9.16
+      },
+      "C1": {
+        "avg_wait_time": 2.25,
+        "avg_queue_length": 3.0,
+        "avg_vehicle_count": 12.02
+      }
+    },
+    "elapsed_seconds": 3.4,
+    "strategy": "webster"
+  },
+  "llm": {
+    "total_steps": 300,
+    "throughput": 0.4933,
+    "avg_wait_time": 2.27,
+    "avg_queue_length": 3.81,
+    "vehicles_departed": 298,
+    "vehicles_arrived": 148,
+    "per_intersection": {
+      "A0": {
+        "avg_wait_time": 2.46,
+        "avg_queue_length": 2.52,
+        "avg_vehicle_count": 11.16
+      },
+      "A1": {
+        "avg_wait_time": 1.74,
+        "avg_queue_length": 3.08,
+        "avg_vehicle_count": 13.5
+      },
+      "B0": {
+        "avg_wait_time": 2.45,
+        "avg_queue_length": 4.32,
+        "avg_vehicle_count": 16.04
+      },
+      "B1": {
+        "avg_wait_time": 3.13,
+        "avg_queue_length": 7.66,
+        "avg_vehicle_count": 24.22
+      },
+      "C0": {
+        "avg_wait_time": 2.06,
+        "avg_queue_length": 1.71,
+        "avg_vehicle_count": 8.18
+      },
+      "C1": {
+        "avg_wait_time": 1.79,
+        "avg_queue_length": 3.59,
+        "avg_vehicle_count": 13.69
+      }
+    },
+    "elapsed_seconds": 584.7,
+    "strategy": "llm"
+  }
+}
