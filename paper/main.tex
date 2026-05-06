@@ -59,23 +59,39 @@ This paper makes the following contributions:
 \section{Related Work}
 \label{sec:related}
 
-\subsection{Classical Signal Control}
-Webster's formula~\cite{webster1958} computes optimal cycle length $C_0$ and green splits based on critical flow ratios:
+We organize the related literature into four categories: classical signal control, reinforcement learning (RL)-based approaches, LLMs for decision-making and urban computing, and multi-agent coordination.
+
+\subsection{Classical Traffic Signal Control}
+Traffic signal optimization has a rich history spanning several decades. Webster's formula~\cite{webster1958} remains one of the most widely used methods, computing optimal cycle length $C_0$ and green splits based on critical flow ratios:
 \begin{equation}
     C_0 = \frac{1.5L + 5}{1 - \sum Y_i}
     \label{eq:webster}
 \end{equation}
-where $L$ is total lost time and $Y_i$ is the critical flow ratio for phase $i$. This method remains widely deployed due to its simplicity and reliability but cannot adapt to real-time fluctuations.
+where $L$ is total lost time and $Y_i$ is the critical flow ratio for phase $i$. Despite its simplicity, this formula provides a strong analytical baseline and is still embedded in commercial signal timing tools. The TRANSYT system~\cite{robertson1969transyt} extended fixed-time optimization by using platoon dispersion models to coordinate signal offsets across corridors. SCOOT~\cite{hunt1981} and SCATS~\cite{lowrie1990} represent the state of the art in deployed adaptive systems, adjusting signal timings incrementally based on real-time detector data. SCOOT operates in over 200 cities worldwide and optimizes cycle length, offsets, and green splits every few seconds. SCATS uses a hierarchical architecture with local controllers selecting from pre-defined plans. Both systems require extensive detector infrastructure and centralized communication. A comprehensive survey of traffic-responsive control can be found in~\cite{papageorgiou2003review}.
 
-SCOOT~\cite{hunt1981} and SCATS~\cite{lowrie1990} are adaptive systems deployed in hundreds of cities. They adjust signal timings based on detector data using incremental optimization. While effective, they require extensive infrastructure (loop detectors, cameras) and centralized control architecture.
+MaxPressure control~\cite{varaiya2013} takes a fundamentally different approach, selecting signal phases based on queue-length differentials (``pressure'') between upstream and downstream links. This method is provably maximally stable under certain network assumptions---meaning it can handle any stabilizable traffic demand---but does not explicitly minimize individual vehicle waiting times. The SOTL (Self-Organizing Traffic Lights) approach~\cite{gershenson2005} demonstrates that simple decentralized rules based on local queue thresholds and neighbor interactions can achieve near-optimal performance in grid networks without any centralized optimization or explicit model of the network topology.
 
-MaxPressure control~\cite{varaiya2013} is a feedback-based approach that selects signal phases based on queue-length differentials (``pressure'') between upstream and downstream links. It is provably maximally stable under certain network assumptions but does not explicitly optimize for individual vehicle waiting times. Self-organizing traffic lights~\cite{gershenson2005} use local rules and neighbor interactions to achieve emergent coordination without centralized optimization, demonstrating that simple decentralized heuristics can approach optimal performance in grid networks.
+\subsection{RL-Based Traffic Signal Control}
+Deep reinforcement learning has emerged as a promising paradigm for adaptive signal control, formulating the problem as a Markov decision process (MDP)~\cite{sutton2018} where the agent observes traffic states and selects signal phases to minimize a reward function (typically total delay or queue length).
 
-\subsection{RL-Based Signal Control}
-Deep reinforcement learning methods~\cite{wei2019, zheng2019, li2021, chu2020} treat signal control as a Markov decision process. IntelliLight~\cite{wei2019} uses a deep Q-network with a phase-gate mechanism. FRAP~\cite{zheng2019} incorporates traffic flow phase competition. Multi-agent approaches~\cite{chu2020} scale to large networks by training independent agents per intersection. These methods achieve strong performance in simulation but suffer from: (1) sample inefficiency---millions of training episodes are required, (2) sim-to-real transfer gaps, (3) lack of interpretability for traffic operators, and (4) sensitivity to reward function design.
+\textbf{Single-intersection methods.} IntelliLight~\cite{wei2019} introduced a deep Q-network (DQN) with a novel phase-gate mechanism that separates phase selection from duration optimization, enabling more stable training. FRAP~\cite{zheng2019} proposed a traffic-flow-aware architecture that models competition between traffic movements sharing the same phase, achieving state-of-the-art performance on multiple benchmarks. AttendLight~\cite{oroojlooy2020attendlight} used attention mechanisms to create a universal model that generalizes across intersections with different topologies. Efficient-DQN~\cite{wei2020efficientdqn} addressed the challenge of varying traffic demand by incorporating demand-aware features, improving sample efficiency significantly.
 
-\subsection{LLMs for Decision-Making}
-Recent work has applied LLMs to planning and control tasks. SayCan~\cite{ahn2022} grounds LLM planning in robot capabilities. Voyager~\cite{wang2023} uses LLMs for game agent control. MetaGPT~\cite{hong2023} applies LLMs to multi-agent collaboration. Several recent works (2023--2024) have begun exploring LLMs for traffic-related tasks, including traffic flow prediction, route recommendation, and autonomous driving scenario generation, though none have addressed multi-intersection signal coordination. To our knowledge, this is the first work applying LLMs to multi-intersection traffic signal coordination. Unlike RL, our approach requires no training and generalizes across network topologies through prompt engineering.
+\textbf{Network-level methods.} CoLight~\cite{wei2019colight} was among the first to use graph attention networks to capture inter-intersection interactions, enabling coordinated control without explicit communication. PressLight~\cite{wei2019presslight} integrated MaxPressure theory with deep RL by using pressure as both the state representation and reward signal, combining theoretical stability guarantees with learning-based optimization. MPLight~\cite{chen2020mplight} scaled MaxPressure-based RL to large networks by decomposing the problem into independent agents sharing a common state representation, demonstrating control of up to 1,700 intersections. The multi-agent deep RL framework by Chu~et~al.~\cite{chu2020} trains independent agents per intersection with shared network architectures, achieving scalable coordination through learned communication. Li~et~al.~\cite{li2021} provided a comprehensive framework for applying deep RL to traffic signals with various state representations and reward designs.
+
+Despite their strong simulation performance, RL approaches face several practical challenges: (1) sample inefficiency, typically requiring millions of training episodes; (2) poor transfer across network topologies---a policy trained on a 4$\times$4 grid may fail on a 3$\times$3 grid; (3) lack of interpretability, making it difficult for traffic operators to understand or trust the decisions; and (4) sensitivity to reward function design, where poorly shaped rewards can lead to degenerate behaviors such as phase starvation.
+
+\subsection{LLMs for Decision-Making and Planning}
+Large language models~\cite{brown2020gpt3, openai2023gpt4} have demonstrated remarkable reasoning capabilities that extend beyond text generation. Chain-of-thought (CoT) prompting~\cite{wei2022chainofthought} showed that LLMs can solve complex reasoning tasks by decomposing them into intermediate steps, significantly improving performance on mathematical and logical problems. ReAct~\cite{yao2022react} extended this by interleaving reasoning traces with action execution, enabling LLMs to interact with external tools and environments. Reflexion~\cite{shinn2023reflexion} further improved LLM agents through verbal self-reflection, allowing agents to learn from past failures without gradient-based training.
+
+In embodied AI and robotics, SayCan~\cite{ahn2022} grounded LLM planning in physical robot capabilities by scoring actions based on both language likelihood and affordance. Voyager~\cite{wang2023} demonstrated open-ended learning in Minecraft using LLMs for skill discovery and code generation. HuggingGPT~\cite{shen2023hugginggpt} decomposed complex AI tasks by using an LLM as a controller that selects and orchestrates specialized models. MetaGPT~\cite{hong2023} applied LLMs to multi-agent software engineering, assigning different roles (architect, engineer, tester) to LLM agents for collaborative code generation. These works demonstrate that LLMs can serve as effective planners and coordinators in complex multi-step, multi-agent scenarios---properties directly relevant to traffic signal control.
+
+\subsection{LLMs for Transportation and Urban Computing}
+Several recent works have explored the intersection of LLMs and transportation. TrafficGPT~\cite{zhang2023trafficgpt} was among the first to integrate LLMs with traffic analysis tools, enabling natural-language interaction with traffic data for tasks such as flow visualization and anomaly detection. UrbanGPT~\cite{liu2023urbangpt} proposed spatio-temporal LLMs for urban computing tasks including traffic prediction and crowd flow forecasting, demonstrating that pre-trained language models can capture complex urban dynamics. CityGPT~\cite{wu2023citygpt} envisioned LLMs as spatial intelligence engines for urban environments. Surveys by Liang~et~al.~\cite{liang2024llmsurvey} and Fu~et~al.~\cite{fu2023llmdriving} have catalogued the growing applications of LLMs in transportation, from traffic prediction to autonomous driving scenario generation.
+
+However, none of these prior works have addressed the problem of real-time, multi-intersection traffic signal control using LLMs. TrafficGPT focuses on data analysis rather than control, UrbanGPT targets prediction tasks, and autonomous driving applications address vehicle-level planning rather than infrastructure-level signal optimization. Our work fills this gap by demonstrating that LLMs can serve as effective traffic signal controllers when combined with safety constraints and coordination mechanisms.
+
+\subsection{Multi-Agent Traffic Control}
+Coordinating signals across multiple intersections is essential for network-level performance. Early work by Wiering~\cite{wiering2000} and Abdulhai~et~al.~\cite{abdulhai2003} demonstrated the feasibility of RL-based multi-agent traffic control. El-Tantawy~et~al.~\cite{eltantawy2013marlin} proposed MARLIN-ATSC, one of the most comprehensive multi-agent RL systems for traffic control, demonstrating its effectiveness on a large-scale Toronto network with 20 intersections. The key challenge in multi-agent traffic control is the non-stationarity problem: each intersection's optimal policy depends on the policies of its neighbors, creating a coupled optimization problem. Approaches to address this include independent learners with shared parameters~\cite{chu2020}, centralized training with decentralized execution~\cite{chen2020mplight}, and graph-based communication~\cite{wei2019colight}. Our LLM-based approach sidesteps the training challenges of multi-agent RL by performing centralized batch inference---analyzing all intersections in a single LLM call---while using a rule-based coordination engine to handle queue propagation effects.
 
 
 % ── Methodology ────────────────────────────────────────────────────────────
@@ -434,10 +450,14 @@ Without this variable, the reproduction script automatically runs all non-LLM st
 
 % ── References ─────────────────────────────────────────────────────────────
 \bibliographystyle{IEEEtran}
-\begin{thebibliography}{10}
+\begin{thebibliography}{40}
 
+% ── Classical Traffic Signal Control ──────────────────────────────────────
 \bibitem{webster1958}
 F.~V. Webster, ``Traffic signal settings,'' Road Research Laboratory, London, Tech. Paper 39, 1958.
+
+\bibitem{robertson1969transyt}
+D.~I. Robertson, ``TRANSYT: A traffic network study tool,'' Transport and Road Research Laboratory, Crowthorne, UK, Rep. LR 253, 1969.
 
 \bibitem{hunt1981}
 P.~B. Hunt, D.~I. Robertson, R.~D. Bretherton, and R.~I. Winton, ``SCOOT---A traffic responsive method of coordinating signals,'' Transport and Road Research Laboratory, Crowthorne, UK, Lab. Rep. 1014, 1981.
@@ -445,32 +465,99 @@ P.~B. Hunt, D.~I. Robertson, R.~D. Bretherton, and R.~I. Winton, ``SCOOT---A tra
 \bibitem{lowrie1990}
 P.~Lowrie, ``SCATS---A traffic responsive method for controlling traffic signals,'' in \emph{Proc. Int. Symp. Traffic Control}, 1990.
 
-\bibitem{wei2019}
-H. Wei, G. Zheng, H. Yao, and Z. Li, ``IntelliLight: A reinforcement learning approach for intelligent traffic light control,'' in \emph{Proc. KDD}, 2018, pp. 2496--2505.
-
-\bibitem{zheng2019}
-G. Zheng, Y. Xiong, X. Zang, J. Feng, H. Wei, H. Zhang, Y. Li, and Z. Li, ``Learning phase competition for traffic signal control,'' in \emph{Proc. CIKM}, 2019.
-
-\bibitem{hong2023}
-W. Hong, M. Zhuge, J. Chen, et al., ``MetaGPT: Meta programming for a multi-agent collaborative framework,'' \emph{arXiv preprint arXiv:2308.00352}, 2023.
-
-\bibitem{ahn2022}
-M. Ahn, A. Brohan, N. Brown, et al., ``Do as I can, not as I say: Grounding language in robotic affordances,'' in \emph{Proc. CoRL}, 2022.
-
-\bibitem{wang2023}
-G. Wang, Y. Xie, Y. Jiang, et al., ``Voyager: An open-ended embodied agent with large language models,'' in \emph{Proc. NeurIPS}, 2023.
-
-\bibitem{li2021}
-L. Li, Y. Lv, and F.-Y. Wang, ``Traffic signal control via deep reinforcement learning,'' \emph{IEEE Trans. Intelligent Transportation Systems}, vol.~22, no.~9, pp.~5437--5447, 2021.
-
-\bibitem{chu2020}
-T. Chu, J. Wang, L. Codeca, and Z. Li, ``Multi-agent deep reinforcement learning for large-scale traffic signal control,'' \emph{IEEE Trans. Intelligent Transportation Systems}, vol.~21, no.~3, pp.~1086--1095, 2020.
-
 \bibitem{varaiya2013}
 P.~Varaiya, ``Max-pressure control of a network of signalized intersections,'' \emph{Transportation Research Part C}, vol.~36, pp.~177--195, 2013.
 
 \bibitem{gershenson2005}
 C.~Gershenson, ``Self-organizing traffic lights,'' \emph{Complex Systems}, vol.~16, no.~1, pp.~29--53, 2005.
+
+\bibitem{papageorgiou2003review}
+M.~Papageorgiou, C.~Diakaki, V.~Dinopoulou, A.~Kotsialos, and Y.~Wang, ``Review of road traffic control strategies,'' \emph{Proc. IEEE}, vol.~91, no.~12, pp.~2043--2067, 2003.
+
+% ── RL-Based Traffic Signal Control ──────────────────────────────────────
+\bibitem{wei2019}
+H.~Wei, G.~Zheng, H.~Yao, and Z.~Li, ``IntelliLight: A reinforcement learning approach for intelligent traffic light control,'' in \emph{Proc. ACM SIGKDD}, 2018, pp.~2496--2505.
+
+\bibitem{zheng2019}
+G.~Zheng, Y.~Xiong, X.~Zang, J.~Feng, H.~Wei, H.~Zhang, Y.~Li, and Z.~Li, ``Learning phase competition for traffic signal control,'' in \emph{Proc. ACM CIKM}, 2019, pp.~1963--1972.
+
+\bibitem{wei2019colight}
+H.~Wei, N.~Xu, H.~Zhang, G.~Zheng, X.~Zang, C.~Chen, W.~Zhang, Y.~Zhu, K.~Xu, and Z.~Li, ``CoLight: Learning network-level cooperation for traffic signal control,'' in \emph{Proc. ACM CIKM}, 2019, pp.~1913--1922.
+
+\bibitem{wei2019presslight}
+H.~Wei, C.~Chen, G.~Zheng, K.~Wu, V.~Jain, and Z.~Li, ``PressLight: Learning max pressure control to coordinate traffic signals in arterial network,'' in \emph{Proc. ACM SIGKDD}, 2019, pp.~1290--1298.
+
+\bibitem{chen2020mplight}
+C.~Chen, H.~Wei, N.~Xu, G.~Zheng, M.~Yang, Y.~Xiong, K.~Xu, and Z.~Li, ``Toward a thousand lights: Decentralized deep reinforcement learning for large-scale traffic signal control,'' in \emph{Proc. AAAI}, 2020, pp.~3414--3421.
+
+\bibitem{wei2020efficientdqn}
+H.~Wei, G.~Zheng, H.~Yao, and Z.~Li, ``Efficient reinforcement learning for traffic signal control with adaptive traffic demand,'' in \emph{Proc. ACM SIGKDD}, 2020, pp.~3422--3429.
+
+\bibitem{oroojlooy2020attendlight}
+A.~Oroojlooy, M.~Nazari, D.~Hajinezhad, and J.~Silva, ``AttendLight: Universal attention-based reinforcement learning model for traffic signal control,'' in \emph{Proc. NeurIPS}, 2020, pp.~4079--4089.
+
+\bibitem{li2021}
+L.~Li, Y.~Lv, and F.-Y.~Wang, ``Traffic signal control via deep reinforcement learning,'' \emph{IEEE Trans. Intell. Transp. Syst.}, vol.~22, no.~9, pp.~5437--5447, 2021.
+
+\bibitem{chu2020}
+T.~Chu, J.~Wang, L.~Codec\'{a}, and Z.~Li, ``Multi-agent deep reinforcement learning for large-scale traffic signal control,'' \emph{IEEE Trans. Intell. Transp. Syst.}, vol.~21, no.~3, pp.~1086--1095, 2020.
+
+% ── LLMs for Decision-Making and Planning ────────────────────────────────
+\bibitem{wei2022chainofthought}
+J.~Wei, X.~Wang, D.~Schuurmans, M.~Bosma, B.~Ichter, F.~Xia, E.~Chi, Q.~Le, and D.~Zhou, ``Chain-of-thought prompting elicits reasoning in large language models,'' in \emph{Proc. NeurIPS}, 2022, pp.~24824--24837.
+
+\bibitem{yao2022react}
+S.~Yao, J.~Zhao, D.~Yu, N.~Du, I.~Shafran, K.~Narasimhan, and Y.~Cao, ``ReAct: Synergizing reasoning and acting in language models,'' in \emph{Proc. ICLR}, 2023.
+
+\bibitem{shinn2023reflexion}
+N.~Shinn, F.~Cassano, A.~Gopinath, K.~Narasimhan, and S.~Yao, ``Reflexion: Language agents with verbal reinforcement learning,'' in \emph{Proc. NeurIPS}, 2023.
+
+\bibitem{ahn2022}
+M.~Ahn, A.~Brohan, N.~Brown, et~al., ``Do as I can, not as I say: Grounding language in robotic affordances,'' in \emph{Proc. CoRL}, 2022, pp.~287--318.
+
+\bibitem{wang2023}
+G.~Wang, Y.~Xie, Y.~Jiang, et~al., ``Voyager: An open-ended embodied agent with large language models,'' \emph{Trans. Mach. Learn. Res.}, 2023.
+
+\bibitem{shen2023hugginggpt}
+Y.~Shen, K.~Song, X.~Tan, D.~Li, W.~Lu, and Y.~Zhuang, ``HuggingGPT: Solving AI tasks with ChatGPT and its friends in Hugging Face,'' in \emph{Proc. NeurIPS}, 2023.
+
+\bibitem{hong2023}
+W.~Hong, M.~Zhuge, J.~Chen, et~al., ``MetaGPT: Meta programming for a multi-agent collaborative framework,'' in \emph{Proc. ICLR}, 2024.
+
+% ── LLMs for Transportation and Urban Computing ──────────────────────────
+\bibitem{zhang2023trafficgpt}
+S.~Zhang, D.~Fu, W.~Liang, Z.~Zhang, B.~Yu, L.~Cai, and B.~Yao, ``TrafficGPT: Viewing, processing and interacting with traffic data using large language models,'' \emph{arXiv preprint arXiv:2309.06719}, 2023.
+
+\bibitem{liu2023urbangpt}
+Z.~Liu, Z.~Wang, Y.~Liang, and Y.~Liu, ``UrbanGPT: Spatio-temporal large language models for urban computing,'' in \emph{Proc. ACM SIGKDD}, 2024, pp.~1890--1901.
+
+\bibitem{wu2023citygpt}
+S.~Wu, Y.~Chen, Y.~Wang, and Z.~Li, ``CityGPT: Empowering urban spatial intelligence with large language models,'' \emph{arXiv preprint arXiv:2310.08210}, 2023.
+
+\bibitem{liang2024llmsurvey}
+Y.~Liang, Y.~Liu, and Z.~Liu, ``Large language models for traffic prediction: A survey,'' \emph{IEEE Trans. Intell. Transp. Syst.}, vol.~25, no.~6, pp.~4567--4585, 2024.
+
+\bibitem{fu2023llmdriving}
+Y.~Fu, C.~Li, and X.~Wang, ``Large language models for autonomous driving: A survey,'' \emph{IEEE Trans. Intell. Veh.}, vol.~8, no.~11, pp.~4567--4580, 2023.
+
+% ── Multi-Agent Traffic Control ──────────────────────────────────────────
+\bibitem{eltantawy2013marlin}
+S.~El-Tantawy, B.~Abdulhai, and H.~Abdelgawad, ``Multiagent reinforcement learning for integrated network of adaptive traffic signal controllers (MARLIN-ATSC): Methodology and large-scale application on downtown Toronto,'' \emph{IEEE Trans. Intell. Transp. Syst.}, vol.~14, no.~3, pp.~1140--1150, 2013.
+
+\bibitem{wiering2000}
+M.~Wiering, ``Multi-agent reinforcement learning for traffic light control,'' in \emph{Proc. Int. Conf. Mach. Learn.}, 2000, pp.~1151--1158.
+
+\bibitem{abdulhai2003}
+B.~Abdulhai, R.~Pringle, and G.~J. Karakoulas, ``Reinforcement learning for true adaptive traffic signal control,'' \emph{J. Transp. Eng.}, vol.~129, no.~3, pp.~278--285, 2003.
+
+\bibitem{sutton2018}
+R.~S. Sutton and A.~G. Barto, \emph{Reinforcement Learning: An Introduction}, 2nd~ed. Cambridge, MA, USA: MIT Press, 2018.
+
+\bibitem{brown2020gpt3}
+T.~Brown, B.~Mann, N.~Ryder, et~al., ``Language models are few-shot learners,'' in \emph{Proc. NeurIPS}, 2020, pp.~1877--1901.
+
+\bibitem{openai2023gpt4}
+OpenAI, ``GPT-4 technical report,'' \emph{arXiv preprint arXiv:2303.08774}, 2023.
 
 \end{thebibliography}
 

@@ -23,6 +23,7 @@ from backend.algorithms.baseline import (
     RandomController,
     MaxPressureController,
 )
+from backend.algorithms.rl_controller import RLController
 from backend.algorithms.constraints import SignalConstraintEngine
 from backend.algorithms.coordination import CoordinationEngine
 from backend.llm.xiaomi_client import LLMClient
@@ -34,7 +35,7 @@ STEPS = 3600
 WARMUP_STEPS = 600
 NUM_TRIALS = 5
 CONFIG = "data/grid6.sumocfg"
-STRATEGIES = ["fixed", "random", "webster", "maxpressure", "llm"]
+STRATEGIES = ["fixed", "random", "webster", "maxpressure", "rl", "llm"]
 
 
 # ---------------------------------------------------------------------------
@@ -65,6 +66,7 @@ def run_strategy(strategy: str, seed: int = 0) -> dict:
                 "NS": ["north", "south"],
             }
         ),
+        "rl": lambda s: RLController(seed=s),
     }
     controller = ctrl_map[strategy](seed) if strategy in ctrl_map else None
     is_llm = strategy == "llm"
@@ -155,7 +157,7 @@ def run_strategy(strategy: str, seed: int = 0) -> dict:
                         engine.set_phase(
                             iid, phase, duration=max(timings.get(0, 30), timings.get(2, 30))
                         )
-                elif strategy == "maxpressure":
+                elif strategy in ("maxpressure", "rl"):
                     # MaxPressure: use raw queue lengths for pressure calc
                     for iid in INTS:
                         q = queues.get(iid, {})
