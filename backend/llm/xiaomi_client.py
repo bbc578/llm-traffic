@@ -13,12 +13,31 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
-SYSTEM_PROMPT = """You are a traffic signal optimizer for a grid of intersections. Respond ONLY with a single JSON object, nothing else.
-Format: {"intersection_id": {"phase_durations": {"0": NS_green_sec, "1": 3, "2": EW_green_sec, "3": 3}, "reasoning": "brief"}, ...}
-Green phases: 10-90 seconds. Yellow phases: 3 seconds. Keep reasoning under 30 words per intersection."""
+SYSTEM_PROMPT = """You are a traffic signal optimizer. Respond ONLY with valid JSON. No markdown, no explanation outside JSON.
+
+Format: {"id": {"phase_durations": {"0": NS_green, "1": 3, "2": EW_green, "3": 3}, "reasoning": "<=30 words"}}
+- Phase 0 = NS green, Phase 1 = NS yellow (fixed 3s), Phase 2 = EW green, Phase 3 = EW yellow (fixed 3s)
+- Green range: 10-90s. Longer queues/waiting → more green for that axis.
+
+Examples:
+
+Input: intersection_1: N:5veh/2q/10w S:4veh/1q/8w E:30veh/12q/45w W:25veh/10q/40w
+Output: {"intersection_1": {"phase_durations": {"0": 20, "1": 3, "2": 55, "3": 3}, "reasoning": "Heavy east traffic (55veh, 22q) needs extended EW green"}}
+
+Input: intersection_2: N:40veh/15q/60w S:35veh/12q/50w E:8veh/3q/15w W:6veh/2q/10w
+Output: {"intersection_2": {"phase_durations": {"0": 65, "1": 3, "2": 15, "3": 3}, "reasoning": "North queue critical (27q, 60w wait) — prioritize NS green"}}
+
+Input: intersection_3: N:20veh/8q/25w S:18veh/7q/22w E:22veh/9q/28w W:19veh/8q/24w
+Output: {"intersection_3": {"phase_durations": {"0": 30, "1": 3, "2": 30, "3": 3}, "reasoning": "Balanced traffic across all directions — equal green splits"}}"""
 
 USER_PROMPT_TEMPLATE = """Intersection state — N:{n_count}veh/{n_queue}q/{n_wait}w S:{s_count}veh/{s_queue}q/{s_wait}w E:{e_count}veh/{e_queue}q/{e_wait}w W:{w_count}veh/{w_queue}q/{w_wait}w | Total:{total} | Time:{sim_time}s | Phase:{current_phase}
 Reply JSON only."""
+
+BATCH_PROMPT_TEMPLATE = """Traffic snapshot at t={time}s. Each line: intersection_id: N/S/E/W stats (veh/queue/wait).
+
+{intersections}
+
+Output one JSON object with ALL intersection IDs. Reply JSON only."""
 
 
 class LLMClient:
@@ -52,7 +71,10 @@ class LLMClient:
                     f"E:{vc.get('east',0)}veh/{ql.get('east',0)}q/{wt.get('east',0)}w "
                     f"W:{vc.get('west',0)}veh/{ql.get('west',0)}q/{wt.get('west',0)}w"
                 )
-            user_msg = "Time: " + str(list(all_states.values())[0].get("time", 0)) + "s\n" + "\n".join(lines) + "\nReply JSON only."
+            user_msg = BATCH_PROMPT_TEMPLATE.format(
+                time=list(all_states.values())[0].get("time", 0),
+                intersections="\n".join(lines),
+            )
 
             response_text = self._call_llm(user_msg)
             return self._parse_batch_response(response_text, all_states)

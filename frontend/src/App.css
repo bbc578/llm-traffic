@@ -51,6 +51,12 @@ body {
 
 .dot.connected { background: var(--green); }
 .dot.disconnected { background: var(--red); }
+.dot.reconnecting { background: var(--yellow, #f59e0b); animation: pulse 1s ease-in-out infinite; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
 
 .status-text {
   font-size: 0.8rem;

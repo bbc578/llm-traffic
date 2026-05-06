@@ -106,7 +106,7 @@ export default function App() {
     }
   }, []);
 
-  const connected = useSimulationSocket(handleData);
+  const { connected, status } = useSimulationSocket(handleData);
 
   // Use discovered intersections or fall back to snapshot keys
   const currentIds = intersectionIds.length > 0
@@ -173,8 +173,8 @@ export default function App() {
       <header className="app-header">
         <h1>🚦 LLM Traffic Signal Optimization</h1>
         <div className="header-status">
-          <span className={`dot ${connected ? 'connected' : 'disconnected'}`} />
-          <span className="status-text">{connected ? 'Connected' : 'Disconnected'}</span>
+          <span className={`dot ${status === 'connected' ? 'connected' : status === 'reconnecting' ? 'reconnecting' : 'disconnected'}`} />
+          <span className="status-text">{status === 'connected' ? 'Connected' : status === 'reconnecting' ? 'Reconnecting…' : 'Disconnected'}</span>
           {intersections.length > 0 && (
             <span className="intersection-count">{intersections.length} intersections</span>
           )}
