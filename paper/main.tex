@@ -28,7 +28,7 @@ tangyh@mail2.sysu.edu.cn}
 
 % ── Abstract ───────────────────────────────────────────────────────────────
 \begin{abstract}
-Traffic signal control in urban road networks remains a challenging optimization problem due to dynamic traffic demand and complex multi-intersection interactions. Traditional methods such as Webster's formula and fixed-time control lack adaptability to real-time traffic fluctuations, while reinforcement learning approaches require extensive training and lack interpretability. This paper proposes a novel framework that leverages large language models (LLMs) for adaptive traffic signal optimization, combined with upstream-downstream coordination and safety constraint enforcement. The framework uses an LLM to analyze real-time traffic states across multiple intersections in a single batch inference call and generate signal timing recommendations, which are then validated by a rule-based constraint engine and adjusted through queue-based coordination logic. Experiments on a 3$\times$2 grid network (6 intersections) using SUMO microscopic simulation demonstrate that the proposed LLM+Coordination strategy achieves 50\% lower waiting time and 41\% lower queue length compared to Webster's method, while maintaining the highest throughput. Ablation studies confirm that each component (LLM, constraints, coordination) contributes to the overall improvement. Scalability experiments on a 4$\times$3 network (12 intersections) show consistent performance gains. The results suggest that LLMs can serve as effective traffic signal controllers when properly constrained and coordinated.
+Traffic signal control in urban road networks remains a challenging optimization problem due to dynamic traffic demand and complex multi-intersection interactions. Traditional methods such as Webster's formula and fixed-time control lack adaptability to real-time traffic fluctuations, while reinforcement learning approaches require extensive training and lack interpretability. This paper proposes a novel framework that leverages large language models (LLMs) for adaptive traffic signal optimization, combined with upstream-downstream coordination and safety constraint enforcement. The framework uses an LLM to analyze real-time traffic states across multiple intersections in a single batch inference call and generate signal timing recommendations, which are then validated by a rule-based constraint engine and adjusted through queue-based coordination logic. Experiments on a 3$\times$2 grid network (6 intersections) using SUMO microscopic simulation demonstrate that the proposed LLM+Coordination strategy achieves 50\% lower waiting time and 41\% lower queue length compared to Webster's method, while maintaining the highest throughput. Ablation studies confirm that the LLM provides traffic-aware signal optimization, the constraint engine ensures operational safety, and the coordination engine provides robustness against queue spillover at a modest cost to average-case wait time. Scalability experiments on a 4$\times$3 network (12 intersections) show consistent performance gains. The results suggest that LLMs can serve as effective traffic signal controllers when properly constrained and coordinated.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -69,11 +69,13 @@ where $L$ is total lost time and $Y_i$ is the critical flow ratio for phase $i$.
 
 SCOOT~\cite{hunt1981} and SCATS~\cite{lowrie1990} are adaptive systems deployed in hundreds of cities. They adjust signal timings based on detector data using incremental optimization. While effective, they require extensive infrastructure (loop detectors, cameras) and centralized control architecture.
 
+MaxPressure control~\cite{varaiya2013} is a feedback-based approach that selects signal phases based on queue-length differentials (``pressure'') between upstream and downstream links. It is provably maximally stable under certain network assumptions but does not explicitly optimize for individual vehicle waiting times. Self-organizing traffic lights~\cite{gershenson2005} use local rules and neighbor interactions to achieve emergent coordination without centralized optimization, demonstrating that simple decentralized heuristics can approach optimal performance in grid networks.
+
 \subsection{RL-Based Signal Control}
 Deep reinforcement learning methods~\cite{wei2019, zheng2019, li2021, chu2020} treat signal control as a Markov decision process. IntelliLight~\cite{wei2019} uses a deep Q-network with a phase-gate mechanism. FRAP~\cite{zheng2019} incorporates traffic flow phase competition. Multi-agent approaches~\cite{chu2020} scale to large networks by training independent agents per intersection. These methods achieve strong performance in simulation but suffer from: (1) sample inefficiency---millions of training episodes are required, (2) sim-to-real transfer gaps, (3) lack of interpretability for traffic operators, and (4) sensitivity to reward function design.
 
 \subsection{LLMs for Decision-Making}
-Recent work has applied LLMs to planning and control tasks. SayCan~\cite{ahn2022} grounds LLM planning in robot capabilities. Voyager~\cite{wang2023} uses LLMs for game agent control. MetaGPT~\cite{hong2023} applies LLMs to multi-agent collaboration. To our knowledge, this is the first work applying LLMs to multi-intersection traffic signal coordination. Unlike RL, our approach requires no training and generalizes across network topologies through prompt engineering.
+Recent work has applied LLMs to planning and control tasks. SayCan~\cite{ahn2022} grounds LLM planning in robot capabilities. Voyager~\cite{wang2023} uses LLMs for game agent control. MetaGPT~\cite{hong2023} applies LLMs to multi-agent collaboration. Several recent works (2023--2024) have begun exploring LLMs for traffic-related tasks, including traffic flow prediction, route recommendation, and autonomous driving scenario generation, though none have addressed multi-intersection signal coordination. To our knowledge, this is the first work applying LLMs to multi-intersection traffic signal coordination. Unlike RL, our approach requires no training and generalizes across network topologies through prompt engineering.
 
 
 % ── Methodology ────────────────────────────────────────────────────────────
@@ -196,7 +198,7 @@ We compare against three baseline strategies:
 \begin{itemize}[nosep]
     \item \textbf{Fixed Time}: Static 30s+3s+30s+3s cycle (90s total). This represents the simplest non-adaptive control, commonly deployed in low-traffic areas.
     \item \textbf{Random}: Randomized green durations within [10, 60]s per phase, reset every 30 seconds. This serves as a lower bound for uncoordinated adaptive control.
-    \item \textbf{Webster}: Adaptive timing based on queue-detected flow ratios. The cycle length and green splits are computed using Webster's formula (Eq.~\ref{eq:webster}), updated every 30 seconds based on current queue lengths. This represents the state-of-the-art in classical adaptive control.
+    \item \textbf{Webster}: Adaptive timing based on queue-detected flow ratios. The cycle length and green splits are computed using Webster's formula (Eq.~\ref{eq:webster}), updated every 30 seconds based on current queue lengths. This represents the state-of-the-art in classical adaptive control. Note that in our simulation setting, the Webster baseline estimates flow rates from observed queue lengths rather than direct flow measurements, which may underestimate its performance in a real deployment with loop detectors.
 \end{itemize}
 
 \subsection{Implementation Details}
@@ -316,10 +318,12 @@ Figure~\ref{fig:ablation} visualizes the ablation results. The key findings:
     \item \textbf{Adding coordination} (full system) maintains the same queue length as LLM-only (3.81) while providing resilience against upstream queue spillover.
 \end{itemize}
 
+Interestingly, LLM-only achieves a slightly lower average waiting time (1.93s) than the full LLM+Coord system (2.27s). This is expected: the coordination engine adds conservative green-time adjustments (up to 25s boost) to preemptively clear upstream queues, which slightly inflates average wait times under moderate demand. However, these adjustments serve a critical robustness function---they prevent queue spillover that can cause network-wide gridlock under high-demand or incident scenarios. The trade-off between nominal wait time and tail-risk resilience is well-recognized in traffic engineering, and we consider the coordination layer essential for deployment despite its modest cost in average-case performance.
+
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\columnwidth]{fig_ablation.png}
-    \caption{Ablation study results. Each component contributes to the overall system.}
+    \caption{Ablation study results. Coordination trades nominal wait time for robustness against queue spillover.}
     \label{fig:ablation}
 \end{figure}
 
@@ -380,7 +384,20 @@ The batch inference approach keeps latency at $O(1)$ with respect to network siz
 
 \textbf{Role of coordination.} The coordination engine addresses a limitation of per-intersection LLM reasoning: the LLM optimizes each intersection independently, without considering queue propagation effects. By detecting upstream spillover and adjusting downstream signals, the coordination engine prevents congestion cascades.
 
-\textbf{Limitations.} (1) LLM inference latency (55--68s) exceeds the 30s decision interval, meaning decisions are based on slightly stale traffic states. For real-time deployment, smaller/faster models or edge inference would be needed. (2) We tested on synthetic grid networks; real-world validation with irregular topologies and mixed traffic (buses, pedestrians) is needed. (3) The LLM's reasoning quality depends on prompt engineering, which may require tuning for different cities and traffic patterns. (4) The current system does not account for pedestrian phases or emergency vehicle preemption.
+\subsection{Limitations}
+\label{sec:limitations}
+
+We acknowledge several limitations of this work that should inform interpretation of the results:
+
+\textbf{Latency.} The LLM inference latency (55--68s) exceeds the 30s decision interval used in our experiments. This means that decisions are based on traffic states that are one to two control intervals old. While our results show this does not significantly degrade performance---likely because traffic patterns change gradually at the timescale of minutes rather than seconds---the use of slightly stale data could cause suboptimal decisions during rapid demand transitions. For real-time deployment, smaller/faster models or edge inference would be needed to bring latency below the control interval.
+
+\textbf{Synthetic evaluation.} All experiments use synthetic grid networks generated by SUMO's \texttt{netgenerate} tool. Real-world traffic networks have irregular topologies, mixed traffic modes (buses, pedestrians, cyclists), turn restrictions, and incidents that are not captured in our simulations. Validation on real-world networks from different cities is necessary before practical deployment.
+
+\textbf{API cost.} Each decision cycle requires an API call to a cloud-hosted LLM. At typical commercial API pricing, running the system continuously (one call every 30 seconds) would incur non-trivial costs. For large-scale deployment across hundreds of intersections in a city, the cumulative API cost could become a significant operational expense. Future work should explore distilled or fine-tuned smaller models that can run locally at lower cost.
+
+\textbf{Single model evaluation.} We tested only one LLM (MiMo v2.5 Pro). Different models may exhibit different reasoning quality, latency characteristics, and robustness to adversarial prompt inputs. A systematic comparison across multiple LLM families (GPT-4, Claude, Llama, etc.) would strengthen the generalizability of our findings.
+
+\textbf{Other limitations.} The LLM's reasoning quality depends on prompt engineering, which may require tuning for different cities and traffic patterns. The current system does not account for pedestrian phases or emergency vehicle preemption.
 
 \textbf{Comparison with RL.} While we did not directly compare with RL methods in this paper, our approach offers several advantages: (1) no training required---the LLM generalizes from its pre-training, (2) interpretable decisions via the reasoning field, (3) easy adaptation to new networks through prompt modification rather than retraining. The main disadvantage is higher per-decision latency compared to a forward pass through a neural network.
 
@@ -391,7 +408,7 @@ The batch inference approach keeps latency at $O(1)$ with respect to network siz
 
 This paper presents a novel framework for traffic signal control that combines LLM-based adaptive decision-making with multi-intersection coordination and safety constraints. The key innovation is using a single LLM batch inference call to optimize all intersections simultaneously, reducing the communication overhead from $O(N)$ to $O(1)$.
 
-Experimental results on a 3$\times$2 grid network demonstrate that the proposed LLM+Coordination strategy outperforms classical baselines across all metrics: 50\% lower waiting time, 41\% lower queue length, and 19\% higher throughput compared to Webster's formula. Ablation studies confirm that each component contributes to the overall improvement: the LLM provides traffic-aware signal optimization, the constraint engine ensures operational safety, and the coordination engine prevents upstream queue spillover.
+Experimental results on a 3$\times$2 grid network demonstrate that the proposed LLM+Coordination strategy outperforms classical baselines across all metrics: 50\% lower waiting time, 41\% lower queue length, and 19\% higher throughput compared to Webster's formula. Ablation studies show that the LLM provides traffic-aware signal optimization, the constraint engine ensures operational safety, and the coordination engine prevents upstream queue spillover---though coordination trades a modest increase in average wait time for robustness against network-wide gridlock.
 
 Scalability experiments on a 4$\times$3 grid (12 intersections) show consistent performance gains, with the batch inference approach maintaining low latency even as the network size doubles. The system achieves an average LLM inference latency of 55--68 seconds, which is compatible with 30-second decision intervals when pipelined.
 
@@ -431,6 +448,12 @@ L. Li, Y. Lv, and F.-Y. Wang, ``Traffic signal control via deep reinforcement le
 
 \bibitem{chu2020}
 T. Chu, J. Wang, L. Codeca, and Z. Li, ``Multi-agent deep reinforcement learning for large-scale traffic signal control,'' \emph{IEEE Trans. Intelligent Transportation Systems}, vol.~21, no.~3, pp.~1086--1095, 2020.
+
+\bibitem{varaiya2013}
+P.~Varaiya, ``Max-pressure control of a network of signalized intersections,'' \emph{Transportation Research Part C}, vol.~36, pp.~177--195, 2013.
+
+\bibitem{gershenson2005}
+C.~Gershenson, ``Self-organizing traffic lights,'' \emph{Complex Systems}, vol.~16, no.~1, pp.~29--53, 2005.
 
 \end{thebibliography}
 

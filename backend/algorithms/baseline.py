@@ -2,10 +2,11 @@
 Baseline controllers for traffic signal timing.
 - FixedTimeController: equal green splits for all phases
 - RandomController: random green splits within constraints
+- MaxPressureController: selects phase with maximum pressure
 """
 
 import random as rng
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 
 class FixedTimeController:
@@ -24,23 +25,6 @@ class FixedTimeController:
         yellow_time: int = 3,
         num_phases: int = 2,
     ) -> List[int]:
-        """
-        Compute equal green durations for all phases.
-
-        If phase_flows is provided, the number of phases is inferred from it.
-        Otherwise num_phases is used.
-
-        Args:
-            phase_flows: optional dict of phase flows (used to count phases)
-            saturation_flow: unused (for API compatibility)
-            min_green: minimum green time per phase
-            max_green: maximum green time per phase
-            yellow_time: yellow time per phase
-            num_phases: number of phases if phase_flows not given
-
-        Returns:
-            List of green durations (int, seconds)
-        """
         if phase_flows is not None:
             n = len(phase_flows)
         else:
@@ -56,7 +40,6 @@ class FixedTimeController:
 
         result = [green_per_phase] * n
 
-        # Adjust last phase to account for rounding
         remainder = total_green - sum(result)
         if n > 0:
             result[-1] += remainder
@@ -82,23 +65,6 @@ class RandomController:
         yellow_time: int = 3,
         num_phases: int = 2,
     ) -> List[int]:
-        """
-        Compute random green durations within constraints.
-
-        Each phase gets at least min_green, at most max_green,
-        and total green + yellow = cycle_length.
-
-        Args:
-            phase_flows: optional dict of phase flows (used to count phases)
-            saturation_flow: unused (for API compatibility)
-            min_green: minimum green time per phase
-            max_green: maximum green time per phase
-            yellow_time: yellow time per phase
-            num_phases: number of phases if phase_flows not given
-
-        Returns:
-            List of green durations (int, seconds)
-        """
         if phase_flows is not None:
             n = len(phase_flows)
         else:
@@ -111,13 +77,10 @@ class RandomController:
         total_green = self.cycle_length - total_yellow
         total_green = max(total_green, n * min_green)
 
-        # Start everyone at min_green, distribute the remainder randomly
         result = [min_green] * n
         remaining = total_green - sum(result)
 
-        # Randomly distribute remaining green time
         for _ in range(int(remaining)):
-            # Pick a random phase that can still accept more green
             eligible = [i for i in range(n) if result[i] < max_green]
             if not eligible:
                 break
@@ -125,3 +88,109 @@ class RandomController:
             result[choice] += 1
 
         return result
+
+
+class MaxPressureController:
+    """MaxPressure signal controller.
+
+    For each signal phase, computes pressure = sum of upstream queue lengths
+    (vehicles on approaches served by that phase).  The phase with the
+    highest pressure receives green; its duration is proportional to the
+    pressure ratio (clamped to [min_green, max_green]).
+
+    Two operating modes
+    -------------------
+    1. **Explicit queue data** (preferred for real-time control):
+       Pass ``queue_data`` – a dict mapping direction names to queue lengths
+       (e.g. ``{"east": 5, "west": 3, "north": 8, "south": 2}``).
+       The ``phase_flows`` dict keys are used as phase names and their
+       values are summed pressure contributions for that phase.
+       ``phase_directions`` maps each phase key to the list of directions
+       it serves.
+
+    2. **Flow-based** (API-compatible with other controllers):
+       When ``queue_data`` is *None*, the values in ``phase_flows`` are
+       treated as traffic demand and the phase with the largest value wins.
+    """
+
+    def __init__(
+        self,
+        cycle_length: int = 60,
+        yellow_time: int = 3,
+        phase_directions: Optional[Dict[str, List[str]]] = None,
+    ):
+        self.cycle_length = cycle_length
+        self.yellow_time = yellow_time
+        # Default: two-phase grid intersection
+        self.phase_directions = phase_directions or {
+            "EW": ["east", "west"],
+            "NS": ["north", "south"],
+        }
+
+    def compute_timing(
+        self,
+        phase_flows: Dict[str, float] = None,
+        saturation_flow: float = 1800,
+        min_green: int = 10,
+        max_green: int = 60,
+        yellow_time: int = 3,
+        num_phases: int = 2,
+        queue_data: Optional[Dict[str, int]] = None,
+    ) -> List[int]:
+        """Return green durations for each phase.
+
+        Parameters
+        ----------
+        phase_flows : dict
+            Phase names (used to determine number of phases and, together
+            with ``phase_directions``, to map directions to phases).
+        queue_data : dict, optional
+            Current per-direction queue lengths.  When provided the
+            pressure for each phase is computed from these values instead
+            of from ``phase_flows`` values.
+        """
+        if phase_flows is not None:
+            phases = list(phase_flows.keys())
+        else:
+            phases = list(self.phase_directions.keys())[: (num_phases or 2)]
+
+        n = len(phases)
+        if n == 0:
+            return []
+
+        total_yellow = n * yellow_time
+        total_green = self.cycle_length - total_yellow
+
+        # --- Compute pressure per phase ---
+        pressures: List[float] = []
+        for phase_name in phases:
+            directions = self.phase_directions.get(phase_name, [])
+            if queue_data is not None:
+                # Pressure = sum of queue lengths on approaches served by this phase
+                p = sum(queue_data.get(d, 0) for d in directions)
+            else:
+                # Fall back to flow value (API compatibility)
+                p = float(phase_flows.get(phase_name, 0))
+            pressures.append(p)
+
+        total_pressure = sum(pressures)
+
+        # --- Distribute green time proportional to pressure ---
+        if total_pressure > 0:
+            greens = [
+                max(min_green, min(max_green, round((p / total_pressure) * total_green)))
+                for p in pressures
+            ]
+        else:
+            # No pressure detected: equal split
+            per = max(min_green, total_green // n) if n else 0
+            greens = [per] * n
+
+        # Adjust for rounding to exactly fill total_green
+        diff = total_green - sum(greens)
+        if n > 0:
+            # Add/subtract from the phase with the most pressure
+            idx = pressures.index(max(pressures))
+            greens[idx] = max(min_green, min(max_green, greens[idx] + diff))
+
+        return greens

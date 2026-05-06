@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 
 # Project paths
-PROJECT_ROOT = Path("/root/llm-traffic")
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 DATA_DIR = PROJECT_ROOT / "data"
 
 # SUMO configuration
@@ -31,7 +31,9 @@ LLM_CALL_INTERVAL = 30      # Call LLM every N simulation seconds
 
 # LLM configuration (OpenAI-compatible API)
 LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "https://token-plan-sgp.xiaomimimo.com/v1")
-LLM_API_KEY = os.environ.get("LLM_API_KEY", "tp-sniiih70c4zrt5jviez6adpct6gbwv2epavg5awvvip3in9p")
+LLM_API_KEY = os.environ.get("LLM_API_KEY", "")
+if not LLM_API_KEY:
+    raise EnvironmentError("LLM_API_KEY environment variable is not set. Please set it before running the application.")
 LLM_MODEL = os.environ.get("LLM_MODEL", "mimo-v2.5-pro")
 
 # Default phase definitions (typical 4-phase intersection)
