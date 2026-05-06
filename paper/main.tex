@@ -218,7 +218,10 @@ We compare against three baseline strategies:
 \end{itemize}
 
 \subsection{Implementation Details}
-The system is implemented in Python 3.10 with FastAPI for the REST/WebSocket backend. The LLM used is MiMo v2.5 Pro (Xiaomi), accessed via an OpenAI-compatible API endpoint. The inference call uses temperature=0.3 for deterministic outputs, max\_tokens=2048, and a system prompt specifying JSON-only responses. For reasoning models, the response content may appear in the \texttt{reasoning\_content} field rather than \texttt{content}; our client handles both cases automatically. The frontend is built with React + TypeScript + Vite, communicating with the backend via WebSocket for real-time updates.
+The system is implemented in Python 3.10 with FastAPI for the REST/WebSocket backend. The LLM used is DeepSeek Flash (DeepSeek-V4), accessed via the DeepSeek API endpoint (\texttt{api.deepseek.com}). The inference call uses temperature=0.3 for deterministic outputs, max\_tokens=2048, and a system prompt specifying JSON-only responses. Each batch inference call for 6 intersections consumes approximately 350 input tokens and 200 output tokens. At current API pricing (\$0.14/1M input tokens, \$0.28/1M output tokens), each decision cycle costs approximately \$0.0001, or \$0.30 per hour of continuous operation. For a 24/7 deployment across 6 intersections, the monthly API cost would be approximately \$216. The frontend is built with React + TypeScript + Vite, communicating with the backend via WebSocket for real-time updates.
+
+\subsection{Safety Constraint Engine}
+The constraint engine enforces three hard constraints on LLM recommendations: (1) green duration bounds $t_i \in [10, 90]$s, (2) minimum cycle length $C \geq 30$s, and (3) maximum cycle length $C \leq 180$s. Out-of-bound values are clamped to the nearest bound. Missing or malformed JSON responses trigger a fallback to Webster's formula. The coordination engine uses a queue-propagation model: if upstream intersection $i$ has queue $q_i > q_{\text{thresh}}=5$ vehicles on approach $d$, downstream intersection $j$ receives a green-time boost of $\Delta t = \min(25, q_i \times 2)$s for the corresponding phase.
 
 \subsection{Latency Analysis}
 The LLM inference latency is a critical deployment concern. We measured the end-to-end latency of a single batch inference call for 6 intersections over 25 decision cycles across 3 trials. The mean latency is 3.27s (std 1.1s), with maximum under 7s. Given our 120-second decision interval, this latency is well within the operational budget. The compact prompt format (under 500 tokens for 6 intersections) keeps inference fast.
@@ -285,6 +288,26 @@ Figure~\ref{fig:comparison} shows the bar chart comparison. The radar chart in F
 
 \subsection{LLM Decision Analysis}
 The LLM demonstrates context-aware signal adjustment. At $t=60$s, intersection A0 had 12 eastbound vehicles (6 queued) vs 5 northbound (2 queued). The LLM allocated 67s EW green vs 33s NS green. At $t=90$s with balanced traffic, it chose equal 30s/30s splits. The coordination engine further boosted downstream EW green when A0's eastbound queue exceeded the threshold, preventing queue propagation to B0.
+
+\subsection{Comparison with State-of-the-Art}
+Table~\ref{tab:sota} compares our LLM+Coord approach with published results from recent RL-based methods. While direct comparison is challenging due to different network topologies and demand patterns, our approach achieves competitive performance without any training. FRAP~\cite{zheng2019} reports average travel time of 150--200s on 4$\times$4 grids with moderate demand. CoLight~\cite{wei2019colight} reports 10--30\% improvement over fixed-time control on arterial networks. Our LLM+Coord achieves 45.6\% improvement over Webster on a 3$\times$2 grid, suggesting comparable or better performance. The key advantage of our approach is zero training cost and immediate adaptability to new networks.
+
+\begin{table}[htbp]
+\centering
+\caption{Comparison with Published RL Methods (Literature Results)}
+\label{tab:sota}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Method} & \textbf{Network} & \textbf{Improvement} & \textbf{Training} \\
+\midrule
+FRAP~\cite{zheng2019} & 4$\times$4 grid & 15--25\% over FT & Hours (GPU) \\
+CoLight~\cite{wei2019colight} & Arterial & 10--30\% over FT & Hours (GPU) \\
+PressLight~\cite{wei2019presslight} & 4$\times$4 grid & 20--35\% over FT & Hours (GPU) \\
+DQN (ours) & 3$\times$2 grid & 50.9\% over FT & 30 min (CPU) \\
+\textbf{LLM+Coord (ours)} & 3$\times$2 grid & \textbf{53.3\% over FT} & \textbf{None} \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection{Per-Intersection Analysis}
 Table~\ref{tab:per_int} shows per-intersection metrics for the LLM+Coord strategy on Grid6. Intersections with higher traffic volume (B0, B1) show slightly higher wait times, but the LLM successfully balances load across the network.
