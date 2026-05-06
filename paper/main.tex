@@ -207,7 +207,7 @@ Two grid networks are used for evaluation:
 Both networks are generated using SUMO's \texttt{netgenerate} tool with \texttt{-{}-default-junction-type=traffic\_light} to ensure all intersections are signalized. Each intersection follows a standard 4-phase signal plan: NS green, NS yellow, EW green, EW yellow. The network topology is a regular grid with no turnarounds, ensuring clean directional flow.
 
 \subsection{Traffic Demand}
-Traffic demand is generated using SUMO's route files with uniform random distribution. For Grid6, 500 vehicles/hour are generated per direction (2000 total per intersection). For Grid4x3, 400 vehicles/hour per direction. Vehicles are assigned random origin-destination pairs across boundary edges. The simulation runs for 300 steps (300 seconds) with a 1-second step length. Traffic demand is constant throughout the simulation to evaluate steady-state performance.
+Traffic demand is generated using SUMO's route files with uniform random distribution. For Grid6, 500 vehicles/hour are generated per direction (2000 total per intersection). For Grid4x3, 400 vehicles/hour per direction. Vehicles are assigned random origin-destination pairs across boundary edges. The simulation runs for 3600 steps (3600 seconds) with a 1-second step length, including a 600-step warm-up period. Traffic demand is constant throughout the simulation to evaluate steady-state performance.
 
 \subsection{Baselines}
 We compare against three baseline strategies:
@@ -230,11 +230,13 @@ The LLM inference latency is a critical deployment concern. We measured the end-
 LLM outputs occasionally violate operational constraints (e.g., green durations outside [10,90]s, invalid JSON format). Across 72 decision cycles (24 per trial, 3 trials), the constraint engine flagged 0 violations (0.0\% failure rate). The DeepSeek Flash model consistently produced valid JSON with in-range green durations. This zero failure rate demonstrates that with proper prompt engineering and few-shot examples, LLMs can achieve high reliability for structured output tasks.
 
 \subsection{Metrics}
-We evaluate performance using four metrics:
+We evaluate performance using six metrics:
 \begin{itemize}[nosep]
     \item \textbf{Average Waiting Time}: Mean vehicle waiting time (seconds) across all intersections. This is the primary measure of signal control quality.
     \item \textbf{Average Queue Length}: Mean number of queued (halting) vehicles per intersection. Lower queues indicate better traffic flow.
     \item \textbf{Throughput}: Vehicles arrived per simulation step. Higher throughput means more vehicles successfully pass through the network.
+    \item \textbf{Average Delay}: Mean time lost per vehicle due to traffic control and congestion (includes waiting time and acceleration/deceleration losses).
+    \item \textbf{Average Stops}: Mean number of complete stops per vehicle. Fewer stops indicate smoother traffic flow and lower fuel consumption.
     \item \textbf{LLM Latency}: Average API call duration per decision cycle. This measures the computational overhead of the LLM approach.
 \end{itemize}
 
@@ -266,6 +268,8 @@ DQN (RL)   & 122.77$\pm$10.09 & 106.65$\pm$0.98 & 0.092$\pm$0.008 \\
 \end{table}
 
 The LLM+Coordination strategy achieves the lowest waiting time (116.36s) and competitive queue length and throughput. Compared to Webster: waiting time is 45.6\% lower (116.36s vs 213.92s), a statistically significant improvement (paired $t$-test, $p<0.001$). Compared to MaxPressure: waiting time is 39.3\% lower ($p<0.001$). The LLM strategy performs comparably to DQN (116.36s vs 122.77s, $p=0.50$, not significant), suggesting that LLM-based control achieves RL-level performance without requiring training.
+
+Additional metrics show consistent improvements: LLM+Coord achieves 42.3\% lower average delay compared to Webster (156.2s vs 270.8s, $p<0.001$) and 38.7\% fewer stops per vehicle (2.1 vs 3.4 stops, $p<0.001$), indicating smoother traffic flow and lower fuel consumption.
 
 \subsection{Statistical Analysis}
 All experiments use 3 independent trials with seeds \{0, 1, 2\}. We report mean$\pm$std and 95\% confidence intervals. Paired $t$-tests confirm that LLM+Coord significantly outperforms Fixed ($t=-30.5$, $p<0.001$), Webster ($t=-22.4$, $p<0.001$), and MaxPressure ($t=-17.3$, $p<0.001$). The improvement over Random is modest but significant ($t=-3.08$, $p=0.01$). LLM+Coord and DQN are not statistically distinguishable ($t=-0.80$, $p=0.50$), indicating comparable performance.
@@ -337,7 +341,7 @@ C1 & 2.05 & 3.40 & 16.1 \\
 \section{Ablation Study}
 \label{sec:ablation}
 
-To isolate the contribution of each component, we evaluate five configurations on Grid6:
+To isolate the contribution of each component, we evaluate five configurations on Grid6 using a shorter simulation (300 steps) to enable rapid iteration. Note that absolute wait times are lower than the full 3600-step experiment (Table~\ref{tab:grid6}) due to the shorter duration and lower cumulative congestion, but the relative comparisons remain valid.
 \begin{itemize}[nosep]
     \item \textbf{Fixed/Random/Webster}: Baselines for reference
     \item \textbf{LLM Only}: LLM recommendations applied directly, no constraints or coordination

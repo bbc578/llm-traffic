@@ -37,6 +37,8 @@ class IntersectionMetrics:
     total_wait_time: float = 0.0
     total_queue_length: int = 0
     total_vehicle_count: int = 0
+    total_delay: float = 0.0  # Total delay (wait time + time loss)
+    total_stops: int = 0  # Total number of stops
     sample_count: int = 0
 
     @property
@@ -80,18 +82,32 @@ class SimulationMetrics:
         """Vehicles arrived per simulation step."""
         return self.vehicles_arrived / self.total_steps if self.total_steps else 0.0
 
+    @property
+    def avg_delay(self) -> float:
+        """Mean average delay across all intersections."""
+        vals = [m.total_delay / m.sample_count if m.sample_count else 0 for m in self.per_intersection.values()]
+        return sum(vals) / len(vals) if vals else 0.0
+
+    @property
+    def avg_stops(self) -> float:
+        """Mean average stops per vehicle across all intersections."""
+        vals = [m.total_stops / m.sample_count if m.sample_count else 0 for m in self.per_intersection.values()]
+        return sum(vals) / len(vals) if vals else 0.0
+
     def summary(self) -> Dict:
         """Return a serializable summary of all simulation metrics.
 
         Returns:
             Dict with total_steps, throughput, avg_wait_time, avg_queue_length,
-            vehicles_departed, vehicles_arrived, and per_intersection breakdowns.
+            avg_delay, avg_stops, vehicles_departed, vehicles_arrived, and per_intersection breakdowns.
         """
         return {
             "total_steps": self.total_steps,
             "throughput": round(self.throughput, 4),
             "avg_wait_time": round(self.avg_wait_time, 2),
             "avg_queue_length": round(self.avg_queue_length, 2),
+            "avg_delay": round(self.avg_delay, 2),
+            "avg_stops": round(self.avg_stops, 2),
             "vehicles_departed": self.vehicles_departed,
             "vehicles_arrived": self.vehicles_arrived,
             "per_intersection": {
@@ -99,6 +115,8 @@ class SimulationMetrics:
                     "avg_wait_time": round(m.avg_wait_time, 2),
                     "avg_queue_length": round(m.avg_queue_length, 2),
                     "avg_vehicle_count": round(m.avg_vehicle_count, 2),
+                    "avg_delay": round(m.total_delay / m.sample_count if m.sample_count else 0, 2),
+                    "avg_stops": round(m.total_stops / m.sample_count if m.sample_count else 0, 2),
                 }
                 for iid, m in self.per_intersection.items()
             },
@@ -288,15 +306,24 @@ class SumoEngine:
 
             # Wait time (from vehicles on approach edges)
             wait_sum = 0.0
+            delay_sum = 0.0
+            stops_sum = 0
             count = 0
             for edge_id in self._approach_edges.get(iid, {}).values():
                 try:
                     for vid in traci.edge.getLastStepVehicleIDs(edge_id):
                         wait_sum += traci.vehicle.getWaitingTime(vid)
+                        # Delay = waiting time + time loss (approximate)
+                        delay_sum += traci.vehicle.getAccumulatedWaitingTime(vid)
+                        # Count stops (speed < 0.1 m/s)
+                        if traci.vehicle.getSpeed(vid) < 0.1:
+                            stops_sum += 1
                         count += 1
                 except Exception:
                     pass
             m.total_wait_time += (wait_sum / count if count else 0)
+            m.total_delay += (delay_sum / count if count else 0)
+            m.total_stops += stops_sum
 
         self._metrics.total_steps = self._current_step
         try:

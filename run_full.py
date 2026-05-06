@@ -17,7 +17,7 @@ from backend.algorithms.coordination import CoordinationEngine
 
 STEPS = 3600
 WARMUP = 600
-NUM_TRIALS = 3
+NUM_TRIALS = 10
 CONFIG = "data/grid6.sumocfg"
 STRATEGIES = ["fixed", "random", "webster", "maxpressure", "rl"]
 OUTPUT = "data/experiment_results.json"
