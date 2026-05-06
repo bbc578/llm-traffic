@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2022/dev/Debian) (preloaded format=xelatex 2026.5.3)  6 MAY 2026 14:37
+This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2022/dev/Debian) (preloaded format=xelatex 2026.5.3)  6 MAY 2026 16:24
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -843,6 +843,19 @@ LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
 (Font)              using `TU/ptm/bx/n' instead on input line 402.
 
 
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 424.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 426.
+
+
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/bx/n' instead on input line 428.
+
+[6]
+
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
 
@@ -853,20 +866,22 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[6] (./main.aux)
+[7
+
+] (./main.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: EC24D7A990A6D1213C3BEFD3B4BF4AA1;3934.
+(rerunfilecheck)             Checksum: 607282E638D017747B36B7294AA952D7;4054.
  ) 
 Here is how much of TeX's memory you used:
- 11710 strings out of 477756
- 193050 string characters out of 5843519
- 525608 words of memory out of 5000000
- 32210 multiletter control sequences out of 15000+600000
+ 11712 strings out of 477756
+ 193088 string characters out of 5843519
+ 525788 words of memory out of 5000000
+ 32212 multiletter control sequences out of 15000+600000
  475111 words of font info for 58 fonts, out of 8000000 for 9000
  264 hyphenation exceptions out of 8191
- 67i,10n,77p,1647b,429s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 67i,10n,77p,1647b,462s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on main.pdf (6 pages).
+Output written on main.pdf (7 pages).

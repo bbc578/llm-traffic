@@ -20,6 +20,12 @@ class SignalConstraintEngine:
     }
 
     def __init__(self, rules: dict = None):
+        """Initialize the constraint engine with optional custom rules.
+
+        Args:
+            rules: Optional dict overriding default constraint values
+                   (min_green, max_green, min_cycle, max_cycle, yellow_time).
+        """
         self.rules = dict(self.DEFAULT_RULES)
         if rules:
             self.rules.update(rules)

@@ -145,6 +145,17 @@ def compute_timing_for_intersection(
     max_green: int = 60,
     yellow_time: int = 3,
 ) -> List[int]:
-    """Convenience function to compute timing without instantiating the controller."""
+    """Compute optimal signal timing using Webster's formula (convenience wrapper).
+
+    Args:
+        flows: Dict mapping phase name to flow rate in veh/hr.
+        saturation_flow: Saturation flow rate per phase (veh/hr).
+        min_green: Minimum green time per phase (seconds).
+        max_green: Maximum green time per phase (seconds).
+        yellow_time: Yellow/clearance time per phase (seconds).
+
+    Returns:
+        List of green durations (int, seconds), one per phase in dict order.
+    """
     ctrl = WebsterController()
     return ctrl.compute_timing(flows, saturation_flow, min_green, max_green, yellow_time)

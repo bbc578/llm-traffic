@@ -10,6 +10,7 @@ import pytest
 # Ensure project root is on path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 os.environ["SUMO_HOME"] = os.environ.get("SUMO_HOME", "/usr/share/sumo")
+os.environ.setdefault("LLM_API_KEY", "test-key-for-unit-tests")
 
 
 # ── LLM Client Tests ──────────────────────────────────────────────────────

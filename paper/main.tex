@@ -415,6 +415,23 @@ Scalability experiments on a 4$\times$3 grid (12 intersections) show consistent 
 Future work includes: (1) testing on real-world traffic networks from different cities with irregular topologies, (2) comparing with state-of-the-art RL methods (IntelliLight, FRAP) on the same benchmarks, (3) exploring smaller/faster LLM models (e.g., 7B parameters) for edge deployment with sub-second latency, (4) incorporating real-time traffic prediction into the prompt to enable proactive signal adjustment, (5) developing adaptive prompt strategies that learn from historical performance data, and (6) extending the framework to handle pedestrian phases, bus priority, and emergency vehicle preemption.
 
 
+% ── Reproducibility ────────────────────────────────────────────────────────
+\section{Reproducibility}
+\label{sec:reproducibility}
+
+All source code, experiment scripts, and data for this paper are open-source and available at \url{https://github.com/bbc578/llm-traffic}. The repository includes the full backend (FastAPI + SUMO + LLM), frontend (React/Vite), experiment runners, test suite, figure generation scripts, and the \LaTeX\ source for this paper.
+
+\textbf{Simulation environment.} All experiments use SUMO version~1.12.0 with the TraCI Python interface. Grid network topologies (Grid6: 3$\times$2, Grid4x3: 4$\times$3) are generated using SUMO's \texttt{netgenerate} tool with \texttt{-{}-default-junction-type=traffic\_light}, 200\,m edge lengths, and 2 lanes per edge. The generated network files (\texttt{.net.xml}), route files (\texttt{.rou.xml}), and configuration files (\texttt{.sumocfg}) are included in the repository's \texttt{data/} directory.
+
+\textbf{Random seed control.} All random number generators use fixed seeds to ensure deterministic, reproducible results. Each experiment trial is run with a specific seed value, passed to both Python's \texttt{random} module and SUMO's \texttt{-s} argument. The multi-trial experiments use seeds \{0, 1, 2, 3, 4\} across 5 trials per strategy.
+
+\textbf{LLM API access.} The LLM-based strategy requires an API key for the hosted model endpoint. To run the full experiment including the LLM strategy, set the \texttt{LLM\_API\_KEY} environment variable before execution:
+\begin{verbatim}
+export LLM_API_KEY="your-api-key-here"
+bash reproduce.sh
+\end{verbatim}
+Without this variable, the reproduction script automatically runs all non-LLM strategies (Fixed Time, Random, Webster, MaxPressure) with fixed seeds. The \texttt{reproduce.sh} script is idempotent and installs all Python and frontend dependencies, runs the test suite, executes the experiments, generates figures, and compiles the paper in a single invocation.
+
 % ── References ─────────────────────────────────────────────────────────────
 \bibliographystyle{IEEEtran}
 \begin{thebibliography}{10}

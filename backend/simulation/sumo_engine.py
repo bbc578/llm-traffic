@@ -41,14 +41,17 @@ class IntersectionMetrics:
 
     @property
     def avg_wait_time(self) -> float:
+        """Average wait time across all samples."""
         return self.total_wait_time / self.sample_count if self.sample_count else 0.0
 
     @property
     def avg_queue_length(self) -> float:
+        """Average queue length across all samples."""
         return self.total_queue_length / self.sample_count if self.sample_count else 0.0
 
     @property
     def avg_vehicle_count(self) -> float:
+        """Average vehicle count across all samples."""
         return self.total_vehicle_count / self.sample_count if self.sample_count else 0.0
 
 
@@ -62,19 +65,28 @@ class SimulationMetrics:
 
     @property
     def avg_wait_time(self) -> float:
+        """Mean average wait time across all intersections."""
         vals = [m.avg_wait_time for m in self.per_intersection.values()]
         return sum(vals) / len(vals) if vals else 0.0
 
     @property
     def avg_queue_length(self) -> float:
+        """Mean average queue length across all intersections."""
         vals = [m.avg_queue_length for m in self.per_intersection.values()]
         return sum(vals) / len(vals) if vals else 0.0
 
     @property
     def throughput(self) -> float:
+        """Vehicles arrived per simulation step."""
         return self.vehicles_arrived / self.total_steps if self.total_steps else 0.0
 
     def summary(self) -> Dict:
+        """Return a serializable summary of all simulation metrics.
+
+        Returns:
+            Dict with total_steps, throughput, avg_wait_time, avg_queue_length,
+            vehicles_departed, vehicles_arrived, and per_intersection breakdowns.
+        """
         return {
             "total_steps": self.total_steps,
             "throughput": round(self.throughput, 4),
@@ -97,6 +109,7 @@ class SumoEngine:
     """Network-agnostic SUMO simulation engine."""
 
     def __init__(self):
+        """Initialize the SUMO simulation engine."""
         self._is_running = False
         self._current_step = 0
         self._step_length = 1
@@ -112,9 +125,15 @@ class SumoEngine:
         step_length: int = 1,
         extra_args: Optional[List[str]] = None,
     ):
-        """Start SUMO with the given config.
+        """Start SUMO with the given config and auto-discover the network.
 
-        Auto-discovers traffic lights and their approach edges from the network.
+        Args:
+            config_file: Path to a .sumocfg file. Defaults to data/grid6.sumocfg.
+            step_length: Simulation step duration in seconds.
+            extra_args: Additional CLI arguments passed to the SUMO binary.
+
+        Raises:
+            RuntimeError: If SUMO fails to start.
         """
         if self._is_running:
             logger.warning("Simulation already running, stopping first.")
@@ -289,7 +308,16 @@ class SumoEngine:
     # -- signal control -----------------------------------------------------
 
     def set_signal_program(self, intersection_id: str, program_id: int):
-        """Switch an intersection to a named program."""
+        """Switch an intersection to a named signal program.
+
+        Args:
+            intersection_id: ID of the traffic light intersection.
+            program_id: The program ID to activate.
+
+        Raises:
+            RuntimeError: If the simulation is not running.
+            ValueError: If the intersection_id is unknown.
+        """
         if not self._is_running:
             raise RuntimeError("Simulation is not running.")
         if intersection_id not in self._intersections:
@@ -301,7 +329,16 @@ class SumoEngine:
             raise
 
     def set_phase(self, intersection_id: str, phase_index: int, duration: int = 30):
-        """Set a specific phase on an intersection."""
+        """Set a specific phase and duration on an intersection.
+
+        Args:
+            intersection_id: ID of the traffic light intersection.
+            phase_index: Phase index to activate.
+            duration: Duration of the phase in seconds.
+
+        Raises:
+            RuntimeError: If the simulation is not running.
+        """
         if not self._is_running:
             raise RuntimeError("Simulation is not running.")
         try:
@@ -312,7 +349,14 @@ class SumoEngine:
             raise
 
     def get_signal_state(self, intersection_id: str) -> Dict:
-        """Return current phase index, program ID, and state string."""
+        """Return current signal state for one intersection.
+
+        Args:
+            intersection_id: ID of the traffic light intersection.
+
+        Returns:
+            Dict with 'intersection', 'program', 'phase', and 'state' keys.
+        """
         try:
             phase = traci.trafficlight.getPhase(intersection_id)
             program = traci.trafficlight.getProgram(intersection_id)
@@ -328,12 +372,24 @@ class SumoEngine:
             return {"intersection": intersection_id, "program": "?", "phase": -1, "state": "?"}
 
     def get_all_signal_states(self) -> List[Dict]:
+        """Return signal state for every discovered intersection.
+
+        Returns:
+            List of signal state dicts, one per intersection.
+        """
         return [self.get_signal_state(iid) for iid in self._intersections]
 
     # -- per-intersection data retrieval ------------------------------------
 
     def get_queue_lengths(self, intersection_id: str) -> Dict[str, int]:
-        """Queue length (halting vehicles) per approach for one intersection."""
+        """Return queue length (halting vehicles) per approach for one intersection.
+
+        Args:
+            intersection_id: ID of the traffic light intersection.
+
+        Returns:
+            Dict mapping direction name to number of halting vehicles.
+        """
         result = {}
         for direction, edge_id in self._approach_edges.get(intersection_id, {}).items():
             try:
@@ -343,7 +399,14 @@ class SumoEngine:
         return result
 
     def get_vehicle_counts(self, intersection_id: str) -> Dict[str, int]:
-        """Vehicle count per approach for one intersection."""
+        """Return vehicle count per approach for one intersection.
+
+        Args:
+            intersection_id: ID of the traffic light intersection.
+
+        Returns:
+            Dict mapping direction name to number of vehicles on that approach.
+        """
         result = {}
         for direction, edge_id in self._approach_edges.get(intersection_id, {}).items():
             try:
@@ -353,12 +416,27 @@ class SumoEngine:
         return result
 
     def get_all_queue_lengths(self) -> Dict[str, Dict[str, int]]:
+        """Return queue lengths for every discovered intersection.
+
+        Returns:
+            Dict mapping intersection ID to its queue-length dict.
+        """
         return {iid: self.get_queue_lengths(iid) for iid in self._intersections}
 
     def get_all_vehicle_counts(self) -> Dict[str, Dict[str, int]]:
+        """Return vehicle counts for every discovered intersection.
+
+        Returns:
+            Dict mapping intersection ID to its vehicle-count dict.
+        """
         return {iid: self.get_vehicle_counts(iid) for iid in self._intersections}
 
     def get_total_vehicles(self) -> int:
+        """Return the total number of vehicles currently in the simulation.
+
+        Returns:
+            Vehicle count, or 0 if the simulation is not running.
+        """
         try:
             return traci.vehicle.getIDCount()
         except Exception:
@@ -368,18 +446,22 @@ class SumoEngine:
 
     @property
     def intersections(self) -> List[str]:
+        """List of discovered traffic light intersection IDs."""
         return list(self._intersections)
 
     @property
     def approach_edges(self) -> Dict[str, Dict[str, str]]:
+        """Mapping of intersection ID to {direction: edge_id} dict."""
         return dict(self._approach_edges)
 
     @property
     def metrics(self) -> SimulationMetrics:
+        """Aggregate simulation metrics collected so far."""
         return self._metrics
 
     @property
     def simulation_time(self) -> float:
+        """Current simulation time in seconds."""
         try:
             return traci.simulation.getTime()
         except Exception:
@@ -387,14 +469,21 @@ class SumoEngine:
 
     @property
     def current_step(self) -> int:
+        """Number of simulation steps completed."""
         return self._current_step
 
     @property
     def is_running(self) -> bool:
+        """Whether the simulation is currently running."""
         return self._is_running
 
     def get_snapshot(self) -> Dict:
-        """Full snapshot: all signals, all queues, all counts, metrics."""
+        """Return a full snapshot of the simulation state.
+
+        Returns:
+            Dict with step, time, total_vehicles, signals, queue_lengths,
+            vehicle_counts, and metrics summary.
+        """
         return {
             "step": self._current_step,
             "time": self.simulation_time,

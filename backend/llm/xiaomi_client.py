@@ -44,6 +44,13 @@ class LLMClient:
     """Client for communicating with OpenAI-compatible LLM APIs."""
 
     def __init__(self, base_url: Optional[str] = None, api_key: Optional[str] = None, model: Optional[str] = None):
+        """Initialize the LLM client with connection parameters.
+
+        Args:
+            base_url: API base URL. Defaults to LLM_BASE_URL from settings.
+            api_key: API authentication key. Defaults to LLM_API_KEY from settings.
+            model: Model identifier string. Defaults to LLM_MODEL from settings.
+        """
         self.base_url = base_url or LLM_BASE_URL
         self.api_key = api_key or LLM_API_KEY
         self.model = model or LLM_MODEL
@@ -164,7 +171,18 @@ class LLMClient:
             }
 
     def _call_llm(self, user_message: str) -> str:
-        """Call the LLM API and return the response text."""
+        """Call the LLM API and return the response text.
+
+        Args:
+            user_message: The user-role message to send to the LLM.
+
+        Returns:
+            The LLM response content as a string.
+
+        Raises:
+            RuntimeError: If the httpx package is not installed.
+            httpx.HTTPStatusError: If the API returns a non-2xx status.
+        """
         try:
             import httpx
         except ImportError:
@@ -204,7 +222,15 @@ class LLMClient:
         return content
 
     def _parse_response(self, response_text: str) -> Dict:
-        """Parse the LLM response to extract phase durations and reasoning."""
+        """Parse the LLM response to extract phase durations and reasoning.
+
+        Args:
+            response_text: Raw text response from the LLM.
+
+        Returns:
+            Dict with 'phase_durations' (Dict[int,int]), 'reasoning' (str),
+            and 'raw_response' (str). Uses 30/3/30/3 defaults on parse failure.
+        """
         # Try to extract JSON from the response
         json_match = re.search(r'\{[^{}]*"phase_durations"[^{}]*\{[^}]*\}[^{}]*\}', response_text, re.DOTALL)
         

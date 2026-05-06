@@ -73,6 +73,14 @@ class CoordinationEngine:
         boost_seconds: int = 10,        # extra green seconds per coordination trigger
         max_boost: int = 25,            # max total boost per cycle
     ):
+        """Initialize the coordination engine with tuning parameters.
+
+        Args:
+            queue_threshold: Minimum queue length to trigger green time boost.
+            critical_threshold: Queue length that forces an immediate phase switch.
+            boost_seconds: Extra green seconds added per coordination trigger.
+            max_boost: Maximum total boost seconds allowed per cycle.
+        """
         self.queue_threshold = queue_threshold
         self.critical_threshold = critical_threshold
         self.boost_seconds = boost_seconds
@@ -194,4 +202,12 @@ class CoordinationEngine:
 
     @staticmethod
     def _reverse_dir(d: str) -> str:
+        """Return the opposite compass direction.
+
+        Args:
+            d: A compass direction string ('north', 'south', 'east', 'west').
+
+        Returns:
+            The opposite direction, or the input if unrecognized.
+        """
         return {"north": "south", "south": "north", "east": "west", "west": "east"}.get(d, d)

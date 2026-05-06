@@ -13,6 +13,12 @@ class FixedTimeController:
     """Distributes green time equally among all phases."""
 
     def __init__(self, cycle_length: int = 60, yellow_time: int = 3):
+        """Initialize the fixed-time controller.
+
+        Args:
+            cycle_length: Total signal cycle length in seconds.
+            yellow_time: Yellow/clearance time per phase in seconds.
+        """
         self.cycle_length = cycle_length
         self.yellow_time = yellow_time
 
@@ -25,6 +31,20 @@ class FixedTimeController:
         yellow_time: int = 3,
         num_phases: int = 2,
     ) -> List[int]:
+        """Compute equal green durations for all phases.
+
+        Args:
+            phase_flows: Optional dict of phase flows; used only to determine
+                the number of phases.
+            saturation_flow: Unused; kept for API compatibility.
+            min_green: Minimum green time per phase (seconds).
+            max_green: Maximum green time per phase (seconds).
+            yellow_time: Yellow/clearance time per phase (seconds).
+            num_phases: Number of phases if phase_flows is None.
+
+        Returns:
+            List of green durations (int, seconds), one per phase.
+        """
         if phase_flows is not None:
             n = len(phase_flows)
         else:
@@ -52,6 +72,13 @@ class RandomController:
     """Generates random green splits within constraint bounds."""
 
     def __init__(self, cycle_length: int = 60, yellow_time: int = 3, seed: int = None):
+        """Initialize the random controller.
+
+        Args:
+            cycle_length: Total signal cycle length in seconds.
+            yellow_time: Yellow/clearance time per phase in seconds.
+            seed: Random seed for reproducibility, or None for random.
+        """
         self.cycle_length = cycle_length
         self.yellow_time = yellow_time
         self._rng = rng.Random(seed)
@@ -65,6 +92,20 @@ class RandomController:
         yellow_time: int = 3,
         num_phases: int = 2,
     ) -> List[int]:
+        """Compute random green durations within constraint bounds.
+
+        Args:
+            phase_flows: Optional dict of phase flows; used only to determine
+                the number of phases.
+            saturation_flow: Unused; kept for API compatibility.
+            min_green: Minimum green time per phase (seconds).
+            max_green: Maximum green time per phase (seconds).
+            yellow_time: Yellow/clearance time per phase (seconds).
+            num_phases: Number of phases if phase_flows is None.
+
+        Returns:
+            List of green durations (int, seconds), one per phase.
+        """
         if phase_flows is not None:
             n = len(phase_flows)
         else:
@@ -119,6 +160,14 @@ class MaxPressureController:
         yellow_time: int = 3,
         phase_directions: Optional[Dict[str, List[str]]] = None,
     ):
+        """Initialize the max-pressure controller.
+
+        Args:
+            cycle_length: Total signal cycle length in seconds.
+            yellow_time: Yellow/clearance time per phase in seconds.
+            phase_directions: Maps phase names to the list of approach
+                directions they serve (e.g. {"EW": ["east", "west"]}).
+        """
         self.cycle_length = cycle_length
         self.yellow_time = yellow_time
         # Default: two-phase grid intersection
@@ -137,17 +186,21 @@ class MaxPressureController:
         num_phases: int = 2,
         queue_data: Optional[Dict[str, int]] = None,
     ) -> List[int]:
-        """Return green durations for each phase.
+        """Compute green durations proportional to per-phase queue pressure.
 
-        Parameters
-        ----------
-        phase_flows : dict
-            Phase names (used to determine number of phases and, together
-            with ``phase_directions``, to map directions to phases).
-        queue_data : dict, optional
-            Current per-direction queue lengths.  When provided the
-            pressure for each phase is computed from these values instead
-            of from ``phase_flows`` values.
+        Args:
+            phase_flows: Phase name -> flow value. Keys determine phase count
+                and, with phase_directions, map directions to phases.
+            saturation_flow: Unused; kept for API compatibility.
+            min_green: Minimum green time per phase (seconds).
+            max_green: Maximum green time per phase (seconds).
+            yellow_time: Yellow/clearance time per phase (seconds).
+            num_phases: Number of phases if phase_flows is None.
+            queue_data: Optional per-direction queue lengths for pressure
+                calculation. Falls back to phase_flows values if None.
+
+        Returns:
+            List of green durations (int, seconds), one per phase.
         """
         if phase_flows is not None:
             phases = list(phase_flows.keys())
