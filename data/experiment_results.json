@@ -1,5 +1,144 @@
 {
-  "summary": {},
+  "summary": {
+    "fixed": {
+      "avg_wait_time": {
+        "mean": 249.22,
+        "std": 0.0,
+        "display": "249.22\u00b10.00"
+      },
+      "avg_queue_length": {
+        "mean": 112.8,
+        "std": 0.0,
+        "display": "112.80\u00b10.00"
+      },
+      "throughput": {
+        "mean": 0.0533,
+        "std": 0.0,
+        "display": "0.05\u00b10.00"
+      },
+      "vehicles_arrived": {
+        "mean": 192.0,
+        "std": 0.0,
+        "display": "192.00\u00b10.00"
+      },
+      "num_trials": 10
+    },
+    "random": {
+      "avg_wait_time": {
+        "mean": 124.936,
+        "std": 4.229,
+        "display": "124.94\u00b14.23"
+      },
+      "avg_queue_length": {
+        "mean": 108.001,
+        "std": 1.0509,
+        "display": "108.00\u00b11.05"
+      },
+      "throughput": {
+        "mean": 0.0851,
+        "std": 0.0083,
+        "display": "0.09\u00b10.01"
+      },
+      "vehicles_arrived": {
+        "mean": 306.2,
+        "std": 29.9622,
+        "display": "306.20\u00b129.96"
+      },
+      "num_trials": 10
+    },
+    "webster": {
+      "avg_wait_time": {
+        "mean": 213.92,
+        "std": 0.0,
+        "display": "213.92\u00b10.00"
+      },
+      "avg_queue_length": {
+        "mean": 112.13,
+        "std": 0.0,
+        "display": "112.13\u00b10.00"
+      },
+      "throughput": {
+        "mean": 0.0603,
+        "std": 0.0,
+        "display": "0.06\u00b10.00"
+      },
+      "vehicles_arrived": {
+        "mean": 217.0,
+        "std": 0.0,
+        "display": "217.00\u00b10.00"
+      },
+      "num_trials": 10
+    },
+    "maxpressure": {
+      "avg_wait_time": {
+        "mean": 191.57,
+        "std": 0.0,
+        "display": "191.57\u00b10.00"
+      },
+      "avg_queue_length": {
+        "mean": 110.32,
+        "std": 0.0,
+        "display": "110.32\u00b10.00"
+      },
+      "throughput": {
+        "mean": 0.0778,
+        "std": 0.0,
+        "display": "0.08\u00b10.00"
+      },
+      "vehicles_arrived": {
+        "mean": 280.0,
+        "std": 0.0,
+        "display": "280.00\u00b10.00"
+      },
+      "num_trials": 10
+    },
+    "rl": {
+      "avg_wait_time": {
+        "mean": 120.471,
+        "std": 6.1631,
+        "display": "120.47\u00b16.16"
+      },
+      "avg_queue_length": {
+        "mean": 106.887,
+        "std": 1.062,
+        "display": "106.89\u00b11.06"
+      },
+      "throughput": {
+        "mean": 0.092,
+        "std": 0.0091,
+        "display": "0.09\u00b10.01"
+      },
+      "vehicles_arrived": {
+        "mean": 331.1,
+        "std": 32.804,
+        "display": "331.10\u00b132.80"
+      },
+      "num_trials": 10
+    },
+    "llm": {
+      "avg_wait_time": {
+        "mean": 127.039,
+        "std": 6.0498,
+        "display": "127.04\u00b16.05"
+      },
+      "avg_queue_length": {
+        "mean": 103.623,
+        "std": 1.0836,
+        "display": "103.62\u00b11.08"
+      },
+      "throughput": {
+        "mean": 0.1153,
+        "std": 0.008,
+        "display": "0.12\u00b10.01"
+      },
+      "vehicles_arrived": {
+        "mean": 415.1,
+        "std": 28.85,
+        "display": "415.10\u00b128.85"
+      },
+      "num_trials": 10
+    }
+  },
   "per_trial": {
     "fixed": [
       {
@@ -211,6 +350,2956 @@
         },
         "elapsed_seconds": 118.8,
         "strategy": "fixed"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0533,
+        "avg_wait_time": 249.22,
+        "avg_queue_length": 112.8,
+        "vehicles_departed": 717,
+        "vehicles_arrived": 192,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 229.07,
+            "avg_queue_length": 103.37,
+            "avg_vehicle_count": 107.44
+          },
+          "A1": {
+            "avg_wait_time": 145.2,
+            "avg_queue_length": 111.81,
+            "avg_vehicle_count": 116.36
+          },
+          "B0": {
+            "avg_wait_time": 299.28,
+            "avg_queue_length": 118.48,
+            "avg_vehicle_count": 123.12
+          },
+          "B1": {
+            "avg_wait_time": 297.1,
+            "avg_queue_length": 124.93,
+            "avg_vehicle_count": 129.8
+          },
+          "C0": {
+            "avg_wait_time": 212.28,
+            "avg_queue_length": 107.85,
+            "avg_vehicle_count": 112.53
+          },
+          "C1": {
+            "avg_wait_time": 312.39,
+            "avg_queue_length": 110.38,
+            "avg_vehicle_count": 115.0
+          }
+        },
+        "elapsed_seconds": 118.5,
+        "strategy": "fixed"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0533,
+        "avg_wait_time": 249.22,
+        "avg_queue_length": 112.8,
+        "vehicles_departed": 717,
+        "vehicles_arrived": 192,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 229.07,
+            "avg_queue_length": 103.37,
+            "avg_vehicle_count": 107.44
+          },
+          "A1": {
+            "avg_wait_time": 145.2,
+            "avg_queue_length": 111.81,
+            "avg_vehicle_count": 116.36
+          },
+          "B0": {
+            "avg_wait_time": 299.28,
+            "avg_queue_length": 118.48,
+            "avg_vehicle_count": 123.12
+          },
+          "B1": {
+            "avg_wait_time": 297.1,
+            "avg_queue_length": 124.93,
+            "avg_vehicle_count": 129.8
+          },
+          "C0": {
+            "avg_wait_time": 212.28,
+            "avg_queue_length": 107.85,
+            "avg_vehicle_count": 112.53
+          },
+          "C1": {
+            "avg_wait_time": 312.39,
+            "avg_queue_length": 110.38,
+            "avg_vehicle_count": 115.0
+          }
+        },
+        "elapsed_seconds": 118.0,
+        "strategy": "fixed"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0533,
+        "avg_wait_time": 249.22,
+        "avg_queue_length": 112.8,
+        "vehicles_departed": 717,
+        "vehicles_arrived": 192,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 229.07,
+            "avg_queue_length": 103.37,
+            "avg_vehicle_count": 107.44
+          },
+          "A1": {
+            "avg_wait_time": 145.2,
+            "avg_queue_length": 111.81,
+            "avg_vehicle_count": 116.36
+          },
+          "B0": {
+            "avg_wait_time": 299.28,
+            "avg_queue_length": 118.48,
+            "avg_vehicle_count": 123.12
+          },
+          "B1": {
+            "avg_wait_time": 297.1,
+            "avg_queue_length": 124.93,
+            "avg_vehicle_count": 129.8
+          },
+          "C0": {
+            "avg_wait_time": 212.28,
+            "avg_queue_length": 107.85,
+            "avg_vehicle_count": 112.53
+          },
+          "C1": {
+            "avg_wait_time": 312.39,
+            "avg_queue_length": 110.38,
+            "avg_vehicle_count": 115.0
+          }
+        },
+        "elapsed_seconds": 118.2,
+        "strategy": "fixed"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0533,
+        "avg_wait_time": 249.22,
+        "avg_queue_length": 112.8,
+        "vehicles_departed": 717,
+        "vehicles_arrived": 192,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 229.07,
+            "avg_queue_length": 103.37,
+            "avg_vehicle_count": 107.44
+          },
+          "A1": {
+            "avg_wait_time": 145.2,
+            "avg_queue_length": 111.81,
+            "avg_vehicle_count": 116.36
+          },
+          "B0": {
+            "avg_wait_time": 299.28,
+            "avg_queue_length": 118.48,
+            "avg_vehicle_count": 123.12
+          },
+          "B1": {
+            "avg_wait_time": 297.1,
+            "avg_queue_length": 124.93,
+            "avg_vehicle_count": 129.8
+          },
+          "C0": {
+            "avg_wait_time": 212.28,
+            "avg_queue_length": 107.85,
+            "avg_vehicle_count": 112.53
+          },
+          "C1": {
+            "avg_wait_time": 312.39,
+            "avg_queue_length": 110.38,
+            "avg_vehicle_count": 115.0
+          }
+        },
+        "elapsed_seconds": 118.1,
+        "strategy": "fixed"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0533,
+        "avg_wait_time": 249.22,
+        "avg_queue_length": 112.8,
+        "vehicles_departed": 717,
+        "vehicles_arrived": 192,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 229.07,
+            "avg_queue_length": 103.37,
+            "avg_vehicle_count": 107.44
+          },
+          "A1": {
+            "avg_wait_time": 145.2,
+            "avg_queue_length": 111.81,
+            "avg_vehicle_count": 116.36
+          },
+          "B0": {
+            "avg_wait_time": 299.28,
+            "avg_queue_length": 118.48,
+            "avg_vehicle_count": 123.12
+          },
+          "B1": {
+            "avg_wait_time": 297.1,
+            "avg_queue_length": 124.93,
+            "avg_vehicle_count": 129.8
+          },
+          "C0": {
+            "avg_wait_time": 212.28,
+            "avg_queue_length": 107.85,
+            "avg_vehicle_count": 112.53
+          },
+          "C1": {
+            "avg_wait_time": 312.39,
+            "avg_queue_length": 110.38,
+            "avg_vehicle_count": 115.0
+          }
+        },
+        "elapsed_seconds": 117.5,
+        "strategy": "fixed"
+      }
+    ],
+    "random": [
+      {
+        "total_steps": 3600,
+        "throughput": 0.0808,
+        "avg_wait_time": 129.76,
+        "avg_queue_length": 108.19,
+        "vehicles_departed": 818,
+        "vehicles_arrived": 291,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 107.14,
+            "avg_queue_length": 100.5,
+            "avg_vehicle_count": 107.42
+          },
+          "A1": {
+            "avg_wait_time": 135.88,
+            "avg_queue_length": 109.52,
+            "avg_vehicle_count": 116.16
+          },
+          "B0": {
+            "avg_wait_time": 138.1,
+            "avg_queue_length": 112.62,
+            "avg_vehicle_count": 120.96
+          },
+          "B1": {
+            "avg_wait_time": 168.4,
+            "avg_queue_length": 122.1,
+            "avg_vehicle_count": 130.36
+          },
+          "C0": {
+            "avg_wait_time": 108.2,
+            "avg_queue_length": 98.06,
+            "avg_vehicle_count": 104.69
+          },
+          "C1": {
+            "avg_wait_time": 120.8,
+            "avg_queue_length": 106.35,
+            "avg_vehicle_count": 113.56
+          }
+        },
+        "elapsed_seconds": 116.1,
+        "strategy": "random"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0975,
+        "avg_wait_time": 125.14,
+        "avg_queue_length": 106.3,
+        "vehicles_departed": 872,
+        "vehicles_arrived": 351,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 133.37,
+            "avg_queue_length": 97.3,
+            "avg_vehicle_count": 104.18
+          },
+          "A1": {
+            "avg_wait_time": 114.39,
+            "avg_queue_length": 107.2,
+            "avg_vehicle_count": 114.49
+          },
+          "B0": {
+            "avg_wait_time": 118.54,
+            "avg_queue_length": 116.29,
+            "avg_vehicle_count": 125.42
+          },
+          "B1": {
+            "avg_wait_time": 167.47,
+            "avg_queue_length": 123.88,
+            "avg_vehicle_count": 133.18
+          },
+          "C0": {
+            "avg_wait_time": 106.96,
+            "avg_queue_length": 90.14,
+            "avg_vehicle_count": 96.9
+          },
+          "C1": {
+            "avg_wait_time": 110.11,
+            "avg_queue_length": 103.0,
+            "avg_vehicle_count": 111.3
+          }
+        },
+        "elapsed_seconds": 115.2,
+        "strategy": "random"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.1008,
+        "avg_wait_time": 119.0,
+        "avg_queue_length": 106.2,
+        "vehicles_departed": 881,
+        "vehicles_arrived": 363,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 127.54,
+            "avg_queue_length": 99.41,
+            "avg_vehicle_count": 106.73
+          },
+          "A1": {
+            "avg_wait_time": 128.84,
+            "avg_queue_length": 108.2,
+            "avg_vehicle_count": 115.42
+          },
+          "B0": {
+            "avg_wait_time": 109.0,
+            "avg_queue_length": 112.69,
+            "avg_vehicle_count": 122.82
+          },
+          "B1": {
+            "avg_wait_time": 126.3,
+            "avg_queue_length": 121.98,
+            "avg_vehicle_count": 130.94
+          },
+          "C0": {
+            "avg_wait_time": 109.04,
+            "avg_queue_length": 88.83,
+            "avg_vehicle_count": 96.32
+          },
+          "C1": {
+            "avg_wait_time": 113.27,
+            "avg_queue_length": 106.09,
+            "avg_vehicle_count": 114.19
+          }
+        },
+        "elapsed_seconds": 115.7,
+        "strategy": "random"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0892,
+        "avg_wait_time": 126.21,
+        "avg_queue_length": 108.07,
+        "vehicles_departed": 842,
+        "vehicles_arrived": 321,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 134.42,
+            "avg_queue_length": 101.49,
+            "avg_vehicle_count": 108.76
+          },
+          "A1": {
+            "avg_wait_time": 116.94,
+            "avg_queue_length": 108.02,
+            "avg_vehicle_count": 114.95
+          },
+          "B0": {
+            "avg_wait_time": 143.11,
+            "avg_queue_length": 112.4,
+            "avg_vehicle_count": 120.59
+          },
+          "B1": {
+            "avg_wait_time": 138.67,
+            "avg_queue_length": 123.89,
+            "avg_vehicle_count": 132.15
+          },
+          "C0": {
+            "avg_wait_time": 107.92,
+            "avg_queue_length": 97.56,
+            "avg_vehicle_count": 104.86
+          },
+          "C1": {
+            "avg_wait_time": 116.23,
+            "avg_queue_length": 105.07,
+            "avg_vehicle_count": 112.02
+          }
+        },
+        "elapsed_seconds": 116.8,
+        "strategy": "random"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0744,
+        "avg_wait_time": 125.01,
+        "avg_queue_length": 109.57,
+        "vehicles_departed": 787,
+        "vehicles_arrived": 268,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 117.68,
+            "avg_queue_length": 98.87,
+            "avg_vehicle_count": 106.24
+          },
+          "A1": {
+            "avg_wait_time": 127.42,
+            "avg_queue_length": 109.79,
+            "avg_vehicle_count": 116.76
+          },
+          "B0": {
+            "avg_wait_time": 133.79,
+            "avg_queue_length": 114.07,
+            "avg_vehicle_count": 121.91
+          },
+          "B1": {
+            "avg_wait_time": 146.15,
+            "avg_queue_length": 124.25,
+            "avg_vehicle_count": 131.65
+          },
+          "C0": {
+            "avg_wait_time": 110.52,
+            "avg_queue_length": 101.89,
+            "avg_vehicle_count": 108.09
+          },
+          "C1": {
+            "avg_wait_time": 114.53,
+            "avg_queue_length": 108.53,
+            "avg_vehicle_count": 115.33
+          }
+        },
+        "elapsed_seconds": 117.8,
+        "strategy": "random"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0792,
+        "avg_wait_time": 122.94,
+        "avg_queue_length": 107.83,
+        "avg_delay": 92.65,
+        "avg_stops": 110.07,
+        "vehicles_departed": 810,
+        "vehicles_arrived": 285,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 111.3,
+            "avg_queue_length": 99.9,
+            "avg_vehicle_count": 106.52,
+            "avg_delay": 88.98,
+            "avg_stops": 101.13
+          },
+          "A1": {
+            "avg_wait_time": 114.69,
+            "avg_queue_length": 109.28,
+            "avg_vehicle_count": 116.07,
+            "avg_delay": 95.32,
+            "avg_stops": 111.31
+          },
+          "B0": {
+            "avg_wait_time": 165.05,
+            "avg_queue_length": 109.85,
+            "avg_vehicle_count": 117.57,
+            "avg_delay": 91.86,
+            "avg_stops": 111.78
+          },
+          "B1": {
+            "avg_wait_time": 130.87,
+            "avg_queue_length": 122.7,
+            "avg_vehicle_count": 131.4,
+            "avg_delay": 96.14,
+            "avg_stops": 126.7
+          },
+          "C0": {
+            "avg_wait_time": 103.22,
+            "avg_queue_length": 97.35,
+            "avg_vehicle_count": 104.7,
+            "avg_delay": 88.8,
+            "avg_stops": 98.84
+          },
+          "C1": {
+            "avg_wait_time": 112.49,
+            "avg_queue_length": 107.93,
+            "avg_vehicle_count": 115.06,
+            "avg_delay": 94.8,
+            "avg_stops": 110.66
+          }
+        },
+        "elapsed_seconds": 525.2,
+        "strategy": "random"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0811,
+        "avg_wait_time": 126.81,
+        "avg_queue_length": 108.62,
+        "avg_delay": 92.77,
+        "avg_stops": 110.86,
+        "vehicles_departed": 819,
+        "vehicles_arrived": 292,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 105.01,
+            "avg_queue_length": 97.78,
+            "avg_vehicle_count": 104.27,
+            "avg_delay": 88.31,
+            "avg_stops": 99.01
+          },
+          "A1": {
+            "avg_wait_time": 131.01,
+            "avg_queue_length": 109.44,
+            "avg_vehicle_count": 116.12,
+            "avg_delay": 95.42,
+            "avg_stops": 111.47
+          },
+          "B0": {
+            "avg_wait_time": 148.42,
+            "avg_queue_length": 114.51,
+            "avg_vehicle_count": 122.6,
+            "avg_delay": 92.16,
+            "avg_stops": 116.44
+          },
+          "B1": {
+            "avg_wait_time": 155.34,
+            "avg_queue_length": 125.03,
+            "avg_vehicle_count": 133.27,
+            "avg_delay": 96.76,
+            "avg_stops": 129.02
+          },
+          "C0": {
+            "avg_wait_time": 109.25,
+            "avg_queue_length": 97.96,
+            "avg_vehicle_count": 104.61,
+            "avg_delay": 89.07,
+            "avg_stops": 99.46
+          },
+          "C1": {
+            "avg_wait_time": 111.82,
+            "avg_queue_length": 107.03,
+            "avg_vehicle_count": 114.0,
+            "avg_delay": 94.88,
+            "avg_stops": 109.76
+          }
+        },
+        "elapsed_seconds": 421.8,
+        "strategy": "random"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0814,
+        "avg_wait_time": 123.09,
+        "avg_queue_length": 108.77,
+        "avg_delay": 93.18,
+        "avg_stops": 111.01,
+        "vehicles_departed": 815,
+        "vehicles_arrived": 293,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 120.15,
+            "avg_queue_length": 100.34,
+            "avg_vehicle_count": 106.51,
+            "avg_delay": 91.19,
+            "avg_stops": 101.56
+          },
+          "A1": {
+            "avg_wait_time": 127.9,
+            "avg_queue_length": 110.67,
+            "avg_vehicle_count": 117.07,
+            "avg_delay": 95.81,
+            "avg_stops": 112.7
+          },
+          "B0": {
+            "avg_wait_time": 126.65,
+            "avg_queue_length": 111.68,
+            "avg_vehicle_count": 120.15,
+            "avg_delay": 91.32,
+            "avg_stops": 113.61
+          },
+          "B1": {
+            "avg_wait_time": 143.43,
+            "avg_queue_length": 125.62,
+            "avg_vehicle_count": 132.89,
+            "avg_delay": 97.78,
+            "avg_stops": 129.61
+          },
+          "C0": {
+            "avg_wait_time": 100.04,
+            "avg_queue_length": 96.46,
+            "avg_vehicle_count": 103.74,
+            "avg_delay": 87.24,
+            "avg_stops": 97.95
+          },
+          "C1": {
+            "avg_wait_time": 120.4,
+            "avg_queue_length": 107.84,
+            "avg_vehicle_count": 114.65,
+            "avg_delay": 95.72,
+            "avg_stops": 110.58
+          }
+        },
+        "elapsed_seconds": 547.1,
+        "strategy": "random"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0836,
+        "avg_wait_time": 119.04,
+        "avg_queue_length": 107.92,
+        "avg_delay": 92.61,
+        "avg_stops": 110.16,
+        "vehicles_departed": 825,
+        "vehicles_arrived": 301,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 109.78,
+            "avg_queue_length": 99.21,
+            "avg_vehicle_count": 106.27,
+            "avg_delay": 91.16,
+            "avg_stops": 100.44
+          },
+          "A1": {
+            "avg_wait_time": 118.22,
+            "avg_queue_length": 107.56,
+            "avg_vehicle_count": 114.02,
+            "avg_delay": 95.35,
+            "avg_stops": 109.59
+          },
+          "B0": {
+            "avg_wait_time": 148.56,
+            "avg_queue_length": 115.2,
+            "avg_vehicle_count": 124.18,
+            "avg_delay": 91.68,
+            "avg_stops": 117.14
+          },
+          "B1": {
+            "avg_wait_time": 125.19,
+            "avg_queue_length": 122.72,
+            "avg_vehicle_count": 131.48,
+            "avg_delay": 95.96,
+            "avg_stops": 126.72
+          },
+          "C0": {
+            "avg_wait_time": 99.16,
+            "avg_queue_length": 96.37,
+            "avg_vehicle_count": 103.43,
+            "avg_delay": 87.37,
+            "avg_stops": 97.87
+          },
+          "C1": {
+            "avg_wait_time": 113.3,
+            "avg_queue_length": 106.47,
+            "avg_vehicle_count": 114.02,
+            "avg_delay": 94.17,
+            "avg_stops": 109.2
+          }
+        },
+        "elapsed_seconds": 365.8,
+        "strategy": "random"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0825,
+        "avg_wait_time": 132.36,
+        "avg_queue_length": 108.54,
+        "avg_delay": 92.96,
+        "avg_stops": 110.78,
+        "vehicles_departed": 821,
+        "vehicles_arrived": 297,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 114.33,
+            "avg_queue_length": 99.19,
+            "avg_vehicle_count": 106.57,
+            "avg_delay": 90.35,
+            "avg_stops": 100.42
+          },
+          "A1": {
+            "avg_wait_time": 119.93,
+            "avg_queue_length": 111.03,
+            "avg_vehicle_count": 117.44,
+            "avg_delay": 96.06,
+            "avg_stops": 113.06
+          },
+          "B0": {
+            "avg_wait_time": 140.18,
+            "avg_queue_length": 113.89,
+            "avg_vehicle_count": 123.58,
+            "avg_delay": 90.22,
+            "avg_stops": 115.82
+          },
+          "B1": {
+            "avg_wait_time": 200.71,
+            "avg_queue_length": 125.41,
+            "avg_vehicle_count": 132.76,
+            "avg_delay": 97.82,
+            "avg_stops": 129.41
+          },
+          "C0": {
+            "avg_wait_time": 105.45,
+            "avg_queue_length": 94.01,
+            "avg_vehicle_count": 100.67,
+            "avg_delay": 87.97,
+            "avg_stops": 95.51
+          },
+          "C1": {
+            "avg_wait_time": 113.55,
+            "avg_queue_length": 107.72,
+            "avg_vehicle_count": 115.04,
+            "avg_delay": 95.34,
+            "avg_stops": 110.46
+          }
+        },
+        "elapsed_seconds": 386.7,
+        "strategy": "random"
+      }
+    ],
+    "webster": [
+      {
+        "total_steps": 3600,
+        "throughput": 0.0603,
+        "avg_wait_time": 213.92,
+        "avg_queue_length": 112.13,
+        "avg_delay": 96.16,
+        "avg_stops": 114.36,
+        "vehicles_departed": 738,
+        "vehicles_arrived": 217,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 179.94,
+            "avg_queue_length": 103.1,
+            "avg_vehicle_count": 108.14,
+            "avg_delay": 91.95,
+            "avg_stops": 104.33
+          },
+          "A1": {
+            "avg_wait_time": 178.34,
+            "avg_queue_length": 113.15,
+            "avg_vehicle_count": 117.41,
+            "avg_delay": 97.93,
+            "avg_stops": 115.18
+          },
+          "B0": {
+            "avg_wait_time": 181.45,
+            "avg_queue_length": 113.45,
+            "avg_vehicle_count": 118.98,
+            "avg_delay": 96.0,
+            "avg_stops": 115.38
+          },
+          "B1": {
+            "avg_wait_time": 302.86,
+            "avg_queue_length": 125.87,
+            "avg_vehicle_count": 130.58,
+            "avg_delay": 99.4,
+            "avg_stops": 129.87
+          },
+          "C0": {
+            "avg_wait_time": 203.93,
+            "avg_queue_length": 107.81,
+            "avg_vehicle_count": 112.75,
+            "avg_delay": 94.02,
+            "avg_stops": 109.3
+          },
+          "C1": {
+            "avg_wait_time": 237.02,
+            "avg_queue_length": 109.38,
+            "avg_vehicle_count": 113.84,
+            "avg_delay": 97.67,
+            "avg_stops": 112.11
+          }
+        },
+        "elapsed_seconds": 397.4,
+        "strategy": "webster"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0603,
+        "avg_wait_time": 213.92,
+        "avg_queue_length": 112.13,
+        "avg_delay": 96.16,
+        "avg_stops": 114.36,
+        "vehicles_departed": 738,
+        "vehicles_arrived": 217,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 179.94,
+            "avg_queue_length": 103.1,
+            "avg_vehicle_count": 108.14,
+            "avg_delay": 91.95,
+            "avg_stops": 104.33
+          },
+          "A1": {
+            "avg_wait_time": 178.34,
+            "avg_queue_length": 113.15,
+            "avg_vehicle_count": 117.41,
+            "avg_delay": 97.93,
+            "avg_stops": 115.18
+          },
+          "B0": {
+            "avg_wait_time": 181.45,
+            "avg_queue_length": 113.45,
+            "avg_vehicle_count": 118.98,
+            "avg_delay": 96.0,
+            "avg_stops": 115.38
+          },
+          "B1": {
+            "avg_wait_time": 302.86,
+            "avg_queue_length": 125.87,
+            "avg_vehicle_count": 130.58,
+            "avg_delay": 99.4,
+            "avg_stops": 129.87
+          },
+          "C0": {
+            "avg_wait_time": 203.93,
+            "avg_queue_length": 107.81,
+            "avg_vehicle_count": 112.75,
+            "avg_delay": 94.02,
+            "avg_stops": 109.3
+          },
+          "C1": {
+            "avg_wait_time": 237.02,
+            "avg_queue_length": 109.38,
+            "avg_vehicle_count": 113.84,
+            "avg_delay": 97.67,
+            "avg_stops": 112.11
+          }
+        },
+        "elapsed_seconds": 390.7,
+        "strategy": "webster"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0603,
+        "avg_wait_time": 213.92,
+        "avg_queue_length": 112.13,
+        "avg_delay": 96.16,
+        "avg_stops": 114.36,
+        "vehicles_departed": 738,
+        "vehicles_arrived": 217,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 179.94,
+            "avg_queue_length": 103.1,
+            "avg_vehicle_count": 108.14,
+            "avg_delay": 91.95,
+            "avg_stops": 104.33
+          },
+          "A1": {
+            "avg_wait_time": 178.34,
+            "avg_queue_length": 113.15,
+            "avg_vehicle_count": 117.41,
+            "avg_delay": 97.93,
+            "avg_stops": 115.18
+          },
+          "B0": {
+            "avg_wait_time": 181.45,
+            "avg_queue_length": 113.45,
+            "avg_vehicle_count": 118.98,
+            "avg_delay": 96.0,
+            "avg_stops": 115.38
+          },
+          "B1": {
+            "avg_wait_time": 302.86,
+            "avg_queue_length": 125.87,
+            "avg_vehicle_count": 130.58,
+            "avg_delay": 99.4,
+            "avg_stops": 129.87
+          },
+          "C0": {
+            "avg_wait_time": 203.93,
+            "avg_queue_length": 107.81,
+            "avg_vehicle_count": 112.75,
+            "avg_delay": 94.02,
+            "avg_stops": 109.3
+          },
+          "C1": {
+            "avg_wait_time": 237.02,
+            "avg_queue_length": 109.38,
+            "avg_vehicle_count": 113.84,
+            "avg_delay": 97.67,
+            "avg_stops": 112.11
+          }
+        },
+        "elapsed_seconds": 367.8,
+        "strategy": "webster"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0603,
+        "avg_wait_time": 213.92,
+        "avg_queue_length": 112.13,
+        "avg_delay": 96.16,
+        "avg_stops": 114.36,
+        "vehicles_departed": 738,
+        "vehicles_arrived": 217,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 179.94,
+            "avg_queue_length": 103.1,
+            "avg_vehicle_count": 108.14,
+            "avg_delay": 91.95,
+            "avg_stops": 104.33
+          },
+          "A1": {
+            "avg_wait_time": 178.34,
+            "avg_queue_length": 113.15,
+            "avg_vehicle_count": 117.41,
+            "avg_delay": 97.93,
+            "avg_stops": 115.18
+          },
+          "B0": {
+            "avg_wait_time": 181.45,
+            "avg_queue_length": 113.45,
+            "avg_vehicle_count": 118.98,
+            "avg_delay": 96.0,
+            "avg_stops": 115.38
+          },
+          "B1": {
+            "avg_wait_time": 302.86,
+            "avg_queue_length": 125.87,
+            "avg_vehicle_count": 130.58,
+            "avg_delay": 99.4,
+            "avg_stops": 129.87
+          },
+          "C0": {
+            "avg_wait_time": 203.93,
+            "avg_queue_length": 107.81,
+            "avg_vehicle_count": 112.75,
+            "avg_delay": 94.02,
+            "avg_stops": 109.3
+          },
+          "C1": {
+            "avg_wait_time": 237.02,
+            "avg_queue_length": 109.38,
+            "avg_vehicle_count": 113.84,
+            "avg_delay": 97.67,
+            "avg_stops": 112.11
+          }
+        },
+        "elapsed_seconds": 437.8,
+        "strategy": "webster"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0603,
+        "avg_wait_time": 213.92,
+        "avg_queue_length": 112.13,
+        "avg_delay": 96.16,
+        "avg_stops": 114.36,
+        "vehicles_departed": 738,
+        "vehicles_arrived": 217,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 179.94,
+            "avg_queue_length": 103.1,
+            "avg_vehicle_count": 108.14,
+            "avg_delay": 91.95,
+            "avg_stops": 104.33
+          },
+          "A1": {
+            "avg_wait_time": 178.34,
+            "avg_queue_length": 113.15,
+            "avg_vehicle_count": 117.41,
+            "avg_delay": 97.93,
+            "avg_stops": 115.18
+          },
+          "B0": {
+            "avg_wait_time": 181.45,
+            "avg_queue_length": 113.45,
+            "avg_vehicle_count": 118.98,
+            "avg_delay": 96.0,
+            "avg_stops": 115.38
+          },
+          "B1": {
+            "avg_wait_time": 302.86,
+            "avg_queue_length": 125.87,
+            "avg_vehicle_count": 130.58,
+            "avg_delay": 99.4,
+            "avg_stops": 129.87
+          },
+          "C0": {
+            "avg_wait_time": 203.93,
+            "avg_queue_length": 107.81,
+            "avg_vehicle_count": 112.75,
+            "avg_delay": 94.02,
+            "avg_stops": 109.3
+          },
+          "C1": {
+            "avg_wait_time": 237.02,
+            "avg_queue_length": 109.38,
+            "avg_vehicle_count": 113.84,
+            "avg_delay": 97.67,
+            "avg_stops": 112.11
+          }
+        },
+        "elapsed_seconds": 387.5,
+        "strategy": "webster"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0603,
+        "avg_wait_time": 213.92,
+        "avg_queue_length": 112.13,
+        "avg_delay": 96.16,
+        "avg_stops": 114.36,
+        "vehicles_departed": 738,
+        "vehicles_arrived": 217,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 179.94,
+            "avg_queue_length": 103.1,
+            "avg_vehicle_count": 108.14,
+            "avg_delay": 91.95,
+            "avg_stops": 104.33
+          },
+          "A1": {
+            "avg_wait_time": 178.34,
+            "avg_queue_length": 113.15,
+            "avg_vehicle_count": 117.41,
+            "avg_delay": 97.93,
+            "avg_stops": 115.18
+          },
+          "B0": {
+            "avg_wait_time": 181.45,
+            "avg_queue_length": 113.45,
+            "avg_vehicle_count": 118.98,
+            "avg_delay": 96.0,
+            "avg_stops": 115.38
+          },
+          "B1": {
+            "avg_wait_time": 302.86,
+            "avg_queue_length": 125.87,
+            "avg_vehicle_count": 130.58,
+            "avg_delay": 99.4,
+            "avg_stops": 129.87
+          },
+          "C0": {
+            "avg_wait_time": 203.93,
+            "avg_queue_length": 107.81,
+            "avg_vehicle_count": 112.75,
+            "avg_delay": 94.02,
+            "avg_stops": 109.3
+          },
+          "C1": {
+            "avg_wait_time": 237.02,
+            "avg_queue_length": 109.38,
+            "avg_vehicle_count": 113.84,
+            "avg_delay": 97.67,
+            "avg_stops": 112.11
+          }
+        },
+        "elapsed_seconds": 375.1,
+        "strategy": "webster"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0603,
+        "avg_wait_time": 213.92,
+        "avg_queue_length": 112.13,
+        "avg_delay": 96.16,
+        "avg_stops": 114.36,
+        "vehicles_departed": 738,
+        "vehicles_arrived": 217,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 179.94,
+            "avg_queue_length": 103.1,
+            "avg_vehicle_count": 108.14,
+            "avg_delay": 91.95,
+            "avg_stops": 104.33
+          },
+          "A1": {
+            "avg_wait_time": 178.34,
+            "avg_queue_length": 113.15,
+            "avg_vehicle_count": 117.41,
+            "avg_delay": 97.93,
+            "avg_stops": 115.18
+          },
+          "B0": {
+            "avg_wait_time": 181.45,
+            "avg_queue_length": 113.45,
+            "avg_vehicle_count": 118.98,
+            "avg_delay": 96.0,
+            "avg_stops": 115.38
+          },
+          "B1": {
+            "avg_wait_time": 302.86,
+            "avg_queue_length": 125.87,
+            "avg_vehicle_count": 130.58,
+            "avg_delay": 99.4,
+            "avg_stops": 129.87
+          },
+          "C0": {
+            "avg_wait_time": 203.93,
+            "avg_queue_length": 107.81,
+            "avg_vehicle_count": 112.75,
+            "avg_delay": 94.02,
+            "avg_stops": 109.3
+          },
+          "C1": {
+            "avg_wait_time": 237.02,
+            "avg_queue_length": 109.38,
+            "avg_vehicle_count": 113.84,
+            "avg_delay": 97.67,
+            "avg_stops": 112.11
+          }
+        },
+        "elapsed_seconds": 411.5,
+        "strategy": "webster"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0603,
+        "avg_wait_time": 213.92,
+        "avg_queue_length": 112.13,
+        "avg_delay": 96.16,
+        "avg_stops": 114.36,
+        "vehicles_departed": 738,
+        "vehicles_arrived": 217,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 179.94,
+            "avg_queue_length": 103.1,
+            "avg_vehicle_count": 108.14,
+            "avg_delay": 91.95,
+            "avg_stops": 104.33
+          },
+          "A1": {
+            "avg_wait_time": 178.34,
+            "avg_queue_length": 113.15,
+            "avg_vehicle_count": 117.41,
+            "avg_delay": 97.93,
+            "avg_stops": 115.18
+          },
+          "B0": {
+            "avg_wait_time": 181.45,
+            "avg_queue_length": 113.45,
+            "avg_vehicle_count": 118.98,
+            "avg_delay": 96.0,
+            "avg_stops": 115.38
+          },
+          "B1": {
+            "avg_wait_time": 302.86,
+            "avg_queue_length": 125.87,
+            "avg_vehicle_count": 130.58,
+            "avg_delay": 99.4,
+            "avg_stops": 129.87
+          },
+          "C0": {
+            "avg_wait_time": 203.93,
+            "avg_queue_length": 107.81,
+            "avg_vehicle_count": 112.75,
+            "avg_delay": 94.02,
+            "avg_stops": 109.3
+          },
+          "C1": {
+            "avg_wait_time": 237.02,
+            "avg_queue_length": 109.38,
+            "avg_vehicle_count": 113.84,
+            "avg_delay": 97.67,
+            "avg_stops": 112.11
+          }
+        },
+        "elapsed_seconds": 365.2,
+        "strategy": "webster"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0603,
+        "avg_wait_time": 213.92,
+        "avg_queue_length": 112.13,
+        "avg_delay": 96.16,
+        "avg_stops": 114.36,
+        "vehicles_departed": 738,
+        "vehicles_arrived": 217,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 179.94,
+            "avg_queue_length": 103.1,
+            "avg_vehicle_count": 108.14,
+            "avg_delay": 91.95,
+            "avg_stops": 104.33
+          },
+          "A1": {
+            "avg_wait_time": 178.34,
+            "avg_queue_length": 113.15,
+            "avg_vehicle_count": 117.41,
+            "avg_delay": 97.93,
+            "avg_stops": 115.18
+          },
+          "B0": {
+            "avg_wait_time": 181.45,
+            "avg_queue_length": 113.45,
+            "avg_vehicle_count": 118.98,
+            "avg_delay": 96.0,
+            "avg_stops": 115.38
+          },
+          "B1": {
+            "avg_wait_time": 302.86,
+            "avg_queue_length": 125.87,
+            "avg_vehicle_count": 130.58,
+            "avg_delay": 99.4,
+            "avg_stops": 129.87
+          },
+          "C0": {
+            "avg_wait_time": 203.93,
+            "avg_queue_length": 107.81,
+            "avg_vehicle_count": 112.75,
+            "avg_delay": 94.02,
+            "avg_stops": 109.3
+          },
+          "C1": {
+            "avg_wait_time": 237.02,
+            "avg_queue_length": 109.38,
+            "avg_vehicle_count": 113.84,
+            "avg_delay": 97.67,
+            "avg_stops": 112.11
+          }
+        },
+        "elapsed_seconds": 355.8,
+        "strategy": "webster"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0603,
+        "avg_wait_time": 213.92,
+        "avg_queue_length": 112.13,
+        "avg_delay": 96.16,
+        "avg_stops": 114.36,
+        "vehicles_departed": 738,
+        "vehicles_arrived": 217,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 179.94,
+            "avg_queue_length": 103.1,
+            "avg_vehicle_count": 108.14,
+            "avg_delay": 91.95,
+            "avg_stops": 104.33
+          },
+          "A1": {
+            "avg_wait_time": 178.34,
+            "avg_queue_length": 113.15,
+            "avg_vehicle_count": 117.41,
+            "avg_delay": 97.93,
+            "avg_stops": 115.18
+          },
+          "B0": {
+            "avg_wait_time": 181.45,
+            "avg_queue_length": 113.45,
+            "avg_vehicle_count": 118.98,
+            "avg_delay": 96.0,
+            "avg_stops": 115.38
+          },
+          "B1": {
+            "avg_wait_time": 302.86,
+            "avg_queue_length": 125.87,
+            "avg_vehicle_count": 130.58,
+            "avg_delay": 99.4,
+            "avg_stops": 129.87
+          },
+          "C0": {
+            "avg_wait_time": 203.93,
+            "avg_queue_length": 107.81,
+            "avg_vehicle_count": 112.75,
+            "avg_delay": 94.02,
+            "avg_stops": 109.3
+          },
+          "C1": {
+            "avg_wait_time": 237.02,
+            "avg_queue_length": 109.38,
+            "avg_vehicle_count": 113.84,
+            "avg_delay": 97.67,
+            "avg_stops": 112.11
+          }
+        },
+        "elapsed_seconds": 311.8,
+        "strategy": "webster"
+      }
+    ],
+    "maxpressure": [
+      {
+        "total_steps": 3600,
+        "throughput": 0.0778,
+        "avg_wait_time": 191.57,
+        "avg_queue_length": 110.32,
+        "avg_delay": 95.35,
+        "avg_stops": 112.56,
+        "vehicles_departed": 799,
+        "vehicles_arrived": 280,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 129.85,
+            "avg_queue_length": 100.65,
+            "avg_vehicle_count": 106.44,
+            "avg_delay": 91.59,
+            "avg_stops": 101.88
+          },
+          "A1": {
+            "avg_wait_time": 155.59,
+            "avg_queue_length": 113.08,
+            "avg_vehicle_count": 118.35,
+            "avg_delay": 97.15,
+            "avg_stops": 115.11
+          },
+          "B0": {
+            "avg_wait_time": 217.26,
+            "avg_queue_length": 112.66,
+            "avg_vehicle_count": 119.33,
+            "avg_delay": 93.55,
+            "avg_stops": 114.59
+          },
+          "B1": {
+            "avg_wait_time": 341.22,
+            "avg_queue_length": 129.15,
+            "avg_vehicle_count": 134.12,
+            "avg_delay": 99.55,
+            "avg_stops": 133.14
+          },
+          "C0": {
+            "avg_wait_time": 144.19,
+            "avg_queue_length": 95.04,
+            "avg_vehicle_count": 100.48,
+            "avg_delay": 92.62,
+            "avg_stops": 96.54
+          },
+          "C1": {
+            "avg_wait_time": 161.32,
+            "avg_queue_length": 111.37,
+            "avg_vehicle_count": 116.09,
+            "avg_delay": 97.64,
+            "avg_stops": 114.1
+          }
+        },
+        "elapsed_seconds": 305.4,
+        "strategy": "maxpressure"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0778,
+        "avg_wait_time": 191.57,
+        "avg_queue_length": 110.32,
+        "avg_delay": 95.35,
+        "avg_stops": 112.56,
+        "vehicles_departed": 799,
+        "vehicles_arrived": 280,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 129.85,
+            "avg_queue_length": 100.65,
+            "avg_vehicle_count": 106.44,
+            "avg_delay": 91.59,
+            "avg_stops": 101.88
+          },
+          "A1": {
+            "avg_wait_time": 155.59,
+            "avg_queue_length": 113.08,
+            "avg_vehicle_count": 118.35,
+            "avg_delay": 97.15,
+            "avg_stops": 115.11
+          },
+          "B0": {
+            "avg_wait_time": 217.26,
+            "avg_queue_length": 112.66,
+            "avg_vehicle_count": 119.33,
+            "avg_delay": 93.55,
+            "avg_stops": 114.59
+          },
+          "B1": {
+            "avg_wait_time": 341.22,
+            "avg_queue_length": 129.15,
+            "avg_vehicle_count": 134.12,
+            "avg_delay": 99.55,
+            "avg_stops": 133.14
+          },
+          "C0": {
+            "avg_wait_time": 144.19,
+            "avg_queue_length": 95.04,
+            "avg_vehicle_count": 100.48,
+            "avg_delay": 92.62,
+            "avg_stops": 96.54
+          },
+          "C1": {
+            "avg_wait_time": 161.32,
+            "avg_queue_length": 111.37,
+            "avg_vehicle_count": 116.09,
+            "avg_delay": 97.64,
+            "avg_stops": 114.1
+          }
+        },
+        "elapsed_seconds": 303.4,
+        "strategy": "maxpressure"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0778,
+        "avg_wait_time": 191.57,
+        "avg_queue_length": 110.32,
+        "avg_delay": 95.35,
+        "avg_stops": 112.56,
+        "vehicles_departed": 799,
+        "vehicles_arrived": 280,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 129.85,
+            "avg_queue_length": 100.65,
+            "avg_vehicle_count": 106.44,
+            "avg_delay": 91.59,
+            "avg_stops": 101.88
+          },
+          "A1": {
+            "avg_wait_time": 155.59,
+            "avg_queue_length": 113.08,
+            "avg_vehicle_count": 118.35,
+            "avg_delay": 97.15,
+            "avg_stops": 115.11
+          },
+          "B0": {
+            "avg_wait_time": 217.26,
+            "avg_queue_length": 112.66,
+            "avg_vehicle_count": 119.33,
+            "avg_delay": 93.55,
+            "avg_stops": 114.59
+          },
+          "B1": {
+            "avg_wait_time": 341.22,
+            "avg_queue_length": 129.15,
+            "avg_vehicle_count": 134.12,
+            "avg_delay": 99.55,
+            "avg_stops": 133.14
+          },
+          "C0": {
+            "avg_wait_time": 144.19,
+            "avg_queue_length": 95.04,
+            "avg_vehicle_count": 100.48,
+            "avg_delay": 92.62,
+            "avg_stops": 96.54
+          },
+          "C1": {
+            "avg_wait_time": 161.32,
+            "avg_queue_length": 111.37,
+            "avg_vehicle_count": 116.09,
+            "avg_delay": 97.64,
+            "avg_stops": 114.1
+          }
+        },
+        "elapsed_seconds": 305.2,
+        "strategy": "maxpressure"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0778,
+        "avg_wait_time": 191.57,
+        "avg_queue_length": 110.32,
+        "avg_delay": 95.35,
+        "avg_stops": 112.56,
+        "vehicles_departed": 799,
+        "vehicles_arrived": 280,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 129.85,
+            "avg_queue_length": 100.65,
+            "avg_vehicle_count": 106.44,
+            "avg_delay": 91.59,
+            "avg_stops": 101.88
+          },
+          "A1": {
+            "avg_wait_time": 155.59,
+            "avg_queue_length": 113.08,
+            "avg_vehicle_count": 118.35,
+            "avg_delay": 97.15,
+            "avg_stops": 115.11
+          },
+          "B0": {
+            "avg_wait_time": 217.26,
+            "avg_queue_length": 112.66,
+            "avg_vehicle_count": 119.33,
+            "avg_delay": 93.55,
+            "avg_stops": 114.59
+          },
+          "B1": {
+            "avg_wait_time": 341.22,
+            "avg_queue_length": 129.15,
+            "avg_vehicle_count": 134.12,
+            "avg_delay": 99.55,
+            "avg_stops": 133.14
+          },
+          "C0": {
+            "avg_wait_time": 144.19,
+            "avg_queue_length": 95.04,
+            "avg_vehicle_count": 100.48,
+            "avg_delay": 92.62,
+            "avg_stops": 96.54
+          },
+          "C1": {
+            "avg_wait_time": 161.32,
+            "avg_queue_length": 111.37,
+            "avg_vehicle_count": 116.09,
+            "avg_delay": 97.64,
+            "avg_stops": 114.1
+          }
+        },
+        "elapsed_seconds": 305.5,
+        "strategy": "maxpressure"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0778,
+        "avg_wait_time": 191.57,
+        "avg_queue_length": 110.32,
+        "avg_delay": 95.35,
+        "avg_stops": 112.56,
+        "vehicles_departed": 799,
+        "vehicles_arrived": 280,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 129.85,
+            "avg_queue_length": 100.65,
+            "avg_vehicle_count": 106.44,
+            "avg_delay": 91.59,
+            "avg_stops": 101.88
+          },
+          "A1": {
+            "avg_wait_time": 155.59,
+            "avg_queue_length": 113.08,
+            "avg_vehicle_count": 118.35,
+            "avg_delay": 97.15,
+            "avg_stops": 115.11
+          },
+          "B0": {
+            "avg_wait_time": 217.26,
+            "avg_queue_length": 112.66,
+            "avg_vehicle_count": 119.33,
+            "avg_delay": 93.55,
+            "avg_stops": 114.59
+          },
+          "B1": {
+            "avg_wait_time": 341.22,
+            "avg_queue_length": 129.15,
+            "avg_vehicle_count": 134.12,
+            "avg_delay": 99.55,
+            "avg_stops": 133.14
+          },
+          "C0": {
+            "avg_wait_time": 144.19,
+            "avg_queue_length": 95.04,
+            "avg_vehicle_count": 100.48,
+            "avg_delay": 92.62,
+            "avg_stops": 96.54
+          },
+          "C1": {
+            "avg_wait_time": 161.32,
+            "avg_queue_length": 111.37,
+            "avg_vehicle_count": 116.09,
+            "avg_delay": 97.64,
+            "avg_stops": 114.1
+          }
+        },
+        "elapsed_seconds": 292.5,
+        "strategy": "maxpressure"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0778,
+        "avg_wait_time": 191.57,
+        "avg_queue_length": 110.32,
+        "avg_delay": 95.35,
+        "avg_stops": 112.56,
+        "vehicles_departed": 799,
+        "vehicles_arrived": 280,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 129.85,
+            "avg_queue_length": 100.65,
+            "avg_vehicle_count": 106.44,
+            "avg_delay": 91.59,
+            "avg_stops": 101.88
+          },
+          "A1": {
+            "avg_wait_time": 155.59,
+            "avg_queue_length": 113.08,
+            "avg_vehicle_count": 118.35,
+            "avg_delay": 97.15,
+            "avg_stops": 115.11
+          },
+          "B0": {
+            "avg_wait_time": 217.26,
+            "avg_queue_length": 112.66,
+            "avg_vehicle_count": 119.33,
+            "avg_delay": 93.55,
+            "avg_stops": 114.59
+          },
+          "B1": {
+            "avg_wait_time": 341.22,
+            "avg_queue_length": 129.15,
+            "avg_vehicle_count": 134.12,
+            "avg_delay": 99.55,
+            "avg_stops": 133.14
+          },
+          "C0": {
+            "avg_wait_time": 144.19,
+            "avg_queue_length": 95.04,
+            "avg_vehicle_count": 100.48,
+            "avg_delay": 92.62,
+            "avg_stops": 96.54
+          },
+          "C1": {
+            "avg_wait_time": 161.32,
+            "avg_queue_length": 111.37,
+            "avg_vehicle_count": 116.09,
+            "avg_delay": 97.64,
+            "avg_stops": 114.1
+          }
+        },
+        "elapsed_seconds": 305.2,
+        "strategy": "maxpressure"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0778,
+        "avg_wait_time": 191.57,
+        "avg_queue_length": 110.32,
+        "avg_delay": 95.35,
+        "avg_stops": 112.56,
+        "vehicles_departed": 799,
+        "vehicles_arrived": 280,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 129.85,
+            "avg_queue_length": 100.65,
+            "avg_vehicle_count": 106.44,
+            "avg_delay": 91.59,
+            "avg_stops": 101.88
+          },
+          "A1": {
+            "avg_wait_time": 155.59,
+            "avg_queue_length": 113.08,
+            "avg_vehicle_count": 118.35,
+            "avg_delay": 97.15,
+            "avg_stops": 115.11
+          },
+          "B0": {
+            "avg_wait_time": 217.26,
+            "avg_queue_length": 112.66,
+            "avg_vehicle_count": 119.33,
+            "avg_delay": 93.55,
+            "avg_stops": 114.59
+          },
+          "B1": {
+            "avg_wait_time": 341.22,
+            "avg_queue_length": 129.15,
+            "avg_vehicle_count": 134.12,
+            "avg_delay": 99.55,
+            "avg_stops": 133.14
+          },
+          "C0": {
+            "avg_wait_time": 144.19,
+            "avg_queue_length": 95.04,
+            "avg_vehicle_count": 100.48,
+            "avg_delay": 92.62,
+            "avg_stops": 96.54
+          },
+          "C1": {
+            "avg_wait_time": 161.32,
+            "avg_queue_length": 111.37,
+            "avg_vehicle_count": 116.09,
+            "avg_delay": 97.64,
+            "avg_stops": 114.1
+          }
+        },
+        "elapsed_seconds": 288.2,
+        "strategy": "maxpressure"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0778,
+        "avg_wait_time": 191.57,
+        "avg_queue_length": 110.32,
+        "avg_delay": 95.35,
+        "avg_stops": 112.56,
+        "vehicles_departed": 799,
+        "vehicles_arrived": 280,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 129.85,
+            "avg_queue_length": 100.65,
+            "avg_vehicle_count": 106.44,
+            "avg_delay": 91.59,
+            "avg_stops": 101.88
+          },
+          "A1": {
+            "avg_wait_time": 155.59,
+            "avg_queue_length": 113.08,
+            "avg_vehicle_count": 118.35,
+            "avg_delay": 97.15,
+            "avg_stops": 115.11
+          },
+          "B0": {
+            "avg_wait_time": 217.26,
+            "avg_queue_length": 112.66,
+            "avg_vehicle_count": 119.33,
+            "avg_delay": 93.55,
+            "avg_stops": 114.59
+          },
+          "B1": {
+            "avg_wait_time": 341.22,
+            "avg_queue_length": 129.15,
+            "avg_vehicle_count": 134.12,
+            "avg_delay": 99.55,
+            "avg_stops": 133.14
+          },
+          "C0": {
+            "avg_wait_time": 144.19,
+            "avg_queue_length": 95.04,
+            "avg_vehicle_count": 100.48,
+            "avg_delay": 92.62,
+            "avg_stops": 96.54
+          },
+          "C1": {
+            "avg_wait_time": 161.32,
+            "avg_queue_length": 111.37,
+            "avg_vehicle_count": 116.09,
+            "avg_delay": 97.64,
+            "avg_stops": 114.1
+          }
+        },
+        "elapsed_seconds": 303.3,
+        "strategy": "maxpressure"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0778,
+        "avg_wait_time": 191.57,
+        "avg_queue_length": 110.32,
+        "avg_delay": 95.35,
+        "avg_stops": 112.56,
+        "vehicles_departed": 799,
+        "vehicles_arrived": 280,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 129.85,
+            "avg_queue_length": 100.65,
+            "avg_vehicle_count": 106.44,
+            "avg_delay": 91.59,
+            "avg_stops": 101.88
+          },
+          "A1": {
+            "avg_wait_time": 155.59,
+            "avg_queue_length": 113.08,
+            "avg_vehicle_count": 118.35,
+            "avg_delay": 97.15,
+            "avg_stops": 115.11
+          },
+          "B0": {
+            "avg_wait_time": 217.26,
+            "avg_queue_length": 112.66,
+            "avg_vehicle_count": 119.33,
+            "avg_delay": 93.55,
+            "avg_stops": 114.59
+          },
+          "B1": {
+            "avg_wait_time": 341.22,
+            "avg_queue_length": 129.15,
+            "avg_vehicle_count": 134.12,
+            "avg_delay": 99.55,
+            "avg_stops": 133.14
+          },
+          "C0": {
+            "avg_wait_time": 144.19,
+            "avg_queue_length": 95.04,
+            "avg_vehicle_count": 100.48,
+            "avg_delay": 92.62,
+            "avg_stops": 96.54
+          },
+          "C1": {
+            "avg_wait_time": 161.32,
+            "avg_queue_length": 111.37,
+            "avg_vehicle_count": 116.09,
+            "avg_delay": 97.64,
+            "avg_stops": 114.1
+          }
+        },
+        "elapsed_seconds": 305.8,
+        "strategy": "maxpressure"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0778,
+        "avg_wait_time": 191.57,
+        "avg_queue_length": 110.32,
+        "avg_delay": 95.35,
+        "avg_stops": 112.56,
+        "vehicles_departed": 799,
+        "vehicles_arrived": 280,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 129.85,
+            "avg_queue_length": 100.65,
+            "avg_vehicle_count": 106.44,
+            "avg_delay": 91.59,
+            "avg_stops": 101.88
+          },
+          "A1": {
+            "avg_wait_time": 155.59,
+            "avg_queue_length": 113.08,
+            "avg_vehicle_count": 118.35,
+            "avg_delay": 97.15,
+            "avg_stops": 115.11
+          },
+          "B0": {
+            "avg_wait_time": 217.26,
+            "avg_queue_length": 112.66,
+            "avg_vehicle_count": 119.33,
+            "avg_delay": 93.55,
+            "avg_stops": 114.59
+          },
+          "B1": {
+            "avg_wait_time": 341.22,
+            "avg_queue_length": 129.15,
+            "avg_vehicle_count": 134.12,
+            "avg_delay": 99.55,
+            "avg_stops": 133.14
+          },
+          "C0": {
+            "avg_wait_time": 144.19,
+            "avg_queue_length": 95.04,
+            "avg_vehicle_count": 100.48,
+            "avg_delay": 92.62,
+            "avg_stops": 96.54
+          },
+          "C1": {
+            "avg_wait_time": 161.32,
+            "avg_queue_length": 111.37,
+            "avg_vehicle_count": 116.09,
+            "avg_delay": 97.64,
+            "avg_stops": 114.1
+          }
+        },
+        "elapsed_seconds": 305.3,
+        "strategy": "maxpressure"
+      }
+    ],
+    "rl": [
+      {
+        "total_steps": 3600,
+        "throughput": 0.0797,
+        "avg_wait_time": 111.16,
+        "avg_queue_length": 107.53,
+        "avg_delay": 92.32,
+        "avg_stops": 109.77,
+        "vehicles_departed": 812,
+        "vehicles_arrived": 287,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 98.29,
+            "avg_queue_length": 97.8,
+            "avg_vehicle_count": 105.53,
+            "avg_delay": 89.3,
+            "avg_stops": 99.03
+          },
+          "A1": {
+            "avg_wait_time": 109.83,
+            "avg_queue_length": 108.71,
+            "avg_vehicle_count": 115.7,
+            "avg_delay": 95.27,
+            "avg_stops": 110.74
+          },
+          "B0": {
+            "avg_wait_time": 105.89,
+            "avg_queue_length": 112.94,
+            "avg_vehicle_count": 122.14,
+            "avg_delay": 91.77,
+            "avg_stops": 114.88
+          },
+          "B1": {
+            "avg_wait_time": 125.33,
+            "avg_queue_length": 121.19,
+            "avg_vehicle_count": 129.58,
+            "avg_delay": 95.94,
+            "avg_stops": 125.18
+          },
+          "C0": {
+            "avg_wait_time": 109.12,
+            "avg_queue_length": 98.61,
+            "avg_vehicle_count": 105.29,
+            "avg_delay": 87.58,
+            "avg_stops": 100.1
+          },
+          "C1": {
+            "avg_wait_time": 118.47,
+            "avg_queue_length": 105.96,
+            "avg_vehicle_count": 113.63,
+            "avg_delay": 94.08,
+            "avg_stops": 108.69
+          }
+        },
+        "elapsed_seconds": 304.3,
+        "strategy": "rl"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.1042,
+        "avg_wait_time": 129.47,
+        "avg_queue_length": 105.6,
+        "avg_delay": 90.89,
+        "avg_stops": 107.84,
+        "vehicles_departed": 900,
+        "vehicles_arrived": 375,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 126.69,
+            "avg_queue_length": 98.38,
+            "avg_vehicle_count": 104.69,
+            "avg_delay": 89.24,
+            "avg_stops": 99.61
+          },
+          "A1": {
+            "avg_wait_time": 146.34,
+            "avg_queue_length": 110.19,
+            "avg_vehicle_count": 116.75,
+            "avg_delay": 95.96,
+            "avg_stops": 112.22
+          },
+          "B0": {
+            "avg_wait_time": 125.58,
+            "avg_queue_length": 110.75,
+            "avg_vehicle_count": 120.58,
+            "avg_delay": 89.42,
+            "avg_stops": 112.68
+          },
+          "B1": {
+            "avg_wait_time": 161.53,
+            "avg_queue_length": 119.07,
+            "avg_vehicle_count": 128.6,
+            "avg_delay": 94.6,
+            "avg_stops": 123.07
+          },
+          "C0": {
+            "avg_wait_time": 105.77,
+            "avg_queue_length": 91.44,
+            "avg_vehicle_count": 97.86,
+            "avg_delay": 84.4,
+            "avg_stops": 92.93
+          },
+          "C1": {
+            "avg_wait_time": 110.93,
+            "avg_queue_length": 103.76,
+            "avg_vehicle_count": 112.61,
+            "avg_delay": 91.71,
+            "avg_stops": 106.5
+          }
+        },
+        "elapsed_seconds": 300.8,
+        "strategy": "rl"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0914,
+        "avg_wait_time": 127.67,
+        "avg_queue_length": 106.82,
+        "avg_delay": 91.58,
+        "avg_stops": 109.06,
+        "vehicles_departed": 857,
+        "vehicles_arrived": 329,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 159.96,
+            "avg_queue_length": 98.34,
+            "avg_vehicle_count": 104.85,
+            "avg_delay": 89.11,
+            "avg_stops": 99.57
+          },
+          "A1": {
+            "avg_wait_time": 129.9,
+            "avg_queue_length": 110.12,
+            "avg_vehicle_count": 116.66,
+            "avg_delay": 95.74,
+            "avg_stops": 112.15
+          },
+          "B0": {
+            "avg_wait_time": 125.44,
+            "avg_queue_length": 113.7,
+            "avg_vehicle_count": 123.09,
+            "avg_delay": 90.12,
+            "avg_stops": 115.64
+          },
+          "B1": {
+            "avg_wait_time": 119.95,
+            "avg_queue_length": 124.43,
+            "avg_vehicle_count": 132.85,
+            "avg_delay": 96.32,
+            "avg_stops": 128.42
+          },
+          "C0": {
+            "avg_wait_time": 106.54,
+            "avg_queue_length": 88.67,
+            "avg_vehicle_count": 95.43,
+            "avg_delay": 83.24,
+            "avg_stops": 90.16
+          },
+          "C1": {
+            "avg_wait_time": 124.24,
+            "avg_queue_length": 105.66,
+            "avg_vehicle_count": 112.58,
+            "avg_delay": 94.96,
+            "avg_stops": 108.4
+          }
+        },
+        "elapsed_seconds": 284.2,
+        "strategy": "rl"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0875,
+        "avg_wait_time": 115.32,
+        "avg_queue_length": 107.33,
+        "avg_delay": 92.12,
+        "avg_stops": 109.56,
+        "vehicles_departed": 836,
+        "vehicles_arrived": 315,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 110.06,
+            "avg_queue_length": 101.25,
+            "avg_vehicle_count": 107.77,
+            "avg_delay": 90.57,
+            "avg_stops": 102.48
+          },
+          "A1": {
+            "avg_wait_time": 121.69,
+            "avg_queue_length": 110.96,
+            "avg_vehicle_count": 118.16,
+            "avg_delay": 95.58,
+            "avg_stops": 112.99
+          },
+          "B0": {
+            "avg_wait_time": 107.69,
+            "avg_queue_length": 108.88,
+            "avg_vehicle_count": 118.4,
+            "avg_delay": 89.3,
+            "avg_stops": 110.81
+          },
+          "B1": {
+            "avg_wait_time": 140.03,
+            "avg_queue_length": 123.64,
+            "avg_vehicle_count": 131.2,
+            "avg_delay": 97.47,
+            "avg_stops": 127.64
+          },
+          "C0": {
+            "avg_wait_time": 100.49,
+            "avg_queue_length": 91.83,
+            "avg_vehicle_count": 98.45,
+            "avg_delay": 85.14,
+            "avg_stops": 93.32
+          },
+          "C1": {
+            "avg_wait_time": 111.98,
+            "avg_queue_length": 107.4,
+            "avg_vehicle_count": 115.13,
+            "avg_delay": 94.64,
+            "avg_stops": 110.14
+          }
+        },
+        "elapsed_seconds": 305.0,
+        "strategy": "rl"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0772,
+        "avg_wait_time": 120.75,
+        "avg_queue_length": 108.97,
+        "avg_delay": 92.93,
+        "avg_stops": 111.21,
+        "vehicles_departed": 808,
+        "vehicles_arrived": 278,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 122.89,
+            "avg_queue_length": 100.07,
+            "avg_vehicle_count": 106.31,
+            "avg_delay": 90.31,
+            "avg_stops": 101.3
+          },
+          "A1": {
+            "avg_wait_time": 132.06,
+            "avg_queue_length": 111.72,
+            "avg_vehicle_count": 117.93,
+            "avg_delay": 96.37,
+            "avg_stops": 113.75
+          },
+          "B0": {
+            "avg_wait_time": 110.55,
+            "avg_queue_length": 113.92,
+            "avg_vehicle_count": 122.31,
+            "avg_delay": 91.2,
+            "avg_stops": 115.85
+          },
+          "B1": {
+            "avg_wait_time": 132.34,
+            "avg_queue_length": 126.55,
+            "avg_vehicle_count": 133.72,
+            "avg_delay": 97.92,
+            "avg_stops": 130.55
+          },
+          "C0": {
+            "avg_wait_time": 100.2,
+            "avg_queue_length": 91.78,
+            "avg_vehicle_count": 98.4,
+            "avg_delay": 85.74,
+            "avg_stops": 93.28
+          },
+          "C1": {
+            "avg_wait_time": 126.46,
+            "avg_queue_length": 109.78,
+            "avg_vehicle_count": 116.43,
+            "avg_delay": 96.04,
+            "avg_stops": 112.52
+          }
+        },
+        "elapsed_seconds": 306.2,
+        "strategy": "rl"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.095,
+        "avg_wait_time": 125.28,
+        "avg_queue_length": 107.38,
+        "avg_delay": 91.58,
+        "avg_stops": 109.62,
+        "vehicles_departed": 865,
+        "vehicles_arrived": 342,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 131.07,
+            "avg_queue_length": 102.21,
+            "avg_vehicle_count": 108.55,
+            "avg_delay": 91.04,
+            "avg_stops": 103.44
+          },
+          "A1": {
+            "avg_wait_time": 148.96,
+            "avg_queue_length": 110.72,
+            "avg_vehicle_count": 116.34,
+            "avg_delay": 96.37,
+            "avg_stops": 112.75
+          },
+          "B0": {
+            "avg_wait_time": 115.29,
+            "avg_queue_length": 113.08,
+            "avg_vehicle_count": 122.33,
+            "avg_delay": 90.37,
+            "avg_stops": 115.02
+          },
+          "B1": {
+            "avg_wait_time": 124.95,
+            "avg_queue_length": 124.9,
+            "avg_vehicle_count": 132.49,
+            "avg_delay": 97.01,
+            "avg_stops": 128.9
+          },
+          "C0": {
+            "avg_wait_time": 101.06,
+            "avg_queue_length": 88.15,
+            "avg_vehicle_count": 95.34,
+            "avg_delay": 80.5,
+            "avg_stops": 89.64
+          },
+          "C1": {
+            "avg_wait_time": 130.38,
+            "avg_queue_length": 105.23,
+            "avg_vehicle_count": 112.22,
+            "avg_delay": 94.19,
+            "avg_stops": 107.96
+          }
+        },
+        "elapsed_seconds": 304.2,
+        "strategy": "rl"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.095,
+        "avg_wait_time": 112.7,
+        "avg_queue_length": 106.19,
+        "avg_delay": 91.22,
+        "avg_stops": 108.43,
+        "vehicles_departed": 864,
+        "vehicles_arrived": 342,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 107.6,
+            "avg_queue_length": 97.88,
+            "avg_vehicle_count": 105.14,
+            "avg_delay": 88.58,
+            "avg_stops": 99.11
+          },
+          "A1": {
+            "avg_wait_time": 116.26,
+            "avg_queue_length": 110.15,
+            "avg_vehicle_count": 116.64,
+            "avg_delay": 95.85,
+            "avg_stops": 112.18
+          },
+          "B0": {
+            "avg_wait_time": 113.43,
+            "avg_queue_length": 108.81,
+            "avg_vehicle_count": 118.47,
+            "avg_delay": 88.68,
+            "avg_stops": 110.75
+          },
+          "B1": {
+            "avg_wait_time": 127.2,
+            "avg_queue_length": 122.55,
+            "avg_vehicle_count": 131.33,
+            "avg_delay": 95.99,
+            "avg_stops": 126.54
+          },
+          "C0": {
+            "avg_wait_time": 101.31,
+            "avg_queue_length": 91.42,
+            "avg_vehicle_count": 98.58,
+            "avg_delay": 83.98,
+            "avg_stops": 92.92
+          },
+          "C1": {
+            "avg_wait_time": 110.38,
+            "avg_queue_length": 106.35,
+            "avg_vehicle_count": 113.89,
+            "avg_delay": 94.21,
+            "avg_stops": 109.08
+          }
+        },
+        "elapsed_seconds": 302.9,
+        "strategy": "rl"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.1058,
+        "avg_wait_time": 118.15,
+        "avg_queue_length": 105.23,
+        "avg_delay": 90.8,
+        "avg_stops": 107.47,
+        "vehicles_departed": 900,
+        "vehicles_arrived": 381,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 121.22,
+            "avg_queue_length": 100.19,
+            "avg_vehicle_count": 106.88,
+            "avg_delay": 89.68,
+            "avg_stops": 101.42
+          },
+          "A1": {
+            "avg_wait_time": 111.97,
+            "avg_queue_length": 107.32,
+            "avg_vehicle_count": 115.29,
+            "avg_delay": 93.53,
+            "avg_stops": 109.35
+          },
+          "B0": {
+            "avg_wait_time": 153.03,
+            "avg_queue_length": 110.55,
+            "avg_vehicle_count": 118.86,
+            "avg_delay": 91.31,
+            "avg_stops": 112.49
+          },
+          "B1": {
+            "avg_wait_time": 114.66,
+            "avg_queue_length": 120.37,
+            "avg_vehicle_count": 130.83,
+            "avg_delay": 94.09,
+            "avg_stops": 124.37
+          },
+          "C0": {
+            "avg_wait_time": 102.54,
+            "avg_queue_length": 91.59,
+            "avg_vehicle_count": 99.04,
+            "avg_delay": 84.61,
+            "avg_stops": 93.09
+          },
+          "C1": {
+            "avg_wait_time": 105.5,
+            "avg_queue_length": 101.37,
+            "avg_vehicle_count": 110.8,
+            "avg_delay": 91.57,
+            "avg_stops": 104.11
+          }
+        },
+        "elapsed_seconds": 291.1,
+        "strategy": "rl"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0922,
+        "avg_wait_time": 122.97,
+        "avg_queue_length": 106.73,
+        "avg_delay": 91.67,
+        "avg_stops": 108.96,
+        "vehicles_departed": 849,
+        "vehicles_arrived": 332,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 110.9,
+            "avg_queue_length": 99.77,
+            "avg_vehicle_count": 106.75,
+            "avg_delay": 89.58,
+            "avg_stops": 101.0
+          },
+          "A1": {
+            "avg_wait_time": 133.97,
+            "avg_queue_length": 110.32,
+            "avg_vehicle_count": 116.52,
+            "avg_delay": 95.6,
+            "avg_stops": 112.35
+          },
+          "B0": {
+            "avg_wait_time": 113.49,
+            "avg_queue_length": 111.48,
+            "avg_vehicle_count": 121.17,
+            "avg_delay": 89.61,
+            "avg_stops": 113.41
+          },
+          "B1": {
+            "avg_wait_time": 172.37,
+            "avg_queue_length": 125.39,
+            "avg_vehicle_count": 132.55,
+            "avg_delay": 97.65,
+            "avg_stops": 129.38
+          },
+          "C0": {
+            "avg_wait_time": 92.55,
+            "avg_queue_length": 87.09,
+            "avg_vehicle_count": 93.97,
+            "avg_delay": 82.76,
+            "avg_stops": 88.59
+          },
+          "C1": {
+            "avg_wait_time": 114.56,
+            "avg_queue_length": 106.32,
+            "avg_vehicle_count": 113.32,
+            "avg_delay": 94.8,
+            "avg_stops": 109.05
+          }
+        },
+        "elapsed_seconds": 261.8,
+        "strategy": "rl"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.0917,
+        "avg_wait_time": 121.24,
+        "avg_queue_length": 107.09,
+        "avg_delay": 91.75,
+        "avg_stops": 109.33,
+        "vehicles_departed": 861,
+        "vehicles_arrived": 330,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 112.76,
+            "avg_queue_length": 100.67,
+            "avg_vehicle_count": 108.08,
+            "avg_delay": 89.55,
+            "avg_stops": 101.9
+          },
+          "A1": {
+            "avg_wait_time": 128.33,
+            "avg_queue_length": 108.89,
+            "avg_vehicle_count": 115.8,
+            "avg_delay": 94.75,
+            "avg_stops": 110.93
+          },
+          "B0": {
+            "avg_wait_time": 131.96,
+            "avg_queue_length": 110.25,
+            "avg_vehicle_count": 119.57,
+            "avg_delay": 89.11,
+            "avg_stops": 112.18
+          },
+          "B1": {
+            "avg_wait_time": 133.64,
+            "avg_queue_length": 120.12,
+            "avg_vehicle_count": 128.64,
+            "avg_delay": 95.85,
+            "avg_stops": 124.12
+          },
+          "C0": {
+            "avg_wait_time": 115.49,
+            "avg_queue_length": 95.84,
+            "avg_vehicle_count": 102.4,
+            "avg_delay": 87.88,
+            "avg_stops": 97.34
+          },
+          "C1": {
+            "avg_wait_time": 105.29,
+            "avg_queue_length": 106.77,
+            "avg_vehicle_count": 115.32,
+            "avg_delay": 93.39,
+            "avg_stops": 109.51
+          }
+        },
+        "elapsed_seconds": 304.2,
+        "strategy": "rl"
+      }
+    ],
+    "llm": [
+      {
+        "total_steps": 3600,
+        "throughput": 0.1125,
+        "avg_wait_time": 129.93,
+        "avg_queue_length": 104.63,
+        "avg_delay": 90.06,
+        "avg_stops": 106.86,
+        "vehicles_departed": 936,
+        "vehicles_arrived": 405,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 144.07,
+            "avg_queue_length": 99.98,
+            "avg_vehicle_count": 106.77,
+            "avg_delay": 89.59,
+            "avg_stops": 101.21
+          },
+          "A1": {
+            "avg_wait_time": 138.37,
+            "avg_queue_length": 103.99,
+            "avg_vehicle_count": 111.32,
+            "avg_delay": 93.26,
+            "avg_stops": 106.02
+          },
+          "B0": {
+            "avg_wait_time": 129.96,
+            "avg_queue_length": 111.89,
+            "avg_vehicle_count": 121.75,
+            "avg_delay": 89.15,
+            "avg_stops": 113.82
+          },
+          "B1": {
+            "avg_wait_time": 131.58,
+            "avg_queue_length": 119.3,
+            "avg_vehicle_count": 130.56,
+            "avg_delay": 92.71,
+            "avg_stops": 123.3
+          },
+          "C0": {
+            "avg_wait_time": 117.98,
+            "avg_queue_length": 92.43,
+            "avg_vehicle_count": 98.73,
+            "avg_delay": 86.46,
+            "avg_stops": 93.93
+          },
+          "C1": {
+            "avg_wait_time": 117.62,
+            "avg_queue_length": 100.17,
+            "avg_vehicle_count": 110.49,
+            "avg_delay": 89.21,
+            "avg_stops": 102.9
+          }
+        },
+        "elapsed_seconds": 865.8,
+        "strategy": "llm"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.1189,
+        "avg_wait_time": 132.05,
+        "avg_queue_length": 103.44,
+        "avg_delay": 89.38,
+        "avg_stops": 105.67,
+        "vehicles_departed": 944,
+        "vehicles_arrived": 428,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 143.14,
+            "avg_queue_length": 99.73,
+            "avg_vehicle_count": 106.72,
+            "avg_delay": 89.06,
+            "avg_stops": 100.96
+          },
+          "A1": {
+            "avg_wait_time": 128.42,
+            "avg_queue_length": 99.68,
+            "avg_vehicle_count": 108.78,
+            "avg_delay": 90.5,
+            "avg_stops": 101.71
+          },
+          "B0": {
+            "avg_wait_time": 134.43,
+            "avg_queue_length": 114.11,
+            "avg_vehicle_count": 125.01,
+            "avg_delay": 89.42,
+            "avg_stops": 116.05
+          },
+          "B1": {
+            "avg_wait_time": 154.53,
+            "avg_queue_length": 115.43,
+            "avg_vehicle_count": 127.18,
+            "avg_delay": 91.78,
+            "avg_stops": 119.43
+          },
+          "C0": {
+            "avg_wait_time": 114.79,
+            "avg_queue_length": 92.57,
+            "avg_vehicle_count": 99.4,
+            "avg_delay": 86.3,
+            "avg_stops": 94.07
+          },
+          "C1": {
+            "avg_wait_time": 117.0,
+            "avg_queue_length": 99.09,
+            "avg_vehicle_count": 108.6,
+            "avg_delay": 89.23,
+            "avg_stops": 101.82
+          }
+        },
+        "elapsed_seconds": 873.4,
+        "strategy": "llm"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.1086,
+        "avg_wait_time": 116.02,
+        "avg_queue_length": 104.29,
+        "avg_delay": 90.27,
+        "avg_stops": 106.52,
+        "vehicles_departed": 906,
+        "vehicles_arrived": 391,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 113.91,
+            "avg_queue_length": 97.11,
+            "avg_vehicle_count": 105.32,
+            "avg_delay": 87.49,
+            "avg_stops": 98.34
+          },
+          "A1": {
+            "avg_wait_time": 126.28,
+            "avg_queue_length": 102.27,
+            "avg_vehicle_count": 110.49,
+            "avg_delay": 92.08,
+            "avg_stops": 104.3
+          },
+          "B0": {
+            "avg_wait_time": 97.24,
+            "avg_queue_length": 107.74,
+            "avg_vehicle_count": 118.78,
+            "avg_delay": 87.89,
+            "avg_stops": 109.68
+          },
+          "B1": {
+            "avg_wait_time": 129.82,
+            "avg_queue_length": 119.47,
+            "avg_vehicle_count": 129.96,
+            "avg_delay": 93.37,
+            "avg_stops": 123.47
+          },
+          "C0": {
+            "avg_wait_time": 113.45,
+            "avg_queue_length": 95.99,
+            "avg_vehicle_count": 102.78,
+            "avg_delay": 88.18,
+            "avg_stops": 97.48
+          },
+          "C1": {
+            "avg_wait_time": 115.43,
+            "avg_queue_length": 103.15,
+            "avg_vehicle_count": 110.51,
+            "avg_delay": 92.59,
+            "avg_stops": 105.88
+          }
+        },
+        "elapsed_seconds": 857.7,
+        "strategy": "llm"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.1161,
+        "avg_wait_time": 132.98,
+        "avg_queue_length": 103.46,
+        "avg_delay": 89.34,
+        "avg_stops": 105.69,
+        "vehicles_departed": 936,
+        "vehicles_arrived": 418,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 138.05,
+            "avg_queue_length": 97.84,
+            "avg_vehicle_count": 105.31,
+            "avg_delay": 87.73,
+            "avg_stops": 99.07
+          },
+          "A1": {
+            "avg_wait_time": 166.69,
+            "avg_queue_length": 100.02,
+            "avg_vehicle_count": 108.37,
+            "avg_delay": 91.06,
+            "avg_stops": 102.05
+          },
+          "B0": {
+            "avg_wait_time": 128.55,
+            "avg_queue_length": 112.29,
+            "avg_vehicle_count": 123.59,
+            "avg_delay": 88.23,
+            "avg_stops": 114.22
+          },
+          "B1": {
+            "avg_wait_time": 126.71,
+            "avg_queue_length": 117.72,
+            "avg_vehicle_count": 129.88,
+            "avg_delay": 92.09,
+            "avg_stops": 121.71
+          },
+          "C0": {
+            "avg_wait_time": 102.83,
+            "avg_queue_length": 92.07,
+            "avg_vehicle_count": 98.28,
+            "avg_delay": 86.64,
+            "avg_stops": 93.57
+          },
+          "C1": {
+            "avg_wait_time": 135.04,
+            "avg_queue_length": 100.78,
+            "avg_vehicle_count": 109.55,
+            "avg_delay": 90.29,
+            "avg_stops": 103.52
+          }
+        },
+        "elapsed_seconds": 853.9,
+        "strategy": "llm"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.1119,
+        "avg_wait_time": 125.39,
+        "avg_queue_length": 103.93,
+        "avg_delay": 89.6,
+        "avg_stops": 106.16,
+        "vehicles_departed": 924,
+        "vehicles_arrived": 403,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 132.62,
+            "avg_queue_length": 96.06,
+            "avg_vehicle_count": 103.74,
+            "avg_delay": 86.13,
+            "avg_stops": 97.29
+          },
+          "A1": {
+            "avg_wait_time": 120.44,
+            "avg_queue_length": 100.97,
+            "avg_vehicle_count": 109.52,
+            "avg_delay": 91.21,
+            "avg_stops": 103.0
+          },
+          "B0": {
+            "avg_wait_time": 143.54,
+            "avg_queue_length": 111.2,
+            "avg_vehicle_count": 121.89,
+            "avg_delay": 88.62,
+            "avg_stops": 113.14
+          },
+          "B1": {
+            "avg_wait_time": 120.84,
+            "avg_queue_length": 119.26,
+            "avg_vehicle_count": 130.91,
+            "avg_delay": 92.76,
+            "avg_stops": 123.26
+          },
+          "C0": {
+            "avg_wait_time": 123.22,
+            "avg_queue_length": 94.61,
+            "avg_vehicle_count": 101.49,
+            "avg_delay": 87.75,
+            "avg_stops": 96.1
+          },
+          "C1": {
+            "avg_wait_time": 111.65,
+            "avg_queue_length": 101.46,
+            "avg_vehicle_count": 109.74,
+            "avg_delay": 91.13,
+            "avg_stops": 104.19
+          }
+        },
+        "elapsed_seconds": 846.9,
+        "strategy": "llm"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.1208,
+        "avg_wait_time": 129.66,
+        "avg_queue_length": 102.88,
+        "avg_delay": 89.12,
+        "avg_stops": 105.12,
+        "vehicles_departed": 956,
+        "vehicles_arrived": 435,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 127.97,
+            "avg_queue_length": 97.19,
+            "avg_vehicle_count": 105.4,
+            "avg_delay": 87.25,
+            "avg_stops": 98.42
+          },
+          "A1": {
+            "avg_wait_time": 137.31,
+            "avg_queue_length": 99.01,
+            "avg_vehicle_count": 107.8,
+            "avg_delay": 90.56,
+            "avg_stops": 101.04
+          },
+          "B0": {
+            "avg_wait_time": 120.76,
+            "avg_queue_length": 112.26,
+            "avg_vehicle_count": 123.62,
+            "avg_delay": 88.09,
+            "avg_stops": 114.2
+          },
+          "B1": {
+            "avg_wait_time": 139.75,
+            "avg_queue_length": 117.07,
+            "avg_vehicle_count": 128.43,
+            "avg_delay": 92.21,
+            "avg_stops": 121.07
+          },
+          "C0": {
+            "avg_wait_time": 110.18,
+            "avg_queue_length": 90.26,
+            "avg_vehicle_count": 97.45,
+            "avg_delay": 85.13,
+            "avg_stops": 91.75
+          },
+          "C1": {
+            "avg_wait_time": 141.98,
+            "avg_queue_length": 101.49,
+            "avg_vehicle_count": 109.5,
+            "avg_delay": 91.46,
+            "avg_stops": 104.23
+          }
+        },
+        "elapsed_seconds": 825.0,
+        "strategy": "llm"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.1092,
+        "avg_wait_time": 128.22,
+        "avg_queue_length": 104.59,
+        "avg_delay": 90.08,
+        "avg_stops": 106.83,
+        "vehicles_departed": 913,
+        "vehicles_arrived": 393,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 109.08,
+            "avg_queue_length": 95.83,
+            "avg_vehicle_count": 103.62,
+            "avg_delay": 86.92,
+            "avg_stops": 97.06
+          },
+          "A1": {
+            "avg_wait_time": 170.39,
+            "avg_queue_length": 101.67,
+            "avg_vehicle_count": 109.22,
+            "avg_delay": 92.19,
+            "avg_stops": 103.7
+          },
+          "B0": {
+            "avg_wait_time": 154.89,
+            "avg_queue_length": 112.51,
+            "avg_vehicle_count": 123.18,
+            "avg_delay": 88.9,
+            "avg_stops": 114.44
+          },
+          "B1": {
+            "avg_wait_time": 116.81,
+            "avg_queue_length": 120.22,
+            "avg_vehicle_count": 131.27,
+            "avg_delay": 93.27,
+            "avg_stops": 124.22
+          },
+          "C0": {
+            "avg_wait_time": 103.54,
+            "avg_queue_length": 95.13,
+            "avg_vehicle_count": 102.03,
+            "avg_delay": 87.52,
+            "avg_stops": 96.62
+          },
+          "C1": {
+            "avg_wait_time": 114.63,
+            "avg_queue_length": 102.19,
+            "avg_vehicle_count": 109.8,
+            "avg_delay": 91.66,
+            "avg_stops": 104.92
+          }
+        },
+        "elapsed_seconds": 816.3,
+        "strategy": "llm"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.1275,
+        "avg_wait_time": 118.06,
+        "avg_queue_length": 101.49,
+        "avg_delay": 87.91,
+        "avg_stops": 103.72,
+        "vehicles_departed": 981,
+        "vehicles_arrived": 459,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 125.85,
+            "avg_queue_length": 96.15,
+            "avg_vehicle_count": 104.65,
+            "avg_delay": 86.72,
+            "avg_stops": 97.38
+          },
+          "A1": {
+            "avg_wait_time": 119.35,
+            "avg_queue_length": 100.35,
+            "avg_vehicle_count": 109.63,
+            "avg_delay": 90.13,
+            "avg_stops": 102.38
+          },
+          "B0": {
+            "avg_wait_time": 100.12,
+            "avg_queue_length": 112.24,
+            "avg_vehicle_count": 124.09,
+            "avg_delay": 87.52,
+            "avg_stops": 114.18
+          },
+          "B1": {
+            "avg_wait_time": 119.99,
+            "avg_queue_length": 115.05,
+            "avg_vehicle_count": 128.1,
+            "avg_delay": 90.8,
+            "avg_stops": 119.05
+          },
+          "C0": {
+            "avg_wait_time": 113.77,
+            "avg_queue_length": 88.07,
+            "avg_vehicle_count": 95.63,
+            "avg_delay": 84.04,
+            "avg_stops": 89.56
+          },
+          "C1": {
+            "avg_wait_time": 129.26,
+            "avg_queue_length": 97.07,
+            "avg_vehicle_count": 107.33,
+            "avg_delay": 88.24,
+            "avg_stops": 99.8
+          }
+        },
+        "elapsed_seconds": 775.0,
+        "strategy": "llm"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.1019,
+        "avg_wait_time": 133.49,
+        "avg_queue_length": 104.96,
+        "avg_delay": 90.59,
+        "avg_stops": 107.2,
+        "vehicles_departed": 888,
+        "vehicles_arrived": 367,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 210.82,
+            "avg_queue_length": 97.85,
+            "avg_vehicle_count": 105.07,
+            "avg_delay": 88.33,
+            "avg_stops": 99.08
+          },
+          "A1": {
+            "avg_wait_time": 120.81,
+            "avg_queue_length": 105.43,
+            "avg_vehicle_count": 112.94,
+            "avg_delay": 93.39,
+            "avg_stops": 107.47
+          },
+          "B0": {
+            "avg_wait_time": 107.59,
+            "avg_queue_length": 107.72,
+            "avg_vehicle_count": 118.06,
+            "avg_delay": 88.35,
+            "avg_stops": 109.65
+          },
+          "B1": {
+            "avg_wait_time": 136.86,
+            "avg_queue_length": 121.71,
+            "avg_vehicle_count": 131.52,
+            "avg_delay": 94.32,
+            "avg_stops": 125.71
+          },
+          "C0": {
+            "avg_wait_time": 104.26,
+            "avg_queue_length": 93.89,
+            "avg_vehicle_count": 100.51,
+            "avg_delay": 86.91,
+            "avg_stops": 95.38
+          },
+          "C1": {
+            "avg_wait_time": 120.61,
+            "avg_queue_length": 103.16,
+            "avg_vehicle_count": 111.28,
+            "avg_delay": 92.21,
+            "avg_stops": 105.89
+          }
+        },
+        "elapsed_seconds": 848.0,
+        "strategy": "llm"
+      },
+      {
+        "total_steps": 3600,
+        "throughput": 0.1256,
+        "avg_wait_time": 124.59,
+        "avg_queue_length": 102.56,
+        "avg_delay": 88.52,
+        "avg_stops": 104.79,
+        "vehicles_departed": 969,
+        "vehicles_arrived": 452,
+        "per_intersection": {
+          "A0": {
+            "avg_wait_time": 120.87,
+            "avg_queue_length": 95.26,
+            "avg_vehicle_count": 104.09,
+            "avg_delay": 86.25,
+            "avg_stops": 96.49
+          },
+          "A1": {
+            "avg_wait_time": 135.19,
+            "avg_queue_length": 99.54,
+            "avg_vehicle_count": 108.69,
+            "avg_delay": 89.77,
+            "avg_stops": 101.58
+          },
+          "B0": {
+            "avg_wait_time": 133.1,
+            "avg_queue_length": 111.58,
+            "avg_vehicle_count": 123.04,
+            "avg_delay": 87.88,
+            "avg_stops": 113.51
+          },
+          "B1": {
+            "avg_wait_time": 123.91,
+            "avg_queue_length": 116.71,
+            "avg_vehicle_count": 128.96,
+            "avg_delay": 91.58,
+            "avg_stops": 120.71
+          },
+          "C0": {
+            "avg_wait_time": 112.54,
+            "avg_queue_length": 91.07,
+            "avg_vehicle_count": 98.41,
+            "avg_delay": 85.01,
+            "avg_stops": 92.56
+          },
+          "C1": {
+            "avg_wait_time": 121.92,
+            "avg_queue_length": 101.17,
+            "avg_vehicle_count": 110.23,
+            "avg_delay": 90.65,
+            "avg_stops": 103.91
+          }
+        },
+        "elapsed_seconds": 865.5,
+        "strategy": "llm"
       }
     ]
   }

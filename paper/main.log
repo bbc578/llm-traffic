@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.5.3)  6 MAY 2026 19:11
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.5.3)  7 MAY 2026 13:24
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -504,96 +504,319 @@ File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 
 
 ] [2]
-LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 1
-68.
 
+! LaTeX Error: Environment algorithm undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.110 \begin{algorithm}
+                       [htbp]
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! Package caption Error: \caption outside float.
+
+See the caption package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.111 \caption
+              {LLM-Guided Adaptive Signal Control}
+If you do not understand this error, please take a closer look
+at the documentation of the `caption' package, especially the
+section about errors.
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+! LaTeX Error: Environment algorithmic undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.113 \begin{algorithmic}
+                         [1]
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+! Undefined control sequence.
+l.114 \REQUIRE
+               Network $G=(V,E)$, decision interval $T$, LLM $\mathcal{M}$, ...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.115 \FOR
+          {each simulation step $t$}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.116     \STATE
+                 Collect traffic state $\mathbf{S}_t = \{\mathbf{s}_i\}_{i \...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.117     \IF
+             {$t \mod T = 0$}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.118         \STATE
+                     $\hat{\mathbf{D}}_t \leftarrow \mathcal{M}(\text{prompt...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.118 ...t{prompt}(\mathbf{S}_t))$ \hfill \COMMENT
+                                                  {Batch LLM inference}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.119         \FOR
+                  {each intersection $i \in V$}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.120             \STATE
+                         $\mathbf{d}_i \leftarrow \text{clip}(\hat{\mathbf{d...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.120 ...thbf{d}}_i, \mathcal{F})$ \hfill \COMMENT
+                                                  {Constraint projection}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.121             \STATE
+                         $\tilde{\mathbf{d}}_i \leftarrow \mathbf{d}_i + \te...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.121 ...ost}(i, G, \mathbf{S}_t)$ \hfill \COMMENT
+                                                  {Coordination}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.122             \STATE
+                         $\tilde{\mathbf{d}}_i \leftarrow \text{clip}(\tilde...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.122 ...thbf{d}}_i, \mathcal{F})$ \hfill \COMMENT
+                                                  {Re-validate}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.123             \STATE
+                         Apply $\tilde{\mathbf{d}}_i$ to SUMO traffic light $i$
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.124         \ENDFOR
+                     
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.125     \ENDIF
+                
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.126     \STATE
+                 Advance simulation by one step
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.127 \ENDFOR
+             
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+! LaTeX Error: \begin{document} ended by \end{algorithmic}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.128 \end{algorithmic}
+                       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{document} ended by \end{algorithm}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.129 \end{algorithm}
+                     
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 1
+89.
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 )
-Overfull \hbox (96.0pt too wide) in paragraph at lines 173--173
+Overfull \hbox (96.0pt too wide) in paragraph at lines 194--194
 []\OT1/pcr/m/n/10 A0: N:5veh/2q/10w S:3veh/1q/5w E:12veh/6q/30w W:2veh/0q/0w[] 
 
  []
 
 
-Overfull \hbox (90.0pt too wide) in paragraph at lines 173--173
+Overfull \hbox (90.0pt too wide) in paragraph at lines 194--194
 []\OT1/pcr/m/n/10 A1: N:8veh/4q/20w S:6veh/3q/15w E:3veh/1q/5w W:4veh/2q/8w[] 
  []
 
 [3]
-Underfull \hbox (badness 10000) in paragraph at lines 207--208
+Underfull \hbox (badness 10000) in paragraph at lines 245--246
 \OT1/ptm/m/n/10 Both net-works are gen-er-ated us-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 207--208
+Underfull \hbox (badness 10000) in paragraph at lines 245--246
 \OT1/ptm/m/n/10 ing SUMO's \OT1/pcr/m/n/10 netgenerate \OT1/ptm/m/n/10 tool wit
 h
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 207--208
+Underfull \hbox (badness 10000) in paragraph at lines 245--246
 \OT1/pcr/m/n/10 --default-junction-type=traffic_light \OT1/ptm/m/n/10 to
  []
 
 
-Underfull \hbox (badness 1546) in paragraph at lines 207--208
+Underfull \hbox (badness 1546) in paragraph at lines 245--246
 \OT1/ptm/m/n/10 en-sure all in-ter-sec-tions are sig-nal-ized. Each in-ter-sec-
 tion
  []
 
 [4]
-Underfull \hbox (badness 3375) in paragraph at lines 237--238
+Underfull \hbox (badness 3375) in paragraph at lines 275--276
 []\OT1/ptm/b/n/10 Throughput\OT1/ptm/m/n/10 : Ve-hi-cles ar-rived per sim-u-la-
 tion step.
  []
 
-LaTeX Font Info:    Trying to load font information for OMS+ptm on input line 2
-71.
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsptm.fd
-File: omsptm.fd 
-)
-LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 271.
-<fig_comparison.png, id=267, 1002.74625pt x 316.90395pt>
+
+Underfull \hbox (badness 2790) in paragraph at lines 308--309
+[]\OT1/ptm/m/n/10 The LLM+Coordination strat-egy achieves the high-est
+ []
+
+[5]
+<fig_comparison.png, id=296, 1004.19165pt x 317.2653pt>
 File: fig_comparison.png Graphic file (type png)
 <use fig_comparison.png>
-Package pdftex.def Info: fig_comparison.png  used on input line 277.
-(pdftex.def)             Requested size: 252.0pt x 79.64165pt.
-<fig_radar.png, id=269, 443.37645pt x 390.9807pt>
+Package pdftex.def Info: fig_comparison.png  used on input line 319.
+(pdftex.def)             Requested size: 252.0pt x 79.61627pt.
+<fig_radar.png, id=298, 344.0052pt x 288.71864pt>
 File: fig_radar.png Graphic file (type png)
 <use fig_radar.png>
-Package pdftex.def Info: fig_radar.png  used on input line 284.
-(pdftex.def)             Requested size: 176.39923pt x 155.54831pt.
-
-
-LaTeX Warning: Reference `tab:sota' on page 5 undefined on input line 293.
-
-[5 <./fig_comparison.png> <./fig_radar.png>]
-<fig_ablation.png, id=290, 1075.73895pt x 353.4003pt>
+Package pdftex.def Info: fig_radar.png  used on input line 326.
+(pdftex.def)             Requested size: 176.39923pt x 148.05075pt.
+ [6 <./fig_comparison.png> <./fig_radar.png>]
+<fig_ablation.png, id=319, 1075.73895pt x 353.4003pt>
 File: fig_ablation.png Graphic file (type png)
 <use fig_ablation.png>
-Package pdftex.def Info: fig_ablation.png  used on input line 374.
+Package pdftex.def Info: fig_ablation.png  used on input line 396.
 (pdftex.def)             Requested size: 252.0pt x 82.78484pt.
- [6 <./fig_ablation.png>]
-Underfull \hbox (badness 3907) in paragraph at lines 473--474
+ [7 <./fig_ablation.png>]
+Underfull \hbox (badness 3907) in paragraph at lines 507--508
 \OT1/ptm/m/n/10 ver-sion 1.12.0 with the TraCI Python in-ter-face. Grid
  []
 
 
-Underfull \hbox (badness 7238) in paragraph at lines 473--474
+Underfull \hbox (badness 7238) in paragraph at lines 507--508
 \OT1/ptm/m/n/10 net-work topolo-gies (Grid6: 3$\OMS/cmsy/m/n/10 ^^B$\OT1/ptm/m/
 n/10 2, Grid4x3: 4$\OMS/cmsy/m/n/10 ^^B$\OT1/ptm/m/n/10 3) are
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 473--474
+Underfull \hbox (badness 10000) in paragraph at lines 507--508
 \OT1/ptm/m/n/10 gen-er-ated us-ing SUMO's \OT1/pcr/m/n/10 netgenerate \OT1/ptm/
 m/n/10 tool with
  []
 
-[7]
-Underfull \hbox (badness 1939) in paragraph at lines 505--506
+[8]
+Underfull \hbox (badness 1939) in paragraph at lines 539--540
 []\OT1/ptm/m/n/8 C. Ger-shen-son, ``Self-organizing traf-fic lights,'' \OT1/ptm
 /m/it/8 Com-plex Sys-tems\OT1/ptm/m/n/8 ,
  []
@@ -609,57 +832,42 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[8] (./main.aux)
-
-LaTeX Warning: There were undefined references.
-
+[9] (./main.aux)
 
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
-
-Package rerunfilecheck Warning: File `main.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `main.out':
-(rerunfilecheck)             Before: 4DA4712DAB304F62947773ADF220727E;5121
-(rerunfilecheck)             After:  BE3EA55B134AF6BF13DFEABA9AB65849;5529.
+Package rerunfilecheck Info: File `main.out' has not changed.
+(rerunfilecheck)             Checksum: C9BB69E6B0D25B26A6F12ACF01AC4DD3;5869.
  ) 
 Here is how much of TeX's memory you used:
- 12160 strings out of 479727
- 198158 string characters out of 5884999
- 513176 words of memory out of 5000000
- 30002 multiletter control sequences out of 15000+600000
+ 12155 strings out of 479727
+ 198020 string characters out of 5884999
+ 513572 words of memory out of 5000000
+ 29997 multiletter control sequences out of 15000+600000
  510373 words of font info for 103 fonts, out of 8000000 for 9000
  264 hyphenation exceptions out of 8191
- 67i,10n,77p,1741b,426s stack positions out of 5000i,500n,10000p,200000b,80000s
-pdfTeX warning (dest): name{figure.caption.7} has been referenced but does no
-t exist, replaced by a fixed one
-
-pdfTeX warning (dest): name{section*.10} has been referenced but does not exist
-, replaced by a fixed one
-
-{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texlive/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-
-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/f
-onts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/t
-ype1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
-blic/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
-sfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
-cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.
-pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></
-usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/sha
-re/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texl
-ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texlive/tex
-mf-dist/fonts/type1/public/amsfonts/latxfont/line10.pfb></usr/share/texlive/tex
-mf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts
-/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/time
-s/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb><
-/usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (8 pages, 605021 bytes).
+ 67i,10n,77p,1741b,475s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
+e/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist
+/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/
+public/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
+amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr
+9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/s
+hare/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/te
+xlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texlive/t
+exmf-dist/fonts/type1/public/amsfonts/latxfont/line10.pfb></usr/share/texlive/t
+exmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fon
+ts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/ti
+mes/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb
+></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on main.pdf (9 pages, 597710 bytes).
 PDF statistics:
- 416 PDF objects out of 1000 (max. 8388607)
- 360 compressed objects within 4 object streams
- 99 named destinations out of 1000 (max. 500000)
- 288 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 440 PDF objects out of 1000 (max. 8388607)
+ 383 compressed objects within 4 object streams
+ 102 named destinations out of 1000 (max. 500000)
+ 320 words of extra memory for PDF output out of 10000 (max. 10000000)
 
