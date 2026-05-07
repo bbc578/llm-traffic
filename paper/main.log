@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.5.3)  7 MAY 2026 13:24
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.5.3)  7 MAY 2026 13:38
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -782,45 +782,77 @@ Underfull \hbox (badness 2790) in paragraph at lines 308--309
  []
 
 [5]
-<fig_comparison.png, id=296, 1004.19165pt x 317.2653pt>
+
+LaTeX Warning: Reference `fig:boxplot' on page 6 undefined on input line 315.
+
+
+LaTeX Warning: Reference `fig:heatmap' on page 6 undefined on input line 315.
+
+
+LaTeX Warning: Reference `fig:significance' on page 6 undefined on input line 3
+15.
+
+<fig_comparison.png, id=295, 1002.144pt x 315.8199pt>
 File: fig_comparison.png Graphic file (type png)
 <use fig_comparison.png>
 Package pdftex.def Info: fig_comparison.png  used on input line 319.
-(pdftex.def)             Requested size: 252.0pt x 79.61627pt.
-<fig_radar.png, id=298, 344.0052pt x 288.71864pt>
-File: fig_radar.png Graphic file (type png)
-<use fig_radar.png>
-Package pdftex.def Info: fig_radar.png  used on input line 326.
-(pdftex.def)             Requested size: 176.39923pt x 148.05075pt.
- [6 <./fig_comparison.png> <./fig_radar.png>]
-<fig_ablation.png, id=319, 1075.73895pt x 353.4003pt>
+(pdftex.def)             Requested size: 252.0pt x 79.41258pt.
+<fig_boxplot.png, id=297, 1002.3849pt x 293.898pt>
+File: fig_boxplot.png Graphic file (type png)
+<use fig_boxplot.png>
+Package pdftex.def Info: fig_boxplot.png  used on input line 326.
+(pdftex.def)             Requested size: 252.0pt x 73.8824pt.
+<fig_per_intersection.png, id=298, 713.3049pt x 351.714pt>
+File: fig_per_intersection.png Graphic file (type png)
+<use fig_per_intersection.png>
+Package pdftex.def Info: fig_per_intersection.png  used on input line 333.
+(pdftex.def)             Requested size: 214.20154pt x 105.61697pt.
+<fig_heatmap.png, id=299, 545.6385pt x 279.6849pt>
+File: fig_heatmap.png Graphic file (type png)
+<use fig_heatmap.png>
+Package pdftex.def Info: fig_heatmap.png  used on input line 340.
+(pdftex.def)             Requested size: 189.0pt x 96.87975pt.
+<fig_significance.png, id=300, 411.4572pt x 351.9549pt>
+File: fig_significance.png Graphic file (type png)
+<use fig_significance.png>
+Package pdftex.def Info: fig_significance.png  used on input line 347.
+(pdftex.def)             Requested size: 163.79846pt x 140.10815pt.
+<fig_tradeoff.png, id=301, 496.254pt x 387.849pt>
+File: fig_tradeoff.png Graphic file (type png)
+<use fig_tradeoff.png>
+Package pdftex.def Info: fig_tradeoff.png  used on input line 354.
+(pdftex.def)             Requested size: 163.79846pt x 128.01422pt.
+[6 <./fig_comparison.png> <./fig_boxplot.png> <./fig_per_intersection.png> <./f
+ig_heatmap.png> <./fig_significance.png> <./fig_tradeoff.png>]
+<fig_ablation.png, id=327, 1075.73895pt x 353.4003pt>
 File: fig_ablation.png Graphic file (type png)
 <use fig_ablation.png>
-Package pdftex.def Info: fig_ablation.png  used on input line 396.
+Package pdftex.def Info: fig_ablation.png  used on input line 424.
 (pdftex.def)             Requested size: 252.0pt x 82.78484pt.
- [7 <./fig_ablation.png>]
-Underfull \hbox (badness 3907) in paragraph at lines 507--508
+ [7 <./fig_ablation.png>] [8]
+Underfull \hbox (badness 3907) in paragraph at lines 535--536
 \OT1/ptm/m/n/10 ver-sion 1.12.0 with the TraCI Python in-ter-face. Grid
  []
 
 
-Underfull \hbox (badness 7238) in paragraph at lines 507--508
+Underfull \hbox (badness 7238) in paragraph at lines 535--536
 \OT1/ptm/m/n/10 net-work topolo-gies (Grid6: 3$\OMS/cmsy/m/n/10 ^^B$\OT1/ptm/m/
 n/10 2, Grid4x3: 4$\OMS/cmsy/m/n/10 ^^B$\OT1/ptm/m/n/10 3) are
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 507--508
+Underfull \hbox (badness 10000) in paragraph at lines 535--536
 \OT1/ptm/m/n/10 gen-er-ated us-ing SUMO's \OT1/pcr/m/n/10 netgenerate \OT1/ptm/
 m/n/10 tool with
  []
 
-[8]
-Underfull \hbox (badness 1939) in paragraph at lines 539--540
+
+Underfull \hbox (badness 1939) in paragraph at lines 567--568
 []\OT1/ptm/m/n/8 C. Ger-shen-son, ``Self-organizing traf-fic lights,'' \OT1/ptm
 /m/it/8 Com-plex Sys-tems\OT1/ptm/m/n/8 ,
  []
 
+[9]
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -832,42 +864,59 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[9] (./main.aux)
+[10
+
+] (./main.aux)
+
+LaTeX Warning: There were undefined references.
+
 
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
-Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: C9BB69E6B0D25B26A6F12ACF01AC4DD3;5869.
+
+Package rerunfilecheck Warning: File `main.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `main.out':
+(rerunfilecheck)             Before: C9BB69E6B0D25B26A6F12ACF01AC4DD3;5869
+(rerunfilecheck)             After:  44ED255528437463CB06C9FCC5CC48CE;5869.
  ) 
 Here is how much of TeX's memory you used:
- 12155 strings out of 479727
- 198020 string characters out of 5884999
- 513572 words of memory out of 5000000
- 29997 multiletter control sequences out of 15000+600000
+ 12195 strings out of 479727
+ 198855 string characters out of 5884999
+ 514572 words of memory out of 5000000
+ 30026 multiletter control sequences out of 15000+600000
  510373 words of font info for 103 fonts, out of 8000000 for 9000
  264 hyphenation exceptions out of 8191
  67i,10n,77p,1741b,475s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
-e/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texm
-f-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist
-/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts
-/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/
-public/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
-amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
-s/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr
-9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/s
-hare/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/te
-xlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texlive/t
-exmf-dist/fonts/type1/public/amsfonts/latxfont/line10.pfb></usr/share/texlive/t
-exmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fon
-ts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/ti
-mes/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb
-></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (9 pages, 597710 bytes).
+pdfTeX warning (dest): name{table.caption.5} has been referenced but does not
+ exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{section*.10} has been referenced but does not exist
+, replaced by a fixed one
+
+{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texlive/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/f
+onts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
+blic/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
+sfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
+cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.
+pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></
+usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/sha
+re/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texl
+ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texlive/tex
+mf-dist/fonts/type1/public/amsfonts/latxfont/line10.pfb></usr/share/texlive/tex
+mf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts
+/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/time
+s/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb><
+/usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on main.pdf (10 pages, 1346754 bytes).
 PDF statistics:
- 440 PDF objects out of 1000 (max. 8388607)
- 383 compressed objects within 4 object streams
- 102 named destinations out of 1000 (max. 500000)
- 320 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 460 PDF objects out of 1000 (max. 8388607)
+ 394 compressed objects within 4 object streams
+ 109 named destinations out of 1000 (max. 500000)
+ 340 words of extra memory for PDF output out of 10000 (max. 10000000)
 

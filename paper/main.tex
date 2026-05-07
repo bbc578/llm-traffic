@@ -312,20 +312,48 @@ The throughput advantage of LLM+Coord stems from its coordination mechanism: by 
 \subsection{Statistical Analysis}
 All experiments use 10 independent trials with seeds $\{0, 1, \ldots, 9\}$. We report mean$\pm$std. Paired $t$-tests on throughput confirm that LLM+Coord significantly outperforms all baselines: Fixed ($t=24.4$, $p<0.001$, Cohen's $d=7.72$), Webster ($t=21.7$, $p<0.001$), MaxPressure ($t=14.8$, $p<0.001$), Random ($t=7.8$, $p<0.001$), and DQN ($t=8.1$, $p<0.001$, $d=2.56$). On queue length, LLM+Coord is significantly shorter than all methods. On waiting time, LLM+Coord is comparable to DQN ($p=0.052$) and Random ($p=0.34$), and significantly better than Fixed/Webster/MaxPressure ($p<0.001$).
 
-Figure~\ref{fig:comparison} shows the bar chart comparison. The radar chart in Fig.~\ref{fig:radar} visualizes normalized performance across all metrics.
+Figure~\ref{fig:comparison} shows the bar chart comparison across all metrics. Figure~\ref{fig:boxplot} presents box plots of the 10-trial distributions, demonstrating the stability of each strategy. Figure~\ref{fig:heatmap} provides a per-intersection heatmap, and Fig.~\ref{fig:significance} shows pairwise statistical significance.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\columnwidth]{fig_comparison.png}
-    \caption{Performance comparison of four strategies: (a) average waiting time, (b) average queue length, (c) throughput.}
+    \caption{Performance comparison across six strategies: (a) average waiting time, (b) average queue length, (c) throughput. Error bars show standard deviation over 10 trials. The LLM+Coord bar (red border) achieves the highest throughput and shortest queue.}
     \label{fig:comparison}
 \end{figure}
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.7\columnwidth]{fig_radar.png}
-    \caption{Radar chart of normalized strategy performance. Higher is better.}
-    \label{fig:radar}
+    \includegraphics[width=\columnwidth]{fig_boxplot.png}
+    \caption{Box plots of 10-trial distributions: (a) waiting time, (b) queue length, (c) throughput. The LLM+Coord strategy shows consistent performance with low variance.}
+    \label{fig:boxplot}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.85\columnwidth]{fig_per_intersection.png}
+    \caption{Per-intersection waiting time breakdown. LLM+Coord achieves balanced performance across all intersections, while traditional methods show high variance at specific nodes.}
+    \label{fig:per_int}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.75\columnwidth]{fig_heatmap.png}
+    \caption{Heatmap of average waiting time per intersection. Darker colors indicate higher congestion. LLM+Coord (bottom row) maintains uniformly low values.}
+    \label{fig:heatmap}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.65\columnwidth]{fig_significance.png}
+    \caption{Pairwise statistical significance of throughput differences ($-\log_{10}(p)$). LLM+Coord significantly outperforms all baselines ($p<0.001$).}
+    \label{fig:significance}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.65\columnwidth]{fig_tradeoff.png}
+    \caption{Waiting time vs.\ throughput trade-off. LLM+Coord dominates the Pareto front: highest throughput with waiting time comparable to DQN and Random.}
+    \label{fig:tradeoff}
 \end{figure}
 
 \subsection{LLM Decision Analysis}
