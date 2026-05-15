@@ -50,9 +50,12 @@ export interface GridSimulationData {
 /** Experiment result for comparison chart */
 export interface ExperimentResult {
   strategy: string;
-  avg_delay: number;
+  avg_wait_time: number;
+  avg_queue_length: number;
   throughput: number;
-  avg_queue: number;
+  vehicles_arrived: number;
+  avg_delay: number;
+  avg_stops: number;
 }
 
 /** Signal timing history entry per intersection */

@@ -488,8 +488,8 @@ class ExperimentRequest(BaseModel):
         steps: Number of simulation steps per strategy
         config_file: Path to .sumocfg file (None = default)
     """
-    strategies: List[str] = ["fixed", "webster", "random"]
-    steps: int = 300
+    strategies: List[str] = ["fixed", "random", "webster", "maxpressure", "rl", "llm"]
+    steps: int = 3600
     config_file: str = None
 
 
@@ -620,6 +620,20 @@ async def get_intersections():
     return {"intersections": [], "message": "Start a simulation to discover intersections."}
 
 
+@app.get("/api/health")
+async def health_check():
+    """Health check endpoint.
+    
+    Returns:
+        Dict with status and version info
+    """
+    return {
+        "status": "healthy",
+        "version": "2.0.0",
+        "simulation_running": _sim_proc is not None and _sim_proc.is_alive(),
+    }
+
+
 @app.post("/api/experiment/compare")
 async def run_experiment(req: ExperimentRequest = None):
     """Run comparative experiments sequentially in a subprocess.
@@ -653,14 +667,16 @@ async def run_experiment(req: ExperimentRequest = None):
         try:
             from simulation.sumo_engine import SumoEngine
             from algorithms.webster import WebsterController
-            from algorithms.baseline import FixedTimeController, RandomController
+            from algorithms.baseline import FixedTimeController, RandomController, MaxPressureController
+            from algorithms.rl_controller import RLController
             from algorithms.constraints import SignalConstraintEngine
             from algorithms.coordination import CoordinationEngine
             from llm.xiaomi_client import LLMClient
         except ImportError:
             from backend.simulation.sumo_engine import SumoEngine
             from backend.algorithms.webster import WebsterController
-            from backend.algorithms.baseline import FixedTimeController, RandomController
+            from backend.algorithms.baseline import FixedTimeController, RandomController, MaxPressureController
+            from backend.algorithms.rl_controller import RLController
             from backend.algorithms.constraints import SignalConstraintEngine
             from backend.algorithms.coordination import CoordinationEngine
             from backend.llm.xiaomi_client import LLMClient
@@ -670,11 +686,18 @@ async def run_experiment(req: ExperimentRequest = None):
             "fixed": FixedTimeController(),
             "random": RandomController(seed=42),
             "webster": WebsterController(),
+            "maxpressure": MaxPressureController(
+                phase_directions={
+                    "EW": ["east", "west"],
+                    "NS": ["north", "south"],
+                }
+            ),
         }
         controller = ctrl_map.get(strategy)
         is_llm = strategy == "llm"
+        is_rl = strategy == "rl"
 
-        if not controller and not is_llm:
+        if not controller and not is_llm and not is_rl:
             return {"error": f"Unknown strategy: {strategy}"}
 
         # Initialize components
@@ -741,6 +764,26 @@ async def run_experiment(req: ExperimentRequest = None):
                                 timings[2] = corrected[1] if len(corrected) > 1 else 30
                             phase = 0 if timings.get(0, 30) >= timings.get(2, 30) else 2
                             engine.set_phase(iid, phase, duration=max(timings.get(0, 30), timings.get(2, 30)))
+                    elif strategy == "maxpressure":
+                        # MaxPressure: use raw queue lengths for pressure calc
+                        for iid in _INTS:
+                            q = queues.get(iid, {})
+                            timings = controller.compute_timing(
+                                {"EW": 1, "NS": 1},
+                                queue_data=q,
+                            )
+                            phase = 0 if timings[0] >= timings[1] else 2
+                            engine.set_phase(iid, phase, duration=int(max(timings)))
+                    elif strategy == "rl":
+                        # RL strategy (placeholder - needs RL controller implementation)
+                        # For now, use random controller as placeholder
+                        for iid in _INTS:
+                            q = queues.get(iid, {})
+                            ew = max((q.get("east", 0) + q.get("west", 0)) * 120, 100)
+                            ns = max((q.get("north", 0) + q.get("south", 0)) * 120, 100)
+                            timings = RandomController(seed=step).compute_timing({"EW": ew, "NS": ns})
+                            phase = 0 if timings[0] >= timings[1] else 2
+                            engine.set_phase(iid, phase, duration=int(max(timings)))
                     else:
                         # Other strategies
                         for iid in _INTS:

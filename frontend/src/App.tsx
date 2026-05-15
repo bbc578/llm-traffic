@@ -15,7 +15,7 @@ import './App.css';
 
 const MAX_TIMING_HISTORY = 200;
 
-type Strategy = 'LLM' | 'Webster' | 'Fixed' | 'Random';
+type Strategy = 'LLM' | 'Webster' | 'Fixed' | 'Random' | 'MaxPressure' | 'RL';
 
 /** Convert backend snapshot to IntersectionState[] */
 function toIntersections(data: any, intersectionIds: string[]): IntersectionState[] {
@@ -120,7 +120,7 @@ export default function App() {
   const handleStart = async () => {
     try {
       await startSimulation({
-        duration: 300,
+        duration: 3600,
         speed_factor: 5,
         strategy: strategy.toLowerCase(),
         llm_enabled: strategy === 'LLM',
@@ -151,13 +151,16 @@ export default function App() {
   const handleRunExperiment = async () => {
     setExperimentLoading(true);
     try {
-      const result = await runExperiment(['fixed', 'webster', 'random', 'llm'], 200);
+      const result = await runExperiment(['fixed', 'random', 'webster', 'maxpressure', 'rl', 'llm'], 3600);
       if (result.results) {
         const mapped: ExperimentResult[] = Object.entries(result.results).map(([strategy, metrics]: [string, any]) => ({
           strategy: strategy.charAt(0).toUpperCase() + strategy.slice(1),
-          avg_delay: metrics.avg_wait_time || 0,
-          throughput: (metrics.throughput || 0) * 1000,
-          avg_queue: metrics.avg_queue_length || 0,
+          avg_wait_time: metrics.avg_wait_time || 0,
+          avg_queue_length: metrics.avg_queue_length || 0,
+          throughput: metrics.throughput || 0,
+          vehicles_arrived: metrics.vehicles_arrived || 0,
+          avg_delay: metrics.avg_delay || 0,
+          avg_stops: metrics.avg_stops || 0,
         }));
         setExperimentResults(mapped);
       }
@@ -217,6 +220,8 @@ export default function App() {
                 <option value="Webster">Webster</option>
                 <option value="Fixed">Fixed</option>
                 <option value="Random">Random</option>
+                <option value="MaxPressure">MaxPressure</option>
+                <option value="RL">RL</option>
               </select>
             </div>
             <div className="button-row">
