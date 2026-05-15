@@ -1,42 +1,78 @@
 """
 Configuration settings for the LLM-Traffic project.
+
+This module centralizes all configuration for the project:
+- SUMO simulation settings
+- LLM API configuration
+- Algorithm parameters
+- Grid6 benchmark settings
+
+Configuration Priority:
+1. Environment variables (highest)
+2. This file (defaults)
+3. Runtime parameters (lowest)
+
+Usage:
+    from backend.config.settings import *
+    
+    # Access configuration
+    print(LLM_MODEL)  # "mimo-v2.5-pro"
+    print(SUMO_CONFIG)  # "data/grid6.sumocfg"
 """
+
 import os
 from pathlib import Path
 
+# ============================================================================
 # Project paths
+# ============================================================================
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 DATA_DIR = PROJECT_ROOT / "data"
 
+
+# ============================================================================
 # SUMO configuration
+# ============================================================================
 SUMO_BINARY = "/usr/bin/sumo"
 SUMO_HOME = os.environ.get("SUMO_HOME", "/usr/share/sumo")
-SUMO_CONFIG = str(DATA_DIR / "cross_intersection.sumocfg")
+SUMO_CONFIG = str(DATA_DIR / "grid6.sumocfg")  # Default network
 
-# Traffic light ID in the network
-TLS_ID = "center"
 
-# Edge names for incoming lanes
-EDGES = {
-    "north": "E_N_in",
-    "south": "E_S_in",
-    "east": "E_E_in",
-    "west": "E_W_in",
-}
+# ============================================================================
+# LLM configuration (OpenAI-compatible API)
+# ============================================================================
+# Note: LLM_API_KEY is optional for non-LLM strategies
+# Only raise error when LLM strategy is actually used
+LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "https://api.xiaomi.com/v1")
+LLM_API_KEY = os.environ.get("LLM_API_KEY", "")
+LLM_MODEL = os.environ.get("LLM_MODEL", "mimo-v2.5-pro")
 
+# Log warning if API key is not set (but don't raise)
+if not LLM_API_KEY:
+    import logging
+    logging.warning(
+        "LLM_API_KEY not set. LLM strategy will not work. "
+        "Non-LLM strategies (fixed, random, webster, maxpressure, rl) are still available."
+    )
+
+
+# ============================================================================
 # Default simulation parameters
+# ============================================================================
 DEFAULT_SIM_DURATION = 3600  # seconds
 DEFAULT_STEP_LENGTH = 1     # seconds
 LLM_CALL_INTERVAL = 30      # Call LLM every N simulation seconds
 
-# LLM configuration (OpenAI-compatible API)
-LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "https://token-plan-sgp.xiaomimimo.com/v1")
-LLM_API_KEY = os.environ.get("LLM_API_KEY", "")
-if not LLM_API_KEY:
-    raise EnvironmentError("LLM_API_KEY environment variable is not set. Please set it before running the application.")
-LLM_MODEL = os.environ.get("LLM_MODEL", "mimo-v2.5-pro")
+# Experiment defaults (unified across project)
+EXPERIMENT_STEPS = 3600
+EXPERIMENT_WARMUP_STEPS = 600
+EXPERIMENT_NUM_TRIALS = 5
+EXPERIMENT_STRATEGIES = ["fixed", "random", "webster", "maxpressure", "rl", "llm"]
 
+
+# ============================================================================
 # Default phase definitions (typical 4-phase intersection)
+# ============================================================================
 DEFAULT_PHASES = [
     {"phase": 0, "description": "North-South Green", "duration": 30},
     {"phase": 1, "description": "North-South Yellow", "duration": 3},
@@ -44,7 +80,10 @@ DEFAULT_PHASES = [
     {"phase": 3, "description": "East-West Yellow", "duration": 3},
 ]
 
-# ── GRID6 configuration ──────────────────────────────────────────────────────
+
+# ============================================================================
+# GRID6 configuration (3×2 grid benchmark)
+# ============================================================================
 GRID6_CONFIG = str(DATA_DIR / "grid6.net.xml")
 GRID6_ROUTES = str(DATA_DIR / "grid6.rou.xml")
 GRID6_TLS = str(DATA_DIR / "grid6.tll.xml")
@@ -72,13 +111,24 @@ GRID6_DEFAULT_VOLUMES = {
     "west":  500,
 }
 
-# Signal timing constraints for GRID6
+
+# ============================================================================
+# Signal timing constraints
+# ============================================================================
 GRID6_MIN_GREEN = 10   # seconds
 GRID6_MAX_GREEN = 60   # seconds
 GRID6_YELLOW_TIME = 3  # seconds
 GRID6_MIN_CYCLE = 30   # seconds
 GRID6_MAX_CYCLE = 180  # seconds
 
+
+# ============================================================================
 # Algorithm defaults
+# ============================================================================
 ALGORITHM_SATURATION_FLOW = 1800  # veh/hr per lane
 ALGORITHM_DEFAULT_CYCLE = 60      # seconds
+
+# Queue-to-flow proxy parameters (for Webster baseline)
+# Note: This is a simplified approximation, not a strict engineering calibration
+QUEUE_TO_FLOW_MULTIPLIER = 120  # vehicles/hour per queued vehicle
+QUEUE_TO_FLOW_MINIMUM = 100     # minimum flow estimate (veh/hr)

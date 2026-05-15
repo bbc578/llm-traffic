@@ -1,96 +1,31 @@
-# 🚦 LLM-Traffic: LLM-Guided Adaptive Traffic Signal Control
-
-> **Using Large Language Models to Revolutionize Urban Traffic Management**
+# LLM-Traffic: LLM-Assisted Adaptive Traffic Signal Control
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![SUMO](https://img.shields.io/badge/SUMO-1.12+-green.svg)](https://sumo.dlr.de/)
 
-## 📋 Table of Contents
+## Overview
 
-- [Project Overview](#-project-overview)
-- [Key Innovations](#-key-innovations)
-- [System Architecture](#-system-architecture)
-- [Technical Deep Dive](#-technical-deep-dive)
-- [Performance Results](#-performance-results)
-- [Getting Started](#-getting-started)
-- [Project Structure](#-project-structure)
-- [Interview Guide](#-interview-guide)
+LLM-Traffic is an exploratory research framework that applies Large Language Models (LLMs) to multi-intersection traffic signal control. The system uses LLMs to generate candidate signal timing recommendations, which are then validated through a constraint engine and coordinated across neighboring intersections.
 
-## 🎯 Project Overview
+**Key characteristics:**
+- LLM-assisted phase selection and green duration adjustment
+- Constraint-validated signal timing recommendations
+- Multi-intersection coordination under a grid benchmark
+- Simulation-based evaluation using SUMO/TraCI
 
-**LLM-Traffic** is a groundbreaking research project that applies **Large Language Models (LLMs)** to urban traffic signal control. Unlike traditional reinforcement learning approaches that require extensive training, our system leverages the **zero-shot reasoning capabilities** of LLMs to make real-time traffic signal decisions.
+> **Note:** This is a research prototype. Results are exploratory and require validation on more networks, demand patterns, and random seeds.
 
-### Why This Matters
+## Key Features
 
-Traditional traffic signal control faces three fundamental challenges:
+- **LLM-Guided Signal Control**: Uses LLMs to generate candidate timing recommendations based on current traffic state
+- **Safety Constraint Engine**: Validates all LLM decisions against safety rules before execution
+- **Upstream-Downstream Coordination**: Adjusts neighboring signals to prevent queue spillover
+- **Multiple Baseline Strategies**: Fixed-time, Random, Webster, MaxPressure, and RL controllers
+- **Comprehensive Metrics**: Wait time, queue length, throughput, delay, and stops
+- **Reproducible Experiments**: Standardized experiment framework with warm-up and multiple trials
 
-1. **Fixed-time controllers** cannot adapt to dynamic traffic patterns
-2. **Adaptive controllers** (like Webster's formula) only optimize locally, ignoring network effects
-3. **Reinforcement Learning** requires millions of training episodes and struggles with generalization
-
-**Our Solution**: Use LLMs as "traffic engineers" that understand traffic patterns through natural language reasoning, achieving **25% higher throughput** than DQN-based approaches with **zero training time**.
-
-### Core Technical Contribution
-
-We introduce a novel **three-stage decision pipeline**:
-
-```
-Perception → Reasoning → Validation → Execution
-```
-
-This pipeline combines:
-- **LLM's pattern recognition** for understanding complex traffic states
-- **Rule-based constraint engine** for safety guarantees
-- **Multi-intersection coordination** for network-level optimization
-
-## 💡 Key Innovations
-
-### 1. Zero-Shot Traffic Control
-Unlike RL methods that require training on specific scenarios, our LLM-based controller generalizes to unseen traffic patterns immediately.
-
-```python
-# Traditional RL: Needs millions of episodes
-agent.train(episodes=1_000_000)  # Days of training
-
-# Our approach: Works immediately
-decision = llm_client.get_recommendation(traffic_state)  # Seconds
-```
-
-### 2. Safety-First Architecture
-LLM decisions are validated through a **constraint engine** before execution:
-
-```python
-# LLM suggests: green_phase = 120s (dangerous!)
-# Constraint engine corrects: green_phase = 60s (safe)
-valid, violations, corrected = constraint_engine.validate(
-    green_phases=llm_suggestion,
-    cycle_length=total_cycle
-)
-```
-
-### 3. Multi-Intersection Coordination
-Our **coordination engine** detects queue spillover and adjusts neighboring signals:
-
-```python
-# Detect: A0's eastbound queue = 15 vehicles
-# Action: B0 increases green time for westbound traffic by 10s
-# Result: Prevents congestion propagation
-```
-
-### 4. Batch Processing for Efficiency
-Instead of calling LLM for each intersection, we batch all states into a single prompt:
-
-```python
-# Traditional: 6 API calls per decision cycle
-for intersection in intersections:
-    decision = llm.get_recommendation(state[intersection])  # 6 calls
-
-# Our approach: 1 API call for all intersections
-batch_decisions = llm.get_batch_recommendation(all_states)  # 1 call
-```
-
-## 🏗️ System Architecture
+## System Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -112,254 +47,69 @@ batch_decisions = llm.get_batch_recommendation(all_states)  # 1 call
 │                    │  Execution   │                             │
 │                    └──────────────┘                             │
 └─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                    React Frontend (Vite)                         │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐            │
-│  │ Network     │  │ LLM Panel   │  │ Real-time   │            │
-│  │ Visualization│  │ (Decisions) │  │ Metrics     │            │
-│  └─────────────┘  └─────────────┘  └─────────────┘            │
-└─────────────────────────────────────────────────────────────────┘
 ```
 
-## 🔬 Technical Deep Dive
+## Method
 
-### 1. LLM Decision Engine
+### SUMO/TraCI Simulation
 
-The core innovation is using LLMs for traffic signal optimization. Here's how it works:
+The system uses SUMO (Simulation of Urban Mobility) with TraCI (Traffic Control Interface) for microscopic traffic simulation. The simulation engine automatically discovers traffic lights and approach edges from the network configuration.
 
-#### Prompt Engineering
-We construct a structured prompt that includes:
-- Current traffic state (queue lengths, vehicle counts)
-- Historical patterns (trends over last N steps)
+### Traffic State Perception
+
+At each control interval, the system collects:
+- Queue lengths per approach (vehicles with speed < 0.1 m/s)
+- Vehicle counts per approach
+- Current signal phase and timing
+
+### LLM-Guided Timing Recommendation
+
+The LLM receives a structured prompt containing:
+- Current traffic state for all intersections
+- Upstream/downstream queue information
 - Safety constraints (min/max green times)
-- Network topology (upstream/downstream relationships)
 
-```python
-prompt = f"""
-You are an expert traffic engineer optimizing signal timing.
+The LLM returns candidate phase durations in JSON format.
 
-Current state for intersection {intersection_id}:
-- East approach: {queue_east} vehicles waiting
-- West approach: {queue_west} vehicles waiting
-- North approach: {queue_north} vehicles waiting
-- South approach: {queue_south} vehicles waiting
+### Constraint Validation
 
-Upstream intersection {upstream_id} has {upstream_queue} vehicles 
-queued eastbound (will arrive here in ~30s).
+All LLM decisions are validated against safety constraints:
+- Minimum green time: 10s (pedestrian safety)
+- Maximum green time: 60s (prevent starvation)
+- Minimum cycle: 30s
+- Maximum cycle: 180s
 
-Recommend green phase durations (in seconds) for:
-- Phase 0 (NS green): [min=10, max=60]
-- Phase 2 (EW green): [min=10, max=60]
+Violations are automatically corrected to safe values.
 
-Respond in JSON format: {"phase_durations": {0: X, 2: Y}}
-"""
-```
+### Upstream-Downstream Coordination
 
-#### Response Parsing
-LLM responses are parsed and validated:
+The coordination engine detects queue spillover from upstream intersections and adjusts downstream green times:
+- If upstream queue > threshold: boost green time for incoming direction
+- If upstream queue > critical threshold: force phase switch
 
-```python
-def parse_llm_response(response: str) -> Dict[int, int]:
-    """Extract phase durations from LLM response.
-    
-    Handles multiple response formats:
-    1. Clean JSON: {"phase_durations": {0: 30, 2: 45}}
-    2. Markdown JSON: ```json\n{...}\n```
-    3. Reasoning models: Extract from reasoning_content field
-    
-    Returns:
-        Dict mapping phase index to duration in seconds
-    """
-    # Try direct JSON parsing
-    try:
-        data = json.loads(response)
-        return data.get("phase_durations", {0: 30, 2: 30})
-    except json.JSONDecodeError:
-        pass
-    
-    # Try extracting from markdown code block
-    json_match = re.search(r'```json\s*(.*?)\s*```', response, re.DOTALL)
-    if json_match:
-        try:
-            data = json.loads(json_match.group(1))
-            return data.get("phase_durations", {0: 30, 2: 30})
-        except json.JSONDecodeError:
-            pass
-    
-    # Fallback to default timing
-    return {0: 30, 2: 30}
-```
+### Baseline Controllers
 
-### 2. Constraint Engine
+- **Fixed**: Static equal green splits
+- **Random**: Randomized green durations within constraints
+- **Webster**: Queue-based adaptive timing using Webster's formula
+- **MaxPressure**: Selects phase with maximum queue pressure
+- **RL**: Reinforcement learning-based controller
 
-Safety is paramount in traffic systems. Our constraint engine ensures LLM decisions never violate safety rules:
+### Ablation Strategies
 
-```python
-class SignalConstraintEngine:
-    """Rule engine for validating signal timing decisions.
-    
-    Constraints:
-    - min_green: 10s (minimum phase duration for pedestrian safety)
-    - max_green: 60s (prevent starvation of other phases)
-    - min_cycle: 30s (minimum complete cycle)
-    - max_cycle: 180s (maximum cycle for responsiveness)
-    - yellow_time: 3s (standard clearance interval)
-    """
-    
-    def validate(self, green_phases: List[float], cycle_length: float):
-        """Validate and correct signal timing.
-        
-        Returns:
-            (valid, violations, corrected)
-            - valid: True if all constraints satisfied
-            - violations: List of violation descriptions
-            - corrected: List of corrected green durations
-        """
-        violations = []
-        corrected = []
-        
-        for i, g in enumerate(green_phases):
-            if g < self.rules["min_green"]:
-                violations.append(f"Phase {i}: {g}s < min {self.rules['min_green']}s")
-                corrected.append(self.rules["min_green"])
-            elif g > self.rules["max_green"]:
-                violations.append(f"Phase {i}: {g}s > max {self.rules['max_green']}s")
-                corrected.append(self.rules["max_green"])
-            else:
-                corrected.append(g)
-        
-        return len(violations) == 0, violations, corrected
-```
+To isolate the contribution of each component, the following ablation strategies are provided:
 
-### 3. Coordination Engine
+- **llm_only**: LLM recommendations only (no coordination, no constraints)
+- **llm_constraints**: LLM + constraint validation (no coordination)
+- **llm_coord**: LLM + coordination (no constraint correction)
+- **llm_full**: LLM + coordination + constraints (complete pipeline)
 
-The coordination engine implements **upstream-downstream queue-based coordination**:
+These strategies help understand:
+1. How much does the constraint engine contribute to safety?
+2. How much does coordination contribute to performance?
+3. What's the baseline LLM performance without safety nets?
 
-```python
-class CoordinationEngine:
-    """Multi-intersection signal coordination.
-    
-    Logic:
-    1. Monitor queue lengths at all intersections
-    2. If upstream queue > threshold in direction flowing here:
-       - Boost green time for that direction
-    3. If upstream queue > critical_threshold:
-       - Force phase switch to prevent spillback
-    
-    Example:
-        A0 (upstream) has 15 vehicles eastbound
-        → B0 (downstream) increases westbound green by 10s
-        → Prevents congestion from propagating
-    """
-```
-
-### 4. Multi-Process Architecture
-
-SUMO simulation runs in a dedicated subprocess for stability:
-
-```python
-def _sim_process_fn(cfg: dict, state_queue: mp.Queue, stop_event: mp.Event):
-    """Simulation process target.
-    
-    Why multiprocessing?
-    - TraCI uses TCP sockets, not thread-safe
-    - SUMO's event loop conflicts with uvicorn's async loop
-    - Process isolation prevents crashes from taking down the server
-    
-    Communication:
-    - state_queue: Push snapshots to main process
-    - stop_event: Signal to terminate simulation
-    """
-```
-
-## 📊 Performance Results
-
-### Experimental Setup
-
-- **Network**: 3×2 grid (6 intersections)
-- **Simulation**: 3600 steps (1 hour simulated)
-- **Trials**: 10 runs per strategy
-- **Metrics**: Wait time, queue length, throughput
-
-### Key Findings
-
-| Strategy | Avg Wait (s) | Avg Queue | Throughput | vs. Baseline |
-|----------|-------------|-----------|------------|--------------|
-| Fixed | 249.2 ± 0.0 | 112.8 ± 0.0 | 0.053 ± 0.000 | — |
-| Random | 124.9 ± 4.2 | 108.0 ± 1.1 | 0.085 ± 0.008 | +60% |
-| Webster | 213.9 ± 0.0 | 112.1 ± 0.0 | 0.060 ± 0.000 | +13% |
-| MaxPressure | 191.6 ± 0.0 | 110.3 ± 0.0 | 0.078 ± 0.000 | +47% |
-| DQN (RL) | 120.5 ± 6.2 | 106.9 ± 1.1 | 0.092 ± 0.009 | +73% |
-| **LLM+Coord** | **127.0 ± 6.0** | **103.6 ± 1.1** | **0.115 ± 0.008** | **+117%** |
-
-### Statistical Significance
-
-- **LLM vs DQN**: p < 0.001, Cohen's d = 2.87 (large effect)
-- **LLM vs Webster**: p < 0.001, Cohen's d = 8.92 (very large effect)
-
-### Why LLM Outperforms RL
-
-1. **Zero-shot generalization**: LLM understands traffic patterns without training
-2. **Network-level reasoning**: Considers upstream/downstream effects
-3. **Adaptive to demand changes**: Responds to traffic variations immediately
-4. **No catastrophic forgetting**: Doesn't degrade on previously learned patterns
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-```bash
-# System dependencies
-sudo apt install sumo sumo-tools
-
-# Python dependencies
-pip install httpx fastapi uvicorn websockets pydantic matplotlib numpy
-
-# Node.js (for frontend)
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-sudo apt install nodejs
-```
-
-### Quick Start
-
-```bash
-# 1. Clone the repository
-git clone https://github.com/bbc578/llm-traffic.git
-cd llm-traffic
-
-# 2. Set up environment
-export SUMO_HOME=/usr/share/sumo
-
-# 3. Start backend
-python3.10 -m uvicorn backend.main:app --host 0.0.0.0 --port 8000
-
-# 4. Start frontend (in another terminal)
-cd frontend
-npm install
-npx vite --host 0.0.0.0 --port 5180
-
-# 5. Run experiment
-python3.10 run_experiment.py
-```
-
-### Configuration
-
-Edit `backend/config/settings.py`:
-
-```python
-# LLM Configuration
-LLM_BASE_URL = "https://api.xiaomi.com/v1"
-LLM_MODEL = "mimo-v2.5-pro"
-LLM_API_KEY = "your-api-key-here"
-
-# Simulation Configuration
-SIMULATION_DURATION = 3600  # steps
-CONTROL_INTERVAL = 30       # seconds between LLM calls
-```
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 llm-traffic/
@@ -373,7 +123,8 @@ llm-traffic/
 │   │   ├── baseline.py            # Fixed/Random controllers
 │   │   ├── webster.py             # Webster's formula
 │   │   ├── constraints.py         # Safety constraint engine
-│   │   └── coordination.py        # Multi-intersection coordination
+│   │   ├── coordination.py        # Multi-intersection coordination
+│   │   └── rl_controller.py       # RL controller
 │   └── experiment/
 │       └── runner.py              # Experiment framework
 ├── frontend/
@@ -384,35 +135,159 @@ llm-traffic/
 │   ├── grid6.net.xml              # Network definition
 │   ├── grid6.rou.xml              # Traffic routes
 │   └── experiment_results.json    # Experiment data
-├── paper/
-│   └── main.tex                   # IEEE conference paper
+├── tests/
+│   ├── test_constraints.py        # Constraint engine tests
+│   ├── test_webster.py            # Webster controller tests
+│   ├── test_llm_parser.py         # LLM response parser tests
+│   └── test_coordination.py       # Coordination engine tests
 ├── ARCHITECTURE.md                # System architecture doc
 ├── INTERVIEW_GUIDE.md             # Interview preparation
 └── run_experiment.py              # Standalone experiment runner
 ```
 
-## 🎓 Interview Guide
+## Installation
 
-See [INTERVIEW_GUIDE.md](INTERVIEW_GUIDE.md) for detailed Q&A preparation covering:
+### Prerequisites
 
-- System design decisions
-- Algorithm comparisons
-- Performance optimization
-- Scalability considerations
-- Future improvements
+- Python 3.10+
+- SUMO 1.12.0+ (`apt install sumo sumo-tools`)
+- Node.js 18+ (for frontend)
 
-## 📚 References
+### Python Dependencies
 
-1. Webster, F. V. (1958). Traffic Signal Settings. Road Research Technical Paper No. 39.
-2. Wei, H., et al. (2019). PressLight: Learning Max Pressure Control to Coordinate Traffic Signals in Arterial Network. KDD.
-3. Chen, C., et al. (2020). Toward A Thousand Lights: Decentralized Deep Reinforcement Learning for Large-Scale Traffic Signal Control. AAAI.
+```bash
+pip install -r requirements.txt
+```
 
-## 📄 License
+### SUMO Configuration
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+```bash
+export SUMO_HOME=/usr/share/sumo
+```
 
-## 🙏 Acknowledgments
+### LLM Configuration (Optional)
 
-- [SUMO](https://sumo.dlr.de/) - Traffic simulation platform
-- [Xiaomi MiMo](https://mimo.xiaomi.com/) - LLM API provider
-- [FastAPI](https://fastapi.tiangolo.com/) - Web framework
+LLM configuration is only required for the LLM strategy. Non-LLM strategies work without this.
+
+```bash
+cp .env.example .env
+# Edit .env with your API key
+```
+
+Or set environment variables:
+
+```bash
+export LLM_API_KEY=your-api-key
+export LLM_BASE_URL=your-openai-compatible-url
+export LLM_MODEL=your-model-name
+```
+
+**Note:** If `LLM_API_KEY` is not set, non-LLM baselines still work. The LLM strategy will fallback to default timing if the API call fails.
+
+## Configuration
+
+All configuration is centralized in `backend/config/settings.py`:
+
+- **SUMO**: Network file, simulation duration, step length
+- **LLM**: API key, base URL, model name
+- **Algorithm**: Min/max green times, cycle lengths, saturation flow
+- **Experiment**: Steps, warm-up, trials, strategies
+
+## Quick Start
+
+### Backend
+
+```bash
+python -m uvicorn backend.main:app --host 0.0.0.0 --port 8000
+```
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+### Run Demo
+
+```bash
+python demo.py --strategy llm --steps 300
+```
+
+## Reproduce Experiments
+
+### Experiment Settings
+
+The following settings are used across the project:
+
+| Parameter | Value |
+|-----------|-------|
+| Network | `data/grid6.sumocfg` |
+| Intersections | 6 (3×2 grid) |
+| Simulation steps | 3600 |
+| Warm-up steps | 600 |
+| Trials | 5 |
+| Strategies | fixed, random, webster, maxpressure, rl, llm |
+
+### Run Experiments
+
+```bash
+python run_experiment.py
+```
+
+Results are saved to `data/experiment_results.json`.
+
+### Run Tests
+
+```bash
+pytest
+```
+
+Tests do not require SUMO and test pure Python modules only.
+
+## Results
+
+The following table is generated from the provided `data/experiment_results.json` file.
+
+**Experiment Setup:**
+- Network: `data/grid6.sumocfg` (3×2 grid, 6 intersections)
+- Simulation steps: 3600 (600 warm-up + 3000 measured)
+- Trials: 5 per strategy
+- Metrics collected after warm-up period
+
+| Strategy | Avg Wait (s) | Avg Queue | Throughput (veh/step) |
+|----------|-------------|-----------|----------------------|
+| Fixed | 249.2 ± 0.0 | 112.8 ± 0.0 | 0.053 ± 0.000 |
+| Random | 124.9 ± 4.2 | 108.0 ± 1.1 | 0.085 ± 0.008 |
+| Webster | 213.9 ± 0.0 | 112.1 ± 0.0 | 0.060 ± 0.000 |
+| MaxPressure | 191.6 ± 0.0 | 110.3 ± 0.0 | 0.078 ± 0.000 |
+| RL | 120.5 ± 6.2 | 106.9 ± 1.1 | 0.092 ± 0.009 |
+| LLM+Coord | 127.0 ± 6.0 | 103.6 ± 1.1 | 0.115 ± 0.008 |
+
+**Interpretation:**
+
+The provided grid benchmark suggests that the LLM-assisted controller can achieve competitive queue and throughput performance under the current simulation setup. However, the results should be interpreted as exploratory and require validation on more networks, demand patterns, and random seeds.
+
+**Note:** The LLM strategy includes coordination and constraint validation. Ablation studies are provided to isolate the contribution of each component.
+
+## Limitations
+
+1. **Single network**: Results are based on a 3×2 grid benchmark only
+2. **Coordination scope**: The coordination module is currently implemented for the provided grid benchmark
+3. **Webster baseline**: Uses a simplified queue-to-flow proxy (queue_length × 120), not strict engineering calibration
+4. **LLM latency**: API calls add 100-500ms per decision cycle
+5. **Cost**: LLM API calls incur costs (mitigated by batch processing)
+6. **Reliability**: LLM responses can be inconsistent (mitigated by constraint engine)
+
+## Roadmap
+
+- [ ] Validate on more networks (real-world, larger grids)
+- [ ] Fine-tune smaller model for traffic-specific tasks
+- [ ] Implement hierarchical coordination for scalability
+- [ ] Add real-time data integration (cameras, GPS)
+- [ ] Systematic evaluation of LLM latency and cost
+
+## License
+
+MIT

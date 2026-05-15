@@ -26,6 +26,7 @@ from backend.algorithms.baseline import (
 from backend.algorithms.rl_controller import RLController
 from backend.algorithms.constraints import SignalConstraintEngine
 from backend.algorithms.coordination import CoordinationEngine
+from backend.algorithms.ablation import AblationStrategy, get_ablation_strategies
 from backend.llm.xiaomi_client import LLMClient
 
 # ---------------------------------------------------------------------------
@@ -36,6 +37,8 @@ WARMUP_STEPS = 600
 NUM_TRIALS = 5
 CONFIG = "data/grid6.sumocfg"
 STRATEGIES = ["fixed", "random", "webster", "maxpressure", "rl", "llm"]
+# Ablation strategies (can be added to STRATEGIES for ablation studies)
+ABLATION_STRATEGIES = get_ablation_strategies()  # ["llm_only", "llm_constraints", "llm_coord", "llm_full"]
 
 
 # ---------------------------------------------------------------------------
@@ -68,9 +71,15 @@ def run_strategy(strategy: str, seed: int = 0) -> dict:
         ),
         "rl": lambda s: RLController(seed=s),
     }
-    controller = ctrl_map[strategy](seed) if strategy in ctrl_map else None
-    is_llm = strategy == "llm"
+    
+    # Check if this is an ablation strategy
+    is_ablation = strategy in ABLATION_STRATEGIES
+    controller = ctrl_map.get(strategy, lambda s: None)(seed) if not is_ablation else None
+    is_llm = strategy == "llm" or is_ablation
     llm_client = LLMClient() if is_llm else None
+    
+    # Initialize ablation strategy if needed
+    ablation = AblationStrategy(strategy) if is_ablation else None
 
     # --- Phase directions (for non-LLM strategies) ----------------------
     phase_directions = {
@@ -111,7 +120,49 @@ def run_strategy(strategy: str, seed: int = 0) -> dict:
             if (step - WARMUP_STEPS) % 30 == 0:
                 queues = engine.get_all_queue_lengths()
 
-                if is_llm and llm_client:
+                if is_ablation and ablation and llm_client:
+                    # Ablation strategy: use LLM + ablation logic
+                    vehicle_counts = engine.get_all_vehicle_counts()
+                    all_states = {}
+                    for iid in INTS:
+                        q = queues.get(iid, {})
+                        vc = vehicle_counts.get(iid, {})
+                        all_states[iid] = {
+                            "vehicle_counts": vc,
+                            "queue_lengths": q,
+                            "avg_waiting_times": {d: 0 for d in q},
+                            "total_vehicles": sum(vc.values()),
+                            "time": step,
+                            "current_phase": 0,
+                        }
+                    try:
+                        # Get LLM recommendation
+                        batch_result = llm_client.get_batch_recommendation(all_states)
+                        llm_rec = {}
+                        for iid in INTS:
+                            pd = batch_result.get(iid, {}).get(
+                                "phase_durations", {0: 30, 1: 3, 2: 30, 3: 3}
+                            )
+                            llm_rec[iid] = {int(k): int(v) for k, v in pd.items()}
+                        
+                        # Apply ablation strategy
+                        timing_cache = ablation.compute_timings(llm_rec, queues, INTS)
+                        
+                        print(f"  step={step} Ablation ({strategy}): {timing_cache}")
+                    except Exception as e:
+                        print(f"  step={step} Ablation FAILED: {e}")
+                        for iid in INTS:
+                            timing_cache[iid] = {0: 30, 1: 3, 2: 30, 3: 3}
+                    
+                    # Apply timings
+                    for iid in INTS:
+                        timings = timing_cache.get(iid, {0: 30, 1: 3, 2: 30, 3: 3})
+                        phase = 0 if timings.get(0, 30) >= timings.get(2, 30) else 2
+                        engine.set_phase(
+                            iid, phase, duration=max(timings.get(0, 30), timings.get(2, 30))
+                        )
+                
+                elif is_llm and llm_client:
                     # LLM strategy (unchanged logic)
                     vehicle_counts = engine.get_all_vehicle_counts()
                     all_states = {}
@@ -169,10 +220,15 @@ def run_strategy(strategy: str, seed: int = 0) -> dict:
                         engine.set_phase(iid, phase, duration=int(max(timings)))
                 else:
                     # Baseline strategies: fixed, random, webster
+                    # Note: Using queue-to-flow proxy (not strict engineering calibration)
+                    # Multiplier (120) and minimum (100) are rough estimates
+                    QUEUE_TO_FLOW_MULTIPLIER = 120  # vehicles/hour per queued vehicle
+                    QUEUE_TO_FLOW_MINIMUM = 100     # minimum flow estimate (veh/hr)
+                    
                     for iid in INTS:
                         q = queues.get(iid, {})
-                        ew = max((q.get("east", 0) + q.get("west", 0)) * 120, 100)
-                        ns = max((q.get("north", 0) + q.get("south", 0)) * 120, 100)
+                        ew = max((q.get("east", 0) + q.get("west", 0)) * QUEUE_TO_FLOW_MULTIPLIER, QUEUE_TO_FLOW_MINIMUM)
+                        ns = max((q.get("north", 0) + q.get("south", 0)) * QUEUE_TO_FLOW_MULTIPLIER, QUEUE_TO_FLOW_MINIMUM)
                         timings = controller.compute_timing({"EW": ew, "NS": ns})
                         phase = 0 if timings[0] >= timings[1] else 2
                         engine.set_phase(iid, phase, duration=int(max(timings)))

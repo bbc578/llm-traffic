@@ -4,6 +4,12 @@ Webster's Formula for Optimal Signal Timing
 This module implements Webster's formula, a classical traffic engineering method
 for computing optimal signal timing based on traffic flow.
 
+Note: The current implementation uses a simplified queue-to-flow proxy
+(queue_length × 120) to estimate traffic flow from queue lengths. This is
+an approximation and not a strict engineering calibration. The multiplier
+(120 vehicles/hour per queued vehicle) is a rough estimate and should be
+calibrated for specific networks and conditions.
+
 What is Webster's Formula?
 ==========================
 Webster's formula computes the optimal cycle length that minimizes total delay:
@@ -28,6 +34,7 @@ Limitations:
 1. **Local optimization**: Only considers one intersection at a time
 2. **Static**: Doesn't adapt to changing traffic patterns
 3. **Assumes uniform arrivals**: May not hold in real traffic
+4. **Queue-to-flow proxy**: Uses simplified approximation, not real flow data
 
 Author: Yihao Tang
 Date: 2024

@@ -5,6 +5,11 @@ This module implements queue-based signal coordination between neighboring
 intersections. It detects queue spillover from upstream intersections and
 adjusts downstream green times to prevent congestion propagation.
 
+Note: The coordination topology is currently implemented for the provided
+3×2 grid benchmark (grid6). The SUMO engine supports automatic discovery
+of traffic lights and approach edges, while the coordination module uses
+a hard-coded topology for the grid6 network.
+
 Why Coordination?
 =================
 Independent intersection control causes problems:
