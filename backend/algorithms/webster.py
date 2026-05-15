@@ -1,17 +1,64 @@
 """
-Webster's formula for optimal signal timing.
+Webster's Formula for Optimal Signal Timing
 
-Formula: C_opt = (1.5*L + 5) / (1 - sum(Yi))
-where:
-  L = total lost time (sum of yellow/clearance phases)
-  Yi = critical flow ratio for phase i (flow / saturation_flow)
+This module implements Webster's formula, a classical traffic engineering method
+for computing optimal signal timing based on traffic flow.
+
+What is Webster's Formula?
+==========================
+Webster's formula computes the optimal cycle length that minimizes total delay:
+
+    C_opt = (1.5L + 5) / (1 - ΣYi)
+
+Where:
+- C_opt: Optimal cycle length (seconds)
+- L: Total lost time (sum of yellow/clearance phases)
+- Yi: Critical flow ratio for phase i (flow / saturation_flow)
+- ΣYi: Sum of all critical flow ratios
+
+Why Webster's Formula?
+======================
+1. **Theoretically grounded**: Based on queuing theory
+2. **Widely used**: Standard in traffic engineering
+3. **Simple to compute**: Easy to implement and understand
+4. **Good baseline**: Strong performance in moderate traffic
+
+Limitations:
+============
+1. **Local optimization**: Only considers one intersection at a time
+2. **Static**: Doesn't adapt to changing traffic patterns
+3. **Assumes uniform arrivals**: May not hold in real traffic
+
+Author: Yihao Tang
+Date: 2024
 """
 
 from typing import Dict, List
 
 
 class WebsterController:
-    """Compute optimal signal timing using Webster's formula."""
+    """Compute optimal signal timing using Webster's formula.
+    
+    This controller implements Webster's formula for signal timing optimization.
+    It's used as a baseline to compare against our LLM-based approach.
+    
+    Algorithm:
+    1. Compute critical flow ratios: Yi = flow_i / saturation_flow
+    2. Sum all flow ratios: ΣYi
+    3. Compute optimal cycle length: C = (1.5L + 5) / (1 - ΣYi)
+    4. Distribute green time proportional to flow ratios
+    5. Apply min/max constraints
+    
+    Usage:
+        controller = WebsterController()
+        
+        # Compute timing for two phases
+        timings = controller.compute_timing({
+            "EW": 800,  # East-West flow (vehicles/hour)
+            "NS": 600,  # North-South flow (vehicles/hour)
+        })
+        # Returns: [35, 28] (EW=35s, NS=28s)
+    """
 
     def compute_timing(
         self,
@@ -21,19 +68,23 @@ class WebsterController:
         max_green: int = 60,
         yellow_time: int = 3,
     ) -> List[int]:
-        """
-        Compute green durations for each phase using Webster's formula.
-
+        """Compute green durations for each phase using Webster's formula.
+        
         Args:
             phase_flows: dict mapping phase name -> flow (veh/hr)
-                         e.g. {"north_south": 800, "east_west": 600}
+                        e.g. {"EW": 800, "NS": 600}
             saturation_flow: saturation flow rate per phase (veh/hr), default 1800
+                            This is the maximum flow a phase can handle
             min_green: minimum green time per phase (seconds)
             max_green: maximum green time per phase (seconds)
             yellow_time: yellow/clearance time per phase (seconds)
-
+        
         Returns:
             List of green durations (int, seconds), one per phase in dict order.
+            Example: [35, 28] for {"EW": 800, "NS": 600}
+        
+        Raises:
+            None (handles edge cases gracefully)
         """
         if not phase_flows:
             return []
@@ -41,18 +92,20 @@ class WebsterController:
         phases = list(phase_flows.keys())
         n = len(phases)
 
-        # Compute critical flow ratios Yi = flow_i / saturation_flow
+        # Step 1: Compute critical flow ratios Yi = flow_i / saturation_flow
+        # Flow ratio represents how much of the phase's capacity is being used
         flow_ratios = {}
         for name, flow in phase_flows.items():
             flow_ratios[name] = max(0.0, flow / saturation_flow)
 
-        # Sum of all flow ratios
+        # Step 2: Sum of all flow ratios
+        # If ΣYi >= 1.0, the intersection is oversaturated
         y_total = sum(flow_ratios.values())
 
-        # Total lost time: one yellow interval per phase
+        # Step 3: Total lost time: one yellow interval per phase
         L = n * yellow_time
 
-        # Webster's optimal cycle length
+        # Step 4: Webster's optimal cycle length
         if y_total >= 1.0:
             # Oversaturated: use max cycle with all phases at max_green
             cycle_opt = 180.0
@@ -61,17 +114,18 @@ class WebsterController:
             if denominator <= 0.0:
                 cycle_opt = 180.0
             else:
+                # Webster's formula: C_opt = (1.5L + 5) / (1 - ΣYi)
                 cycle_opt = (1.5 * L + 5.0) / denominator
 
-        # Clamp cycle length to reasonable bounds
+        # Step 5: Clamp cycle length to reasonable bounds
         min_cycle = n * (min_green + yellow_time)
         max_cycle = n * (max_green + yellow_time)
         cycle_opt = max(min_cycle, min(cycle_opt, max_cycle))
 
-        # Effective green = cycle - total yellow
+        # Step 6: Effective green = cycle - total yellow
         total_green = cycle_opt - (n * yellow_time)
 
-        # Distribute green time proportional to flow ratios
+        # Step 7: Distribute green time proportional to flow ratios
         if y_total > 0:
             greens = []
             raw_greens = []
@@ -90,6 +144,7 @@ class WebsterController:
                 greens[i] = raw_greens[i]
 
             # Iterative rebalancing to respect min/max
+            # This ensures all phases get at least min_green
             for _ in range(10):
                 free_sum = 0.0
                 fixed_count = 0
@@ -129,7 +184,7 @@ class WebsterController:
             # No traffic: distribute equally
             greens = [total_green / n] * n
 
-        # Final clamp and round
+        # Step 8: Final clamp and round
         result = []
         for g in greens:
             g = max(min_green, min(max_green, round(g)))
@@ -146,16 +201,25 @@ def compute_timing_for_intersection(
     yellow_time: int = 3,
 ) -> List[int]:
     """Compute optimal signal timing using Webster's formula (convenience wrapper).
-
+    
+    This is a convenience function that creates a WebsterController instance
+    and computes timing in one call.
+    
     Args:
         flows: Dict mapping phase name to flow rate in veh/hr.
+              Example: {"EW": 800, "NS": 600}
         saturation_flow: Saturation flow rate per phase (veh/hr).
+                        Default 1800 (standard value for urban intersections)
         min_green: Minimum green time per phase (seconds).
+                  Default 10 (pedestrian safety)
         max_green: Maximum green time per phase (seconds).
+                  Default 60 (prevent starvation)
         yellow_time: Yellow/clearance time per phase (seconds).
-
+                    Default 3 (standard traffic engineering value)
+    
     Returns:
         List of green durations (int, seconds), one per phase in dict order.
+        Example: [35, 28] for {"EW": 800, "NS": 600}
     """
     ctrl = WebsterController()
     return ctrl.compute_timing(flows, saturation_flow, min_green, max_green, yellow_time)
