@@ -227,7 +227,7 @@ The following settings are used across the project:
 | Intersections | 6 (3×2 grid) |
 | Simulation steps | 3600 |
 | Warm-up steps | 600 |
-| Trials | 5 |
+| Trials | 10 |
 | Strategies | fixed, random, webster, maxpressure, rl, llm |
 
 ### Run Experiments
@@ -253,7 +253,7 @@ The following table is generated from the provided `data/experiment_results.json
 **Experiment Setup:**
 - Network: `data/grid6.sumocfg` (3×2 grid, 6 intersections)
 - Simulation steps: 3600 (600 warm-up + 3000 measured)
-- Trials: 5 per strategy
+- Trials: 10 per strategy
 - Metrics collected after warm-up period
 
 | Strategy | Avg Wait (s) | Avg Queue | Throughput (veh/step) |

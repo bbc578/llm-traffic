@@ -7,133 +7,140 @@ Tests cover:
 - Invalid JSON fallback
 - Phase duration clamping
 - Reasoning field preservation
-- Reasoning_content fallback
+- Batch response parsing
 
-These tests do not require LLM API and test pure Python modules only.
+These tests call the actual LLMClient methods to ensure test validity.
+They do NOT require LLM API key (tests parsing only, not API calls).
 """
 
 import pytest
 import sys
 import os
-import json
 
 # Add project root to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
+from backend.llm.xiaomi_client import LLMClient
+
 
 class TestLLMResponseParser:
-    """Test suite for LLM response parsing logic."""
+    """Test suite for LLM response parsing using actual LLMClient methods."""
 
-    def test_valid_json_parsing(self):
+    def setup_method(self):
+        """Set up test fixtures with dummy API key."""
+        self.client = LLMClient(api_key="dummy")
+
+    def test_parse_response_valid_json(self):
         """Test parsing valid JSON response."""
-        response = '{"phase_durations": {"0": 30, "2": 45}}'
-        data = json.loads(response)
+        response = '{"phase_durations": {"0": 30, "1": 3, "2": 45, "3": 3}, "reasoning": "test"}'
+        result = self.client._parse_response(response)
         
-        assert "phase_durations" in data
-        assert data["phase_durations"]["0"] == 30
-        assert data["phase_durations"]["2"] == 45
+        assert result["phase_durations"][0] == 30
+        assert result["phase_durations"][2] == 45
+        assert result["reasoning"] == "test"
 
-    def test_missing_phase_defaults(self):
+    def test_parse_response_missing_phase_defaults(self):
         """Test that missing phases get default values."""
-        response = '{"phase_durations": {"0": 30}}'
-        data = json.loads(response)
+        response = '{"phase_durations": {"0": 30}, "reasoning": "incomplete"}'
+        result = self.client._parse_response(response)
         
-        # Should have default for phase 2
-        pd = data.get("phase_durations", {})
-        phase_2 = pd.get("2", 30)  # Default to 30
-        assert phase_2 == 30
+        # Should have defaults for missing phases
+        assert 0 in result["phase_durations"]
+        assert 1 in result["phase_durations"]
+        assert 2 in result["phase_durations"]
+        assert 3 in result["phase_durations"]
+        assert result["phase_durations"][1] == 3  # Default yellow
 
-    def test_invalid_json_fallback(self):
+    def test_parse_response_invalid_json_fallback(self):
         """Test fallback for invalid JSON."""
-        response = "This is not JSON"
+        response = "This is not JSON at all"
+        result = self.client._parse_response(response)
         
-        # Should not crash
-        try:
-            data = json.loads(response)
-        except json.JSONDecodeError:
-            # Expected - use default
-            data = {"phase_durations": {0: 30, 2: 30}}
-        
-        assert "phase_durations" in data
+        # Should return defaults
+        assert result["phase_durations"] == {0: 30, 1: 3, 2: 30, 3: 3}
+        assert "Default timing used" in result["reasoning"]
 
-    def test_phase_duration_clamping(self):
+    def test_parse_response_phase_duration_clamping(self):
         """Test that phase durations are clamped to valid range."""
-        response = '{"phase_durations": {"0": 120, "2": 5}}'
-        data = json.loads(response)
+        # Green phase too high (120 > 90)
+        # Green phase too low (5 < 10)
+        response = '{"phase_durations": {"0": 120, "1": 3, "2": 5, "3": 3}, "reasoning": "test"}'
+        result = self.client._parse_response(response)
         
-        pd = data.get("phase_durations", {})
-        
-        # Clamp to [10, 60]
-        phase_0 = max(10, min(60, int(pd.get("0", 30))))
-        phase_2 = max(10, min(60, int(pd.get("2", 30))))
-        
-        assert phase_0 == 60  # Clamped from 120
-        assert phase_2 == 10  # Clamped from 5
+        assert result["phase_durations"][0] == 90  # Clamped from 120
+        assert result["phase_durations"][2] == 10  # Clamped from 5
 
-    def test_reasoning_field_preservation(self):
+    def test_parse_response_yellow_phase_clamping(self):
+        """Test that yellow phases are clamped to [3, 5]."""
+        response = '{"phase_durations": {"0": 30, "1": 10, "2": 30, "3": 1}, "reasoning": "test"}'
+        result = self.client._parse_response(response)
+        
+        assert result["phase_durations"][1] == 5   # Clamped from 10
+        assert result["phase_durations"][3] == 3   # Clamped from 1
+
+    def test_parse_response_reasoning_preservation(self):
         """Test that reasoning field is preserved."""
-        response = json.dumps({
-            "phase_durations": {"0": 30, "2": 45},
-            "reasoning": "NS has more vehicles, so giving more green time"
-        })
-        data = json.loads(response)
+        response = '{"phase_durations": {"0": 30, "1": 3, "2": 45, "3": 3}, "reasoning": "Heavy east traffic"}'
+        result = self.client._parse_response(response)
         
-        assert "reasoning" in data
-        assert "NS has more vehicles" in data["reasoning"]
+        assert result["reasoning"] == "Heavy east traffic"
 
-    def test_markdown_json_extraction(self):
-        """Test extraction from markdown code block."""
-        response = '''```json
-{
-    "phase_durations": {"0": 35, "2": 25}
-}
-```'''
+    def test_parse_batch_response_valid(self):
+        """Test parsing valid batch response."""
+        response = '''{
+            "A0": {"phase_durations": {"0": 40, "1": 3, "2": 20, "3": 3}, "reasoning": "test A0"},
+            "B0": {"phase_durations": {"0": 25, "1": 3, "2": 35, "3": 3}, "reasoning": "test B0"}
+        }'''
+        all_states = {"A0": {}, "B0": {}}
+        result = self.client._parse_batch_response(response, all_states)
         
-        # Extract JSON from markdown
-        import re
-        json_match = re.search(r'```json\s*(.*?)\s*```', response, re.DOTALL)
-        assert json_match is not None
-        
-        data = json.loads(json_match.group(1))
-        assert data["phase_durations"]["0"] == 35
-        assert data["phase_durations"]["2"] == 25
+        assert result["A0"]["phase_durations"][0] == 40
+        assert result["B0"]["phase_durations"][2] == 35
+        assert result["A0"]["reasoning"] == "test A0"
 
-    def test_integer_string_keys(self):
-        """Test that integer string keys are handled."""
-        response = '{"phase_durations": {"0": 30, "2": 45}}'
-        data = json.loads(response)
+    def test_parse_batch_response_missing_intersection(self):
+        """Test batch response with missing intersection."""
+        response = '{"A0": {"phase_durations": {"0": 40, "1": 3, "2": 20, "3": 3}}}'
+        all_states = {"A0": {}, "B0": {}}
+        result = self.client._parse_batch_response(response, all_states)
         
-        pd = data.get("phase_durations", {})
+        # A0 should have LLM values
+        assert result["A0"]["phase_durations"][0] == 40
         
-        # Convert keys to integers
-        result = {int(k): int(v) for k, v in pd.items()}
-        
-        assert 0 in result
-        assert 2 in result
-        assert result[0] == 30
-        assert result[2] == 45
+        # B0 should have defaults
+        assert result["B0"]["phase_durations"][0] == 30
+        assert "did not provide data" in result["B0"]["reasoning"]
 
-    def test_empty_response(self):
-        """Test empty response handling."""
-        response = ""
+    def test_parse_batch_response_invalid_json(self):
+        """Test batch response with invalid JSON falls back to per-intersection parsing."""
+        response = "Not JSON at all"
+        all_states = {"A0": {}, "B0": {}}
+        result = self.client._parse_batch_response(response, all_states)
         
-        try:
-            data = json.loads(response)
-        except json.JSONDecodeError:
-            data = {"phase_durations": {0: 30, 2: 30}}
-        
-        assert "phase_durations" in data
+        # Should return defaults for all intersections
+        for iid in all_states:
+            assert result[iid]["phase_durations"] == {0: 30, 1: 3, 2: 30, 3: 3}
 
-    def test_malformed_json(self):
-        """Test malformed JSON handling."""
-        response = '{"phase_durations": {"0": 30, "2": 45}'  # Missing closing brace
+    def test_parse_response_raw_response_preserved(self):
+        """Test that raw response is preserved."""
+        response = '{"phase_durations": {"0": 30, "1": 3, "2": 30, "3": 3}, "reasoning": "test"}'
+        result = self.client._parse_response(response)
         
-        try:
-            data = json.loads(response)
-        except json.JSONDecodeError:
-            data = {"phase_durations": {0: 30, 2: 30}}
+        assert result["raw_response"] == response
+
+    def test_call_llm_empty_api_key_raises(self):
+        """Test that empty API key raises RuntimeError."""
+        client = LLMClient(api_key="")
         
-        assert "phase_durations" in data
+        with pytest.raises(RuntimeError, match="LLM_API_KEY is not set"):
+            client._call_llm("test message")
+
+    def test_call_llm_none_api_key_raises(self):
+        """Test that None API key raises RuntimeError."""
+        client = LLMClient(api_key="")
+        
+        with pytest.raises(RuntimeError, match="LLM_API_KEY is not set"):
+            client._call_llm("test message")
 
 
 if __name__ == "__main__":

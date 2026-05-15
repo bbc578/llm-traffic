@@ -34,7 +34,7 @@ from backend.llm.xiaomi_client import LLMClient
 # ---------------------------------------------------------------------------
 STEPS = 3600
 WARMUP_STEPS = 600
-NUM_TRIALS = 5
+NUM_TRIALS = 10
 CONFIG = "data/grid6.sumocfg"
 STRATEGIES = ["fixed", "random", "webster", "maxpressure", "rl", "llm"]
 # Ablation strategies (can be added to STRATEGIES for ablation studies)
@@ -299,7 +299,7 @@ if __name__ == "__main__":
 
         # Aggregate across trials
         if trial_results:
-            metric_keys = ["avg_wait_time", "avg_queue_length", "throughput", "vehicles_arrived"]
+            metric_keys = ["avg_wait_time", "avg_queue_length", "throughput", "vehicles_arrived", "avg_delay", "avg_stops"]
             agg = {}
             for key in metric_keys:
                 vals = [r.get(key, 0) for r in trial_results]

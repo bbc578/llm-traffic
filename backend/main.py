@@ -128,6 +128,33 @@ def _sim_process_fn(cfg: dict, state_queue: mp.Queue, stop_event: mp.Event):
     llm_interval = cfg.get("llm_interval", 30)
     step_delay = max(0.01, 0.1 / speed_factor)  # Delay between steps
 
+    # Import additional controllers
+    try:
+        from algorithms.baseline import FixedTimeController, RandomController, MaxPressureController
+        from algorithms.rl_controller import RLController
+    except ImportError:
+        from backend.algorithms.baseline import FixedTimeController, RandomController, MaxPressureController
+        from backend.algorithms.rl_controller import RLController
+
+    # Initialize controller based on strategy
+    if strategy == "fixed":
+        controller = FixedTimeController()
+    elif strategy == "random":
+        controller = RandomController(seed=42)
+    elif strategy == "webster":
+        controller = webster
+    elif strategy == "maxpressure":
+        controller = MaxPressureController(
+            phase_directions={
+                "EW": ["east", "west"],
+                "NS": ["north", "south"],
+            }
+        )
+    elif strategy == "rl":
+        controller = RLController(seed=42)
+    else:
+        controller = None
+
     # LLM client (only instantiated if strategy == "llm")
     # This saves memory and API calls when LLM is not needed
     llm_client = None
@@ -199,20 +226,39 @@ def _sim_process_fn(cfg: dict, state_queue: mp.Queue, stop_event: mp.Event):
                     vehicle_counts = engine.get_all_vehicle_counts()
 
                     # ============================================================
-                    # Webster Strategy
+                    # Fixed/Random/Webster Strategies
                     # ============================================================
-                    if strategy == "webster":
+                    if strategy in ("fixed", "random", "webster"):
                         for iid in _INTS:
                             q = queues[iid]
-                            # Convert queue lengths to flow estimates
-                            # Multiply by 120 (assuming 120 vehicles/hour/lane)
                             ew = max((q.get("east", 0) + q.get("west", 0)) * 120, 100)
                             ns = max((q.get("north", 0) + q.get("south", 0)) * 120, 100)
-                            
-                            # Compute optimal timing using Webster's formula
-                            timings = webster.compute_timing({"EW": ew, "NS": ns})
-                            
-                            # Select phase with longer green time
+                            timings = controller.compute_timing({"EW": ew, "NS": ns})
+                            phase = 0 if timings[0] >= timings[1] else 2
+                            engine.set_phase(iid, phase, duration=int(max(timings)))
+
+                    # ============================================================
+                    # MaxPressure Strategy
+                    # ============================================================
+                    elif strategy == "maxpressure":
+                        for iid in _INTS:
+                            q = queues.get(iid, {})
+                            timings = controller.compute_timing(
+                                {"EW": 1, "NS": 1},
+                                queue_data=q,
+                            )
+                            phase = 0 if timings[0] >= timings[1] else 2
+                            engine.set_phase(iid, phase, duration=int(max(timings)))
+
+                    # ============================================================
+                    # RL Strategy
+                    # ============================================================
+                    elif strategy == "rl":
+                        for iid in _INTS:
+                            q = queues.get(iid, {})
+                            ew = max((q.get("east", 0) + q.get("west", 0)) * 120, 100)
+                            ns = max((q.get("north", 0) + q.get("south", 0)) * 120, 100)
+                            timings = controller.compute_timing({"EW": ew, "NS": ns})
                             phase = 0 if timings[0] >= timings[1] else 2
                             engine.set_phase(iid, phase, duration=int(max(timings)))
 

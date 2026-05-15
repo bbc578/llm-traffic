@@ -180,9 +180,16 @@ class LLMClient:
             The LLM response content as a string.
 
         Raises:
-            RuntimeError: If the httpx package is not installed.
+            RuntimeError: If the httpx package is not installed or API key is not set.
             httpx.HTTPStatusError: If the API returns a non-2xx status.
         """
+        # Check if API key is set
+        if not self.api_key:
+            raise RuntimeError(
+                "LLM_API_KEY is not set. Set it only when running LLM-based strategies. "
+                "Non-LLM strategies (fixed, random, webster, maxpressure, rl) work without it."
+            )
+
         try:
             import httpx
         except ImportError:

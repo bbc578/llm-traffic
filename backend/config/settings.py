@@ -66,7 +66,7 @@ LLM_CALL_INTERVAL = 30      # Call LLM every N simulation seconds
 # Experiment defaults (unified across project)
 EXPERIMENT_STEPS = 3600
 EXPERIMENT_WARMUP_STEPS = 600
-EXPERIMENT_NUM_TRIALS = 5
+EXPERIMENT_NUM_TRIALS = 10
 EXPERIMENT_STRATEGIES = ["fixed", "random", "webster", "maxpressure", "rl", "llm"]
 
 
